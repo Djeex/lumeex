@@ -1,0 +1,13 @@
+/*-----------------------------------*/
+/* Typewriter theme for Lumeex           */
+/* https://git.djeex.fr/Djeex/lumeex */
+/*-----------------------------------*/
+
+
+.tag {
+    line-height: 0.5em;
+}
+
+.tags {
+    gap:0px;
+}

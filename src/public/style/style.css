@@ -238,7 +238,7 @@ h2 {
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   margin-bottom: 10px;
 }
 
@@ -247,6 +247,7 @@ h2 {
   cursor: pointer;
   font-size: 18px;
   transition: background 0.2s ease;
+  line-height: 1em;
 }
 
 .tag:hover,
@@ -477,6 +478,10 @@ h2 {
 	
 	h2 {
 		font-size:18px;
+	}
+
+	.tag {
+		font-size: 14px;
 	}
 
 	#legals.content-wrapper {

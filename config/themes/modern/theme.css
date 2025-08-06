@@ -49,6 +49,10 @@ img, tag {
         margin: 0;
     }
 
+    .tag {
+        font-size: 12px;
+    }
+
     .hero-background {
         max-width: 90%;
         margin: auto;
