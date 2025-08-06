@@ -16,10 +16,10 @@ The project comes with two themes: one modern, the other more minimalistic, both
 
 ## 📌 Table of Contents
 
-- [Features](#-features)
-- [Python Installation](#-python-installation)
-- [Configuration](#-configuration)
-- [Build the Site](#-build-the-site)
+- [Features](#features)
+- [Python Installation](#python-installation)
+- [Configuration](#configuration)
+- [Build the Site](#build-the-site)
 
 ## Features
 
