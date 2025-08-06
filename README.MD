@@ -7,7 +7,9 @@
 
 Lumeex is a static site generator that builds a minimalist photo gallery. The project was born from the need to create a gallery focused more on the artworks than the author, while allowing users to organize works using tags and share filtered views. In this spirit, each page load displays the photos in random order, allowing users to discover new content they might not have seen before.
 
-The project comes with two themes: one modern, the other more minimalistic, both designed to keep the focus on the artworks.
+The project comes with two themes: one modern, the other more minimalistic, both designed to keep the focus on the artworks:
+  - Modern 👉 [demo](https://modern.djeex.fr)
+  - Typewriter 👉 [demo](https://typewriter.djeex.fr)
 
 > [!NOTE]
 > _This GitHub repository is a mirror of https://git.djeex.fr/Djeex/lumeex. You’ll find the complete package, history, and release notes there. An LLM is used for bug checking and language file generation._
@@ -27,7 +29,9 @@ The project comes with two themes: one modern, the other more minimalistic, both
 - Shareable URLs with active tag filters.  
 - A photo carousel on the landing page.  
 - A legal notice page.  
-- Two visual themes (easily customizable).  
+- Two visual themes (easily customizable):
+  - Modern 👉 [demo](https://modern.djeex.fr)
+  - Typewriter 👉 [demo](https://typewriter.djeex.fr)
 - Supports Google Fonts and local fonts.
 
 **No-Code Builder Based on YAML Files**  
@@ -166,6 +170,10 @@ themes/
     ├── theme.css (optional)
     └── favicon.png
 ```
+
+**Lumeex** is shipped with two prebuilt themes:
+  - Modern 👉 [demo](https://modern.djeex.fr)
+  - Typewriter 👉 [demo](https://typewriter.djeex.fr)
 
 You can edit existing themes or create your own. Each theme can include:
 - **Required:** a `theme.yaml` file for visual settings (colors, fonts, etc.)
