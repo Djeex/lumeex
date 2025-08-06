@@ -7,7 +7,7 @@ colors:
   primary_dark: '#005384'
   secondary: '#00b0f0'
   accent: '#ffc700'
-  text_dark: '#333'
+  text_dark: '#616161'
   background: '#fff'
   browser_color: '#fff'
 favicon:
