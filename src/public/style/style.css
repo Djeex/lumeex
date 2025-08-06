@@ -8,7 +8,7 @@
   --color-primary-dark: #005384;
   --color-secondary: #00b0f0;
   --color-accent: #ffc700;
-  --color-text-dark: #333333;
+  --color-text-dark: #616161;
   --color-background: #ffffff;
 }
 
@@ -173,6 +173,9 @@ h2 {
   visibility: hidden;
 }
 
+.nav-separator {
+	color: var(--color-accent);
+}
 /* animation */
 
 .appear {
@@ -393,7 +396,6 @@ h2 {
 }
 
 .navigation-bottom-link {
-	color:var(--color-accent);
 	font-size: 12px;
 }
 
@@ -445,6 +447,10 @@ h2 {
 
 .legals-content {
 	margin: 0 100px;
+}
+
+.legals-content p {
+	color: var(--color-text-dark);
 }
 
 /* responsive */
