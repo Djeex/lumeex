@@ -64,7 +64,7 @@ git clone https://git.djeex.fr/Djeex/lumeex.git
 cd lumeex
 python3 -m venv .venv
 source .venv/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 You're ready to go!
