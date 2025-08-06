@@ -7,8 +7,8 @@ GALLERY_YAML = "config/gallery.yaml"
 SITE_YAML = "config/site.yaml"
 
 # Image directories
-GALLERY_DIR = Path("public/img/gallery")
-HERO_DIR = Path("public/img/hero")
+GALLERY_DIR = Path("config/photos/gallery")
+HERO_DIR = Path("config/photos/hero")
 
 def load_yaml(path):
     print(f"[→] Loading {path}...")
