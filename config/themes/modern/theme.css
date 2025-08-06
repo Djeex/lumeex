@@ -1,0 +1,61 @@
+/*-----------------------------------*/
+/* Modern theme for Lumeex           */
+/* https://git.djeex.fr/Djeex/lumeex */
+/*-----------------------------------*/
+
+.hero-background {
+    border-radius: 0 0 15px 15px;
+}
+
+img, tag {
+    border-radius: 15px;
+}
+
+.tag, .scroll-up, .back-button {
+    padding: 5px 10px;
+    background: rgb(245 245 245);
+    border-radius: 30px;
+    font-size: 15px;
+}
+
+.back-button {
+    padding: 8px 15px 10px 15px;
+    margin-left: 100px;
+}
+
+.tag:hover {
+    background: rgb(231, 231, 231);
+    color: var(--color-primary-dark);
+}
+
+.tag.active, .scroll-up:hover, .back-button:hover {
+    color: var(--color-background);
+    background: var(--color-primary-dark);
+}
+
+#footer {
+    box-shadow: 0px 20px 100px -44px rgba(0, 0, 0, 0.5);
+    border-radius: 15px 15px 0 0;
+    max-width: 1140px;
+    margin: auto;
+}
+
+@media (max-width: 768px) {
+    
+    #footer {
+        box-shadow: 0px 20px 100px -44px rgba(0, 0, 0, 0.5);
+        border-radius: 15px 15px 0 0;
+        max-width: 1140px;
+        margin: 0;
+    }
+
+    .hero-background {
+        max-width: 90%;
+        margin: auto;
+    }
+
+    .back-button {
+        margin-left: 0px;
+}
+
+}

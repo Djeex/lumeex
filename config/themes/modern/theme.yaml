@@ -1,0 +1,32 @@
+#-----------------------------------#
+# Modern theme for Lumeex           #
+# https://git.djeex.fr/Djeex/lumeex #
+#-----------------------------------#
+colors:
+  primary: '#0065a1'
+  primary_dark: '#005384'
+  secondary: '#00b0f0'
+  accent: '#ffc700'
+  text_dark: '#333'
+  background: '#fff'
+  browser_color: '#fff'
+favicon:
+  path: favicon.png
+google_fonts:
+  - family: Lato
+    weights:
+    - '200'
+    - '400'
+    - '700'
+  - family: Montserrat
+    weights:
+    - '200'
+    - '400'
+    - '700'
+fonts:
+  primary:
+    name: Lato
+    fallback: sans-serif
+  secondary:
+    name: Montserrat
+    fallback: serif
