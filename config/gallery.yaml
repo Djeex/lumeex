@@ -2,8 +2,8 @@
 # Relative path is set from built img folder
 # You can also use gallery.py to automatically add photos stored in your /config/photos/gallery folder
 # Add tags to your photos as shown below
-
-images:
+# remove the # before [] if you removed all images to use gallery.py
+images: #[]
 - src: gallery/almos-bechtold-3402kvtHhOo-unsplash.jpg
   tags: ["portrait"]
 - src: gallery/arthur-savary-nLfAqmZ2hJo-unsplash.jpg

@@ -1,3 +1,6 @@
+# This file is filled with the demo info
+# Please change this by your settings
+
 info:
   title: Lumeex
   subtitle: A minimalistic Gallery
@@ -24,13 +27,12 @@ menu:
   - label: Animals
     href: /?tag=animals
 
-
 hero:
   # Source your hero carrousel images here. 
   # Root folder is img. 
-  # You can also use gallery.py to automatically add images from config/photos/hero folder.
-  
-  images:
+  # You can also use gallery.py to automatically add images from config/photos/hero folder
+  # remove the # before [] if you removed all images to use gallery.py
+  images: #[]
   - src: hero/francesco-ungaro-Zbc9Ka8msdI-unsplash.jpg
   - src: hero/gilley-aguilar-ywGDhTlf93E-unsplash.jpg
   - src: hero/jacob-reinikainen-nGG6m3RbjSk-unsplash.jpg
@@ -40,11 +42,13 @@ footer:
   legal_link: '/legals/'
   legal_label: Legal notice
 
+# Build parameters
 build:
   theme: modern # choose a theme in config/theme folder.
   convert_images: true # use true to automatically convert images to webp small weight images.
   resize_images: true # use true to automatically resize to width 1140px (maximum width used in the gallery)
 
+# Change this by your legals
 legals:
   hoster_name: Djeex
   hoster_adress: Paris, France
