@@ -12,7 +12,7 @@ The project comes with two themes: one modern, the other more minimalistic, both
   - Typewriter 👉 [demo](https://typewriter.djeex.fr)
 
 > [!NOTE]
-> _This GitHub repository is a mirror of https://git.djeex.fr/Djeex/lumeex. You’ll find the complete package, history, and release notes there. An LLM is used for bug checking and language file generation._
+> _This GitHub repository is a mirror of https://git.djeex.fr/Djeex/lumeex. You’ll find the complete package, history, and release notes there. An LLM is used for bug checking._
 
 ## 📌 Table of Contents
 
