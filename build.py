@@ -26,8 +26,9 @@ def build():
     logging.info("🚀 Starting build...")
     ensure_dir(BUILD_DIR)
     copy_assets(JS_DIR, STYLE_DIR, BUILD_DIR)
+    
+    # Defining build vars
     build_date = datetime.now().strftime("%Y%m%d%H%M%S")
-
     site_vars = load_yaml(SITE_FILE)
     gallery_sections = load_yaml(GALLERY_FILE)
     build_section = site_vars.get("build", {})
@@ -35,7 +36,11 @@ def build():
     theme_vars, theme_dir = load_theme_config(theme_name, THEMES_DIR)
     fonts_dir = theme_dir / "fonts"
     theme_css_path = theme_dir / "theme.css"
+    canonical_url = site_vars.get("info", {}).get("canonical", "").rstrip("/")
+    canonical_home = f"{canonical_url}/"
+    canonical_legals = f"{canonical_url}/legals/"
 
+    # Copying theme.css if existing
     if theme_css_path.exists():
         dest_theme_css = BUILD_DIR / "style" / "theme.css"
         dest_theme_css.parent.mkdir(parents=True, exist_ok=True)
@@ -51,6 +56,7 @@ def build():
     generate_favicons_from_logo(theme_vars, theme_dir, BUILD_DIR / "img" / "favicon")
     generate_favicon_ico(theme_vars, theme_dir, BUILD_DIR / "favicon.ico")
 
+    # Converting and resizing images if enabled
     convert_images = build_section.get("convert_images", False)
     resize_images = build_section.get("resize_images", False)
     logging.info(f"[~] convert_images = {convert_images}")
@@ -66,6 +72,7 @@ def build():
         copy_original_images(hero_images, IMG_DIR, BUILD_DIR)
         copy_original_images(gallery_images, IMG_DIR, BUILD_DIR)
 
+    # Adding menu
     menu_html = "\n".join(
         f'<li class="nav-item appear"><a href="{item["href"]}">{item["label"]}</a></li>'
         for item in site_vars.get("menu", {}).get("items", [])
@@ -74,9 +81,11 @@ def build():
     if "footer" in site_vars:
         site_vars["footer"]["menu_items"] = menu_html
 
+    # Adding Google fonts if existing
     google_fonts_link = generate_google_fonts_link(theme_vars.get("google_fonts", []))
     logging.info(f"[✓] Google Fonts link generated:\n{google_fonts_link}")
 
+    # Generating thumbnail
     thumbnail_path = site_vars.get("social", {}).get("thumbnail")
     if thumbnail_path:
         src_thumb = IMG_DIR / thumbnail_path
@@ -94,6 +103,7 @@ def build():
     else:
         logging.warning("[~] No thumbnail found in social section")
 
+    # Defining head variables
     head_vars = dict(site_vars.get("info", {}))
     head_vars.update(theme_vars.get("colors", {}))
     head_vars.update(site_vars.get("social", {}))
@@ -102,7 +112,9 @@ def build():
     head_vars["font_preloads"] = "\n".join(preload_links)
     head_vars["theme_css"] = theme_css
     head_vars["build_date"] = build_date
-
+    head_vars["canonical"] = canonical_home
+    
+    # Render the home page
     head = render_template(TEMPLATE_DIR / "head.html", head_vars)
     hero = render_template(TEMPLATE_DIR / "hero.html", {**site_vars["hero"], **head_vars})
     footer = render_template(TEMPLATE_DIR / "footer.html", {**site_vars.get("footer", {}), **head_vars})
@@ -123,8 +135,13 @@ def build():
         f.write(f"<!DOCTYPE html>\n{signature}\n<html lang='en'>\n{head}\n{body}\n</html>")
     logging.info(f"[✓] HTML generated: {output_file}")
 
+    # Rendering legals page
+    head_vars["canonical"] = canonical_legals
+
     legals_vars = site_vars.get("legals", {})
     if legals_vars:
+        head = render_template(TEMPLATE_DIR / "head.html", head_vars)
+
         ip_paragraphs = legals_vars.get("intellectual_property", [])
         paragraphs_html = "\n".join(f"<p>{item['paragraph']}</p>" for item in ip_paragraphs)
         legals_context = {
@@ -143,11 +160,13 @@ def build():
     else:
         logging.warning("[~] No legals section found in site.yaml")
 
+    # Hero carrousel generator
     if hero_images:
         generate_gallery_json_from_images(hero_images, BUILD_DIR / "data" / "gallery.json")
     else:
         logging.warning("[~] No hero images found, skipping JSON generation.")
 
+    # Sitemap and robot.txt generator
     site_info = site_vars.get("info", {})
     canonical_url = site_info.get("canonical", "").rstrip("/")
     if canonical_url:
