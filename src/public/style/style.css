@@ -486,6 +486,10 @@ h2 {
 		font-size:18px;
 	}
 
+	.section img {
+		margin: 0px 0 60px 0;
+	}
+
 	.tag {
 		font-size: 14px;
 	}
