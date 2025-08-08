@@ -58,8 +58,8 @@ def build():
     generate_favicon_ico(theme_vars, theme_dir, BUILD_DIR / "favicon.ico")
 
     # Converting and resizing images if enabled
-    convert_images = build_section.get("convert_images", False)
-    resize_images = build_section.get("resize_images", False)
+    convert_images = build_section.get("convert_images", True)
+    resize_images = build_section.get("resize_images", True)
     logging.info(f"[~] convert_images = {convert_images}")
     logging.info(f"[~] resize_images = {resize_images}")
 
