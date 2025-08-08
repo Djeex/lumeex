@@ -121,7 +121,7 @@ def build():
     gallery_html = render_gallery_images(gallery_images)
     gallery = render_template(TEMPLATE_DIR / "gallery.html", {"gallery_images": gallery_html})
 
-    signature = f"<!-- Build with Lumeex v1.0 | https://git.djeex.fr/Djeex/lumeex | {build_date} -->"
+    signature = f"<!-- Build with Lumeex v1.1 | https://git.djeex.fr/Djeex/lumeex | {build_date} -->"
     body = f"""
     <body>
         <div class="page-loader"><div class="spinner"></div></div>
