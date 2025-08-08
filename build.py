@@ -29,6 +29,7 @@ def build():
     
     # Defining build vars
     build_date = datetime.now().strftime("%Y%m%d%H%M%S")
+    build_date_version = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     site_vars = load_yaml(SITE_FILE)
     gallery_sections = load_yaml(GALLERY_FILE)
     build_section = site_vars.get("build", {})
@@ -121,7 +122,7 @@ def build():
     gallery_html = render_gallery_images(gallery_images)
     gallery = render_template(TEMPLATE_DIR / "gallery.html", {"gallery_images": gallery_html})
 
-    signature = f"<!-- Build with Lumeex v1.1 | https://git.djeex.fr/Djeex/lumeex | {build_date} -->"
+    signature = f"<!-- Build with Lumeex v1.1 | https://git.djeex.fr/Djeex/lumeex | {build_date_version} -->"
     body = f"""
     <body>
         <div class="page-loader"><div class="spinner"></div></div>
