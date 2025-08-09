@@ -10,15 +10,11 @@ info:
 social:
   instagram_url:
   thumbnail:
-
+  
 menu:
   items:
   - label: Home
     href: /
-
-hero:
-  # Use gallery.py to automatically add images from config/photos/hero folder
-  images: []
 
 footer:
   copyright: Copyright © 2025

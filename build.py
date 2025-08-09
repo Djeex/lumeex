@@ -31,7 +31,7 @@ def build():
     build_date = datetime.now().strftime("%Y%m%d%H%M%S")
     build_date_version = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     site_vars = load_yaml(SITE_FILE)
-    gallery_sections = load_yaml(GALLERY_FILE)
+    gallery_vars = load_yaml(GALLERY_FILE)
     build_section = site_vars.get("build", {})
     theme_name = site_vars.get("build", {}).get("theme", "default")
     theme_vars, theme_dir = load_theme_config(theme_name, THEMES_DIR)
@@ -63,8 +63,8 @@ def build():
     logging.info(f"[~] convert_images = {convert_images}")
     logging.info(f"[~] resize_images = {resize_images}")
 
-    hero_images = site_vars.get("hero", {}).get("images", [])
-    gallery_images = [img for section in gallery_sections for img in section["images"]] if isinstance(gallery_sections, list) else gallery_sections.get("images", [])
+    hero_images = gallery_vars.get("hero", {}).get("images", [])
+    gallery_images = gallery_vars.get("gallery", {}).get("images", [])
 
     if convert_images:
         process_images(hero_images, resize_images, IMG_DIR, BUILD_DIR)
@@ -72,6 +72,9 @@ def build():
     else:
         copy_original_images(hero_images, IMG_DIR, BUILD_DIR)
         copy_original_images(gallery_images, IMG_DIR, BUILD_DIR)
+
+    if "hero" not in site_vars:
+        site_vars["hero"] = {}  # Initialize an empty hero section
 
     # Adding menu
     menu_html = "\n".join(
