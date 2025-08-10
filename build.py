@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 # Define key directories used throughout the script
 SRC_DIR = Path.cwd()
-BUILD_DIR = SRC_DIR / ".output"
+BUILD_DIR = SRC_DIR / "output"
 TEMPLATE_DIR = SRC_DIR / "src/templates"
 IMG_DIR = SRC_DIR / "config/photos"
 JS_DIR = SRC_DIR / "src/public/js"
@@ -166,7 +166,7 @@ def build():
 
     # Hero carrousel generator
     if hero_images:
-        generate_gallery_json_from_images(hero_images, BUILD_DIR / "data" / "gallery.json")
+        generate_gallery_json_from_images(hero_images, BUILD_DIR)
     else:
         logging.warning("[~] No hero images found, skipping JSON generation.")
 
@@ -175,8 +175,8 @@ def build():
     canonical_url = site_info.get("canonical", "").rstrip("/")
     if canonical_url:
         allowed_pages = ["/", "/legals/"]
-        generate_robots_txt(canonical_url, allowed_pages)
-        generate_sitemap_xml(canonical_url, allowed_pages)
+        generate_robots_txt(canonical_url, allowed_pages, BUILD_DIR)
+        generate_sitemap_xml(canonical_url, allowed_pages, BUILD_DIR)
     else:
         logging.warning("[~] No canonical URL found in site.yaml info section, skipping robots.txt and sitemap.xml generation.")
 
