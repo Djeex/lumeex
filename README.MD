@@ -1,9 +1,10 @@
 <div align="center">
-  <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/logo.svg" alt="Lumeex Screenshot" width="300"/>
+  <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/logo.svg" alt="Lumeex Screenshot" width="400"/>
 </div>
 <p/>
-
-**Lumeex** — Yet another minimalist, lightweight photo gallery static site generator.
+<div align="center">
+<p>Yet another minimalist, lightweight photo gallery static site generator.</p>
+<div>
 </p>
 <div align="center">
   <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex.png" alt="Lumeex Screenshot" />
