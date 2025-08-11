@@ -4,7 +4,7 @@
 <p/>
 <div align="center">
 <p>Yet another minimalist, lightweight photo gallery static site generator.</p>
-<div>
+</div>
 </p>
 <div align="center">
   <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex.png" alt="Lumeex Screenshot" />
