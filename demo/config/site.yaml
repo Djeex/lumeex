@@ -1,0 +1,49 @@
+# This file is filled with the demo info
+# Please change this by your settings
+
+info:
+  title: Lumeex
+  subtitle: A minimalistic Gallery
+  description: A minimalistic Gallery
+  canonical: https://lumeex.djeex.fr
+  keywords: photography, lumen, demo, gallery, minimalistic
+  author: Djeex
+  google_analytics_id: G-XXXXXXX # optional
+
+social:
+  instagram_url: https://www.instagram.com/
+  thumbnail: hero/jacob-reinikainen-nGG6m3RbjSk-unsplash.jpg
+
+menu:
+  items:
+  - label: Home
+    href: /
+  - label: Nature
+    href: /?tag=Nature
+  - label: Landscape
+    href: /?tag=landscape
+  - label: Portrait
+    href: /?tag=portrait
+  - label: Animals
+    href: /?tag=animals
+
+footer:
+  copyright: Copyright © 2025 – Lumeex
+  legal_link: '/legals/'
+  legal_label: Legal notice
+
+# Build parameters
+build:
+  theme: modern # choose a theme in config/theme folder.
+  convert_images: true # use true to automatically convert images to webp small weight images.
+  resize_images: true # use true to automatically resize to width 1140px (maximum width used in the gallery)
+
+# Change this by your legals
+legals:
+  hoster_name: Djeex
+  hoster_adress: Paris, France
+  hoster_contact: contact@djeex.fr
+  intellectual_property:
+    - paragraph: "Users of this website are required to comply with the provisions of the French Data Protection Act (Loi Informatique et Libertés), the violation of which may result in criminal penalties. In particular, they must refrain from any collection or misuse of personal data accessible through the site, and more generally, from any act likely to infringe upon the privacy or reputation of individuals."
+    - paragraph: "The overall structure, as well as the software, texts, animated or still images, know-how, and all other components of the site, are the exclusive property of Lumeex"
+    - paragraph: "Any total or partial reproduction of this website, by any means whatsoever, without the express authorization of Lumeex, is prohibited and constitutes an infringement punishable under articles L.335-2 and following of the French Intellectual Property Code. The same applies to the databases appearing on the website, which are protected by the provisions of the law of July 1, 1998, implementing into the Intellectual Property Code the European directive of March 11, 1996, on the legal protection of databases."

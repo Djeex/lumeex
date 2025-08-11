@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 # Define key directories used throughout the script
 SRC_DIR = Path.cwd()
-BUILD_DIR = SRC_DIR / ".output"
+BUILD_DIR = SRC_DIR / "output"
 TEMPLATE_DIR = SRC_DIR / "src/templates"
 IMG_DIR = SRC_DIR / "config/photos"
 JS_DIR = SRC_DIR / "src/public/js"
@@ -31,7 +31,7 @@ def build():
     build_date = datetime.now().strftime("%Y%m%d%H%M%S")
     build_date_version = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     site_vars = load_yaml(SITE_FILE)
-    gallery_sections = load_yaml(GALLERY_FILE)
+    gallery_vars = load_yaml(GALLERY_FILE)
     build_section = site_vars.get("build", {})
     theme_name = site_vars.get("build", {}).get("theme", "default")
     theme_vars, theme_dir = load_theme_config(theme_name, THEMES_DIR)
@@ -58,13 +58,13 @@ def build():
     generate_favicon_ico(theme_vars, theme_dir, BUILD_DIR / "favicon.ico")
 
     # Converting and resizing images if enabled
-    convert_images = build_section.get("convert_images", False)
-    resize_images = build_section.get("resize_images", False)
+    convert_images = build_section.get("convert_images", True)
+    resize_images = build_section.get("resize_images", True)
     logging.info(f"[~] convert_images = {convert_images}")
     logging.info(f"[~] resize_images = {resize_images}")
 
-    hero_images = site_vars.get("hero", {}).get("images", [])
-    gallery_images = [img for section in gallery_sections for img in section["images"]] if isinstance(gallery_sections, list) else gallery_sections.get("images", [])
+    hero_images = gallery_vars.get("hero", {}).get("images", [])
+    gallery_images = gallery_vars.get("gallery", {}).get("images", [])
 
     if convert_images:
         process_images(hero_images, resize_images, IMG_DIR, BUILD_DIR)
@@ -72,6 +72,9 @@ def build():
     else:
         copy_original_images(hero_images, IMG_DIR, BUILD_DIR)
         copy_original_images(gallery_images, IMG_DIR, BUILD_DIR)
+
+    if "hero" not in site_vars:
+        site_vars["hero"] = {}  # Initialize an empty hero section
 
     # Adding menu
     menu_html = "\n".join(
@@ -122,7 +125,7 @@ def build():
     gallery_html = render_gallery_images(gallery_images)
     gallery = render_template(TEMPLATE_DIR / "gallery.html", {"gallery_images": gallery_html})
 
-    signature = f"<!-- Build with Lumeex v1.1 | https://git.djeex.fr/Djeex/lumeex | {build_date_version} -->"
+    signature = f"<!-- Build with Lumeex v1.2 | https://git.djeex.fr/Djeex/lumeex | {build_date_version} -->"
     body = f"""
     <body>
         <div class="page-loader"><div class="spinner"></div></div>
@@ -163,7 +166,7 @@ def build():
 
     # Hero carrousel generator
     if hero_images:
-        generate_gallery_json_from_images(hero_images, BUILD_DIR / "data" / "gallery.json")
+        generate_gallery_json_from_images(hero_images, BUILD_DIR)
     else:
         logging.warning("[~] No hero images found, skipping JSON generation.")
 
@@ -172,8 +175,8 @@ def build():
     canonical_url = site_info.get("canonical", "").rstrip("/")
     if canonical_url:
         allowed_pages = ["/", "/legals/"]
-        generate_robots_txt(canonical_url, allowed_pages)
-        generate_sitemap_xml(canonical_url, allowed_pages)
+        generate_robots_txt(canonical_url, allowed_pages, BUILD_DIR)
+        generate_sitemap_xml(canonical_url, allowed_pages, BUILD_DIR)
     else:
         logging.warning("[~] No canonical URL found in site.yaml info section, skipping robots.txt and sitemap.xml generation.")
 
