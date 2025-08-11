@@ -1,11 +1,13 @@
 <div align="center">
-  <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex.png" alt="Lumeex Screenshot" />
+  <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/logo.svg" alt="Lumeex Screenshot" width="300"/>
 </div>
+<p/>
+
+**Lumeex** — Yet another minimalist, lightweight photo gallery static site generator.
+</p>
 <div align="center">
   <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex.png" alt="Lumeex Screenshot" />
 </div>
-
-**Lumeex** — A minimalist, lightweight photo gallery static site generator.
 
 Lumeex is a static site generator designed to create minimalist photo galleries that highlight your artworks over the author. It empowers users to organize and explore images using tags, with each page load presenting photos in a random order to encourage discovery of new content.
 
