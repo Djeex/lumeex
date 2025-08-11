@@ -79,6 +79,6 @@ pip install -r requirements.txt
 
 You are now ready to use Lumeex!
 
-### ⚙️ Configuration
+## ⚙️ Configuration
 For comprehensive documentation on configuration options, customization, and demos, please visit:
 https://lumeex.djeex.fr
