@@ -1,5 +1,5 @@
 import logging
-from src.py.builder import build
+from src.py.site_builder import build
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")

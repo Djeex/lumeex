@@ -1,6 +1,3 @@
-# Use gallery.py to automatically add photos stored in your /config/photos/gallery folder
-# Add tags to your photos as shown below
-# remove the # before [] if you removed all images to use gallery.py again
 hero:
   images: []
 gallery:
