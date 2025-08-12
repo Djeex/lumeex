@@ -36,16 +36,30 @@ def generate_gallery_json_from_images(images, output_dir):
 
 def generate_robots_txt(canonical_url, allowed_paths, output_dir):
     robots_lines = ["User-agent: *"]
-    for path in allowed_paths:
-        robots_lines.append(f"Allow: {path}")
+
+    # Block everything by default
     robots_lines.append("Disallow: /")
+
+    # Explicitly allow certain paths
+    for path in allowed_paths:
+        if not path.startswith("/"):
+            path = "/" + path
+        robots_lines.append(f"Allow: {path}")
+
     robots_lines.append("")
-    robots_lines.append(f"Sitemap: {canonical_url}/sitemap.xml")
+    robots_lines.append(f"Sitemap: {canonical_url.rstrip('/')}/sitemap.xml")
+
     content = "\n".join(robots_lines)
-    output_path = output_dir / "robots.txt"
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(content)
-    logging.info(f"[✓] robots.txt generated at {output_path}")
+    output_path = Path(output_dir) / "robots.txt"
+
+    try:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        logging.info(f"[✓] robots.txt generated at {output_path}")
+
+    except Exception as e:
+        logging.error(f"[✗] Failed to write robots.txt: {e}")
 
 def generate_sitemap_xml(canonical_url, allowed_paths, output_dir):
     urlset_start = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
