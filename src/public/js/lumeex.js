@@ -17,22 +17,9 @@ const setupLoader = () => {
   window.addEventListener('load', () => {
     setTimeout(() => {
       const loader = document.querySelector('.page-loader');
-      if (loader) {
-        loader.classList.add('hidden');
-      }
+      if (loader) loader.classList.add('hidden');
     }, 50);
   });
-};
-
-// Gallery randomizer to shuffle gallery sections on page load
-const shuffleGallery = () => {
-  const gallery = document.querySelector('.gallery');
-  if (!gallery) return;
-  const sections = Array.from(gallery.querySelectorAll('.section'));
-  while (sections.length) {
-    const randomIndex = Math.floor(Math.random() * sections.length);
-    gallery.appendChild(sections.splice(randomIndex, 1)[0]);
-  }
 };
 
 // Hero background randomizer
@@ -65,32 +52,74 @@ const randomizeHeroBackground = () => {
     .catch(console.error);
 };
 
+// Gallery randomizer to shuffle gallery sections on page load
+const shuffleGallery = () => {
+  const gallery = document.querySelector('.gallery');
+  if (!gallery) return;
+  const sections = Array.from(gallery.querySelectorAll('.section'));
+  while (sections.length) {
+    const randomIndex = Math.floor(Math.random() * sections.length);
+    gallery.appendChild(sections.splice(randomIndex, 1)[0]);
+  }
+};
+
 // Tags filter functionality
 const setupTagFilter = () => {
+  const galleryContainer = document.querySelector('#gallery');
   const allSections = document.querySelectorAll('.section[data-tags]');
   const allTags = document.querySelectorAll('.tag');
   let activeTags = [];
+  let lastClickedTag = null; // mémorise le dernier tag cliqué
+
   const applyFilter = () => {
+    let filteredSections = [];
+    let matchingSection = null;
+
     allSections.forEach((section) => {
       const sectionTags = section.dataset.tags.toLowerCase().split(/\s+/);
       const hasAllTags = activeTags.every((tag) => sectionTags.includes(tag));
       section.style.display = hasAllTags ? '' : 'none';
+
+      if (hasAllTags) {
+        filteredSections.push(section);
+        if (lastClickedTag && sectionTags.includes(lastClickedTag) && !matchingSection) {
+          matchingSection = section;
+        }
+      }
     });
+
+    // Réorganise : la photo correspondante au dernier tag cliqué en premier
+    if (matchingSection && galleryContainer.contains(matchingSection)) {
+      galleryContainer.prepend(matchingSection);
+    }
+
+    // Met à jour le style des tags
     allTags.forEach((tagEl) => {
       const tagText = tagEl.textContent.replace('#', '').toLowerCase();
       tagEl.classList.toggle('active', activeTags.includes(tagText));
     });
+
+    // Met à jour l'URL
     const base = window.location.pathname;
     const query = activeTags.length > 0 ? `?tag=${activeTags.join(',')}` : '';
     window.history.pushState({}, '', base + query);
+
+    // Scroll jusqu'à la galerie
+    if (galleryContainer) {
+      galleryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   allTags.forEach((tagEl) => {
     tagEl.addEventListener('click', () => {
       const tagText = tagEl.textContent.replace('#', '').toLowerCase();
-      activeTags = activeTags.includes(tagText)
-        ? activeTags.filter((t) => t !== tagText)
-        : [...activeTags, tagText];
+      lastClickedTag = tagText; // mémorise le dernier tag cliqué
+
+      if (activeTags.includes(tagText)) {
+        activeTags = activeTags.filter((t) => t !== tagText);
+      } else {
+        activeTags.push(tagText);
+      }
       applyFilter();
     });
   });
@@ -100,29 +129,24 @@ const setupTagFilter = () => {
     const urlTags = params.get('tag');
     if (urlTags) {
       activeTags = urlTags.split(',').map((t) => t.toLowerCase());
+      lastClickedTag = activeTags[activeTags.length - 1] || null;
       applyFilter();
     }
   });
 };
 
-// Disable right-click context menu and image dragging
+// Disable right click and drag
 const disableRightClickAndDrag = () => {
-  document.addEventListener("contextmenu", (e) => e.preventDefault());
-  document.addEventListener("dragstart", (e) => {
-    if (e.target.tagName === "IMG") {
-      e.preventDefault();
-    }
-  });
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('dragstart', (e) => e.preventDefault());
 };
 
-// Scroll-to-top button functionality
+// Scroll to top button
 const setupScrollToTopButton = () => {
-  const scrollBtn = document.getElementById("scrollToTop");
-  window.addEventListener("scroll", () => {
-    scrollBtn.style.display = window.scrollY > 300 ? "block" : "none";
-  });
-  scrollBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToTopButton = document.querySelector('.scroll-to-top');
+  if (!scrollToTopButton) return;
+  scrollToTopButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 };
 

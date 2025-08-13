@@ -333,8 +333,12 @@ h2 {
     font-size: 22px;
 }
 
-/* Sections */
 
+.gallery {
+		padding-top: 15px;
+	}
+
+	/* Sections */
 .section {
 	max-width: 1140px;
 	margin:auto;
@@ -507,5 +511,10 @@ h2 {
 	.back-button {
 		padding-left: 0;
 		margin-top: 60px;
+	}
+
+	.gallery {
+	    margin: 10% 5% 0 5%;
+		padding-top: 15px;
 	}
 }
