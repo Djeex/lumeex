@@ -23,11 +23,11 @@ SITE_FILE = SRC_DIR / "config/site.yaml"
 THEMES_DIR = SRC_DIR / "config/themes"
 
 def build():
-    build_version = "v1.3"
+    build_version = "v1.3.1"
     logging.info("\n")
-    logging.info("=" * 23)
+    logging.info("=" * 24)
     logging.info(f"🚀 Lumeex builder {build_version}")
-    logging.info("=" * 23)
+    logging.info("=" * 24)
     logging.info("\n === Starting build === ")
     ensure_dir(BUILD_DIR)
     copy_assets(JS_DIR, STYLE_DIR, BUILD_DIR)
