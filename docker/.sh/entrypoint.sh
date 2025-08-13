@@ -19,7 +19,7 @@ copy_default_config() {
 
     if [ ! -e "$target" ]; then
       echo "Copying default config file: $filename"
-      cp "$file" "$target"
+      cp -r "$file" "$target"
       files_copied=true
     fi
   done
@@ -33,17 +33,22 @@ copy_default_config() {
 
 
 start_server() {
+  # Clean up old FIFOs
+  [ -p /tmp/build_logs_fifo ] && rm /tmp/build_logs_fifo
+  [ -p /tmp/build_logs_fifo2 ] && rm /tmp/build_logs_fifo2
+
   mkfifo /tmp/build_logs_fifo
   mkfifo /tmp/build_logs_fifo2
+
   cat /tmp/build_logs_fifo >&2 &
   cat /tmp/build_logs_fifo2 >&2 &
+
   echo "Starting HTTP server on port 3000..."
   python3 -u -m http.server 3000 -d /app/output &
   SERVER_PID=$!
   trap "echo 'Stopping server...'; kill -TERM $SERVER_PID 2>/dev/null; wait $SERVER_PID; exit 0" SIGINT SIGTERM
   wait $SERVER_PID
 }
-
 
 if [ $# -eq 0 ]; then
   echo -e "${CYAN}╭───────────────────────────────────────────╮${NC}"
