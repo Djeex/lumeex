@@ -1,4 +1,5 @@
 .*
+!.sh
 !.gitignore
 output/
 __pycache__/

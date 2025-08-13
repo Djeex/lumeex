@@ -23,7 +23,12 @@ SITE_FILE = SRC_DIR / "config/site.yaml"
 THEMES_DIR = SRC_DIR / "config/themes"
 
 def build():
-    logging.info("🚀 Starting build...")
+    build_version = "v1.3"
+    logging.info("\n")
+    logging.info("=" * 23)
+    logging.info(f"🚀 Lumeex builder {build_version}")
+    logging.info("=" * 23)
+    logging.info("\n === Starting build === ")
     ensure_dir(BUILD_DIR)
     copy_assets(JS_DIR, STYLE_DIR, BUILD_DIR)
     
@@ -87,7 +92,7 @@ def build():
 
     # Adding Google fonts if existing
     google_fonts_link = generate_google_fonts_link(theme_vars.get("google_fonts", []))
-    logging.info(f"[✓] Google Fonts link generated:\n{google_fonts_link}")
+    logging.info(f"[✓] Google Fonts link generated")
 
     # Generating thumbnail
     thumbnail_path = site_vars.get("social", {}).get("thumbnail")
@@ -125,7 +130,7 @@ def build():
     gallery_html = render_gallery_images(gallery_images)
     gallery = render_template(TEMPLATE_DIR / "gallery.html", {"gallery_images": gallery_html})
 
-    signature = f"<!-- Build with Lumeex v1.2 | https://git.djeex.fr/Djeex/lumeex | {build_date_version} -->"
+    signature = f"<!-- Build with Lumeex {build_version} | https://git.djeex.fr/Djeex/lumeex | {build_date_version} -->"
     body = f"""
     <body>
         <div class="page-loader"><div class="spinner"></div></div>

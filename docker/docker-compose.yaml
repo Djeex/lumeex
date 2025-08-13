@@ -1,0 +1,10 @@
+services:
+  lumeex:
+    container_name: lmx
+    build: ..
+    volumes:
+      - ../config:/app/config  # mount config directory
+      - ../output:/app/output  # mount output directory
+    ports:
+      - "3000:3000"
+      

@@ -23,9 +23,8 @@ The project includes two thoughtfully designed themes—one modern, one minimali
 
 ## 📌 Table of Contents
 
-- [✨ Features](#-features)  
-- [🐍 Python Installation](#-python-installation)  
-- [⚙️ Configuration](#-configuration)  
+- [✨ Features](#-features)
+- [🐳 Docker or 🐍 Python Installation](#-docker-or--python-installation)
 
 
 ## ✨ Features
@@ -57,28 +56,6 @@ The project includes two thoughtfully designed themes—one modern, one minimali
 - *(Optional)* Converts images to WebP format for optimized performance  
 - Outputs a complete static website ready to deploy on any web server
 
-
-## 🐍 Python Installation
-
-Run the Python scripts directly with the following prerequisites:
-
-### Prerequisites
-
-- Git
-- Python 3.11 or above
-
-### Installation Steps
-
-```sh
-git clone https://git.djeex.fr/Djeex/lumeex.git
-cd lumeex
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-You are now ready to use Lumeex!
-
-## ⚙️ Configuration
-For comprehensive documentation on configuration options, customization, and demos, please visit:
+## 🐳 Docker or 🐍 Python Installation
+For comprehensive documentation on installation, configuration options, customization, and demos, please visit:
 https://lumeex.djeex.fr
