@@ -51,7 +51,7 @@ h1, h2 {
 }
 
 .photo {
-  background-color: rgba(58, 62, 65, 0.26);
+  background-color: rgb(67 67 67 / 26%);
   border-radius: 6px;
   padding: 10px;
   text-align: center;
@@ -163,6 +163,7 @@ h1, h2 {
   border-radius: 15px;
   display: flex;
   align-items: center;
+  font-size: 14px;
 }
 
 .tag .remove-tag {
@@ -273,7 +274,7 @@ h1, h2 {
 .nav > .nav-links {
   display: inline;
   float: right;
-  font-size: 12px;
+  font-size: 14px;
   height: 100%;
   line-height: 70px;
 }
@@ -366,4 +367,62 @@ h1, h2 {
 
 .custom-upload-btn:hover {
   background: #55c3ec;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+.modal-content {
+  background: #ffffff29;
+  color: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  min-width: 300px;
+  max-width: 90vw;
+  position: relative;
+  text-align: center;
+  backdrop-filter: blur(20px);
+}
+.modal-close {
+  position: absolute;
+  top: 12px; right: 18px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.7;
+}
+.modal-close:hover { opacity: 1; }
+.modal-actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.modal-btn {
+  padding: 0.5em 1.5em;
+  border-radius: 30px;
+  border: none;
+  background: #09A0C1;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.modal-btn.danger {
+  background: #c62828;
+}
+.modal-btn:hover {
+  background: #55c3ec;
+}
+.modal-btn.danger:hover {
+  background: #d32f2f;
 }

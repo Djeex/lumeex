@@ -44,7 +44,7 @@ function renderGallery() {
       <div class="tags-display" data-index="${i}"></div>
       <div class="flex-item flex-full">
       <div class="flex-item flex-end">
-          <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
+          <button onclick="showDeleteModal('gallery', ${i})">🗑 Delete</button>
         </div>
         <div class="tag-input" data-index="${i}"></div>
       </div>
@@ -208,56 +208,13 @@ function renderHero() {
       </div>
       <div class="flex-item flex-full">
         <div class="flex-item flex-end">
-        <button onclick="deleteHeroImage(${i})">🗑 Delete</button>
+        <button onclick="showDeleteModal('hero', ${i})">🗑 Delete</button>
       </div>
     `;
     container.appendChild(div);
   });
 }
 
-// --- Delete gallery image ---
-async function deleteGalleryImage(index) {
-  const img = galleryImages[index];
-  try {
-    const res = await fetch('/api/gallery/delete', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ src: img.src.split('/').pop() })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      galleryImages.splice(index, 1);
-      renderGallery();
-      await saveGallery();
-      showToast("✅ Gallery image deleted!", "success");
-    } else showToast("Error: " + data.error, "error");
-  } catch(err) {
-    console.error(err);
-    showToast("Server error!", "error");
-  }
-}
-
-// --- Delete hero image ---
-async function deleteHeroImage(index) {
-  const img = heroImages[index];
-  try {
-    const res = await fetch('/api/hero/delete', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ src: img.src.split('/').pop() })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      heroImages.splice(index, 1);
-      renderHero();
-      await saveHero();
-      showToast("✅ Hero image deleted!", "success");
-    } else showToast("Error: " + data.error, "error");
-  } catch(err) {
-    console.error(err);
-    showToast("Server error!", "error");
-  }
-}
 
 // --- Save gallery to server ---
 async function saveGallery() {
@@ -315,6 +272,91 @@ function showToast(message, type = "success", duration = 3000) {
     toast.addEventListener("transitionend", () => toast.remove());
   }, duration);
 }
+
+let pendingDelete = null; // { type: 'gallery'|'hero', index: number }
+
+// --- Show delete confirmation modal ---
+function showDeleteModal(type, index) {
+  pendingDelete = { type, index };
+  document.getElementById('delete-modal').style.display = 'flex';
+}
+
+// --- Hide modal ---
+function hideDeleteModal() {
+  document.getElementById('delete-modal').style.display = 'none';
+  pendingDelete = null;
+}
+
+// --- Confirm deletion ---
+async function confirmDelete() {
+  if (!pendingDelete) return;
+  if (pendingDelete.type === 'gallery') {
+    await actuallyDeleteGalleryImage(pendingDelete.index);
+  } else if (pendingDelete.type === 'hero') {
+    await actuallyDeleteHeroImage(pendingDelete.index);
+  }
+  hideDeleteModal();
+}
+
+
+// --- Modal event listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('delete-modal-close').onclick = hideDeleteModal;
+  document.getElementById('delete-modal-cancel').onclick = hideDeleteModal;
+  document.getElementById('delete-modal-confirm').onclick = confirmDelete;
+});
+
+// --- Actual delete functions ---
+async function actuallyDeleteGalleryImage(index) {
+  const img = galleryImages[index];
+  try {
+    const res = await fetch('/api/gallery/delete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ src: img.src.split('/').pop() })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      galleryImages.splice(index, 1);
+      renderGallery();
+      await saveGallery();
+      showToast("✅ Gallery image deleted!", "success");
+    } else showToast("Error: " + data.error, "error");
+  } catch(err) {
+    console.error(err);
+    showToast("Server error!", "error");
+  }
+}
+
+async function actuallyDeleteHeroImage(index) {
+  const img = heroImages[index];
+  try {
+    const res = await fetch('/api/hero/delete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ src: img.src.split('/').pop() })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      heroImages.splice(index, 1);
+      renderHero();
+      await saveHero();
+      showToast("✅ Hero image deleted!", "success");
+    } else showToast("Error: " + data.error, "error");
+  } catch(err) {
+    console.error(err);
+    showToast("Server error!", "error");
+  }
+}
+
+// --- Modal event listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('delete-modal-close').onclick = hideDeleteModal;
+  document.getElementById('delete-modal-cancel').onclick = hideDeleteModal;
+  document.getElementById('delete-modal-confirm').onclick = confirmDelete;
+});
+
+
 
 // --- Initialize ---
 loadData();
