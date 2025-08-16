@@ -2,49 +2,64 @@ import logging
 from pathlib import Path
 from flask import Blueprint, request, current_app
 from werkzeug.utils import secure_filename
+from src.py.builder.gallery_builder import update_gallery, update_hero
 
-# Create a Flask blueprint for upload routes
+# --- Create Flask blueprint for upload routes ---
 upload_bp = Blueprint("upload", __name__)
 
-# Allowed file extensions for uploads
+# --- Allowed file types ---
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
-# Function to check if a file has an allowed extension
 def allowed_file(filename: str) -> bool:
+    """Check if the uploaded file has an allowed extension."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Function to save uploaded file to a given folder
 def save_uploaded_file(file, folder: Path):
-    folder.mkdir(parents=True, exist_ok=True)  # Create folder if it doesn't exist
+    """Save an uploaded file to the specified folder."""
+    folder.mkdir(parents=True, exist_ok=True)  # Create folder if not exists
     filename = secure_filename(file.filename)  # Sanitize filename
-    file.save(folder / filename)  # Save file to folder
+    file.save(folder / filename)  # Save to disk
     logging.info(f"[✓] Uploaded {filename} to {folder}")
-    return filename  # Return saved filename
+    return filename
 
-# Route to handle photo uploads for gallery or hero
 @upload_bp.route("/api/<section>/upload", methods=["POST"])
 def upload_photo(section: str):
+    """
+    Handle file uploads for gallery or hero section.
+    Accepts multiple files under 'files'.
+    """
     # Validate section
     if section not in ["gallery", "hero"]:
         return {"error": "Invalid section"}, 400
 
-    # Check if the request contains a file
-    if "file" not in request.files:
-        return {"error": "No file part"}, 400
-    file = request.files["file"]
+    # Check if files are provided
+    if "files" not in request.files:
+        return {"error": "No files provided"}, 400
+    
+    files = request.files.getlist("files")
+    if not files:
+        return {"error": "No selected files"}, 400
 
-    # Check if a file was actually selected
-    if file.filename == "":
-        return {"error": "No selected file"}, 400
+    # Get photos directory from app config
+    PHOTOS_DIR = current_app.config.get("PHOTOS_DIR")
+    if not PHOTOS_DIR:
+        return {"error": "Server misconfiguration"}, 500
 
-    # Check file type and save it
-    if file and allowed_file(file.filename):
-        PHOTOS_DIR = current_app.config.get("PHOTOS_DIR")  # Get base photos directory from config
-        if not PHOTOS_DIR:
-            return {"error": "Server misconfiguration"}, 500
-        folder = PHOTOS_DIR / section  # Target folder (gallery or hero)
-        filename = save_uploaded_file(file, folder)
-        return {"status": "ok", "filename": filename}
+    folder = PHOTOS_DIR / section  # Target folder
+    uploaded = []
 
-    # If file type is not allowed
-    return {"error": "File type not allowed"}, 400
+    # Save each valid file
+    for file in files:
+        if file and allowed_file(file.filename):
+            filename = save_uploaded_file(file, folder)
+            uploaded.append(filename)
+
+    # Update YAML if any files were uploaded
+    if uploaded:
+        if section == "gallery":
+            update_gallery()
+        else:
+            update_hero()
+        return {"status": "ok", "uploaded": uploaded}
+
+    return {"error": "No valid files uploaded"}, 400
