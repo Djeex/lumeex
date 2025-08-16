@@ -10,11 +10,12 @@ document.getElementById('upload-gallery').addEventListener('change', async (e) =
     const res = await fetch('/api/gallery/upload', { method: 'POST', body: formData });
     const data = await res.json();
     if (res.ok) {
-      alert(`✅ ${data.uploaded.length} gallery image(s) uploaded!`);
+      showToast(`✅ ${data.uploaded.length} gallery image(s) uploaded!`, "success");
       refreshGallery();
-    } else alert('Error: ' + data.error);
+    } else showToast('Error: ' + data.error, "error");
   } catch(err) {
-    console.error(err); alert('Server error!');
+    console.error(err);
+    showToast('Server error!', "error");
   } finally { e.target.value = ''; }
 });
 
@@ -30,10 +31,11 @@ document.getElementById('upload-hero').addEventListener('change', async (e) => {
     const res = await fetch('/api/hero/upload', { method: 'POST', body: formData });
     const data = await res.json();
     if (res.ok) {
-      alert(`✅ ${data.uploaded.length} hero image(s) uploaded!`);
+      showToast(`✅ ${data.uploaded.length} hero image(s) uploaded!`, "success");
       refreshHero();
-    } else alert('Error: ' + data.error);
+    } else showToast('Error: ' + data.error, "error");
   } catch(err) {
-    console.error(err); alert('Server error!');
+    console.error(err);
+    showToast('Server error!', "error");
   } finally { e.target.value = ''; }
 });

@@ -1,12 +1,14 @@
 // --- Arrays to store gallery and hero images ---
 let galleryImages = [];
 let heroImages = [];
+let allTags = []; // global tag list
 
 // --- Load images from server on page load ---
 async function loadData() {
   try {
     const galleryRes = await fetch('/api/gallery');
     galleryImages = await galleryRes.json();
+    updateAllTags();
     renderGallery();
 
     const heroRes = await fetch('/api/hero');
@@ -14,8 +16,18 @@ async function loadData() {
     renderHero();
   } catch(err) {
     console.error(err);
-    alert("Error loading images!");
+    showToast("Error loading images!", "error");
   }
+}
+
+// --- Update global tag list from galleryImages ---
+function updateAllTags() {
+  allTags = [];
+  galleryImages.forEach(img => {
+    if (img.tags) img.tags.forEach(t => {
+      if (!allTags.includes(t)) allTags.push(t);
+    });
+  });
 }
 
 // --- Render gallery images with tags and delete buttons ---
@@ -27,12 +39,130 @@ function renderGallery() {
     div.className = 'photo';
     div.innerHTML = `
       <img src="/photos/${img.src}">
-      <input type="text" value="${(img.tags || []).join(', ')}"
-        onchange="updateTags(${i}, this.value)">
+      <div class="tag-input" data-index="${i}"></div>
       <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
     `;
     container.appendChild(div);
+
+    renderTags(div.querySelector('.tag-input'), img.tags || [], i);
   });
+}
+
+// --- Render tags for a single image ---
+function renderTags(container, tags, imgIndex) {
+  container.innerHTML = '';
+
+  // Render existing tags
+  tags.forEach(tag => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.textContent = tag;
+
+    const remove = document.createElement('span');
+    remove.className = 'remove-tag';
+    remove.textContent = '×';
+    remove.onclick = () => {
+      tags.splice(tags.indexOf(tag), 1);
+      updateTags(imgIndex, tags);
+      renderTags(container, tags, imgIndex);
+    };
+
+    span.appendChild(remove);
+    container.appendChild(span);
+  });
+
+  // Input for new tags
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Add tag...';
+  container.appendChild(input);
+
+  // Suggestion dropdown
+  const suggestionBox = document.createElement('ul');
+  suggestionBox.className = 'suggestions';
+  suggestionBox.style.fontStyle = 'italic';
+  suggestionBox.style.textAlign = 'left';
+  container.appendChild(suggestionBox);
+
+  let selectedIndex = -1;
+
+  const addTag = (tag) => {
+    tag = tag.trim();
+    if (!tag) return;
+    if (!tags.includes(tag)) tags.push(tag);
+    updateAllTags();
+    updateTags(imgIndex, tags);
+    renderTags(container, tags, imgIndex);
+  };
+
+  const updateSuggestions = () => {
+    const value = input.value.toLowerCase();
+    const suggestions = allTags.filter(t => !tags.includes(t) && t.toLowerCase().startsWith(value));
+
+    suggestionBox.innerHTML = '';
+    selectedIndex = -1;
+
+    if (suggestions.length) {
+      suggestionBox.style.display = 'block';
+      suggestions.forEach((s, idx) => {
+        const li = document.createElement('li');
+        const boldPart = `<b>${s.substring(0, input.value.length)}</b>`;
+        const rest = s.substring(input.value.length);
+        li.innerHTML = boldPart + rest;
+        li.onclick = () => addTag(s);
+        li.onmouseover = () => selectedIndex = idx;
+        suggestionBox.appendChild(li);
+      });
+    } else {
+      suggestionBox.style.display = 'none';
+    }
+  };
+
+  input.addEventListener('input', updateSuggestions);
+  input.addEventListener('focus', updateSuggestions);
+
+  // Keyboard navigation
+  input.addEventListener('keydown', (e) => {
+    const items = suggestionBox.querySelectorAll('li');
+    if (items.length) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % items.length;
+        items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (selectedIndex >= 0) addTag(items[selectedIndex].textContent.replace(/×$/,''));
+        else addTag(input.value);
+      } else if (e.key === 'Escape') {
+        suggestionBox.style.display = 'none';
+      } else if ([' ', ','].includes(e.key)) {
+        e.preventDefault();
+        addTag(input.value);
+      }
+    } else if (['Enter', ' ', ','].includes(e.key)) {
+      e.preventDefault();
+      addTag(input.value);
+    }
+  });
+
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (input.value.trim()) addTag(input.value);
+      suggestionBox.style.display = 'none';
+    }, 100);
+  });
+
+  input.focus();
+}
+
+// --- Update tags in galleryImages array ---
+function updateTags(index, tags) {
+  galleryImages[index].tags = tags;
+  saveGallery();
 }
 
 // --- Render hero images with delete buttons ---
@@ -50,11 +180,6 @@ function renderHero() {
   });
 }
 
-// --- Update tags for gallery image ---
-function updateTags(index, value) {
-  galleryImages[index].tags = value.split(',').map(t => t.trim()).filter(t => t);
-}
-
 // --- Delete gallery image ---
 async function deleteGalleryImage(index) {
   const img = galleryImages[index];
@@ -69,9 +194,11 @@ async function deleteGalleryImage(index) {
       galleryImages.splice(index, 1);
       renderGallery();
       await saveGallery();
-    } else alert("Error: " + data.error);
+      showToast("✅ Gallery image deleted!", "success");
+    } else showToast("Error: " + data.error, "error");
   } catch(err) {
-    console.error(err); alert("Server error!");
+    console.error(err);
+    showToast("Server error!", "error");
   }
 }
 
@@ -89,9 +216,11 @@ async function deleteHeroImage(index) {
       heroImages.splice(index, 1);
       renderHero();
       await saveHero();
-    } else alert("Error: " + data.error);
+      showToast("✅ Hero image deleted!", "success");
+    } else showToast("Error: " + data.error, "error");
   } catch(err) {
-    console.error(err); alert("Server error!");
+    console.error(err);
+    showToast("Server error!", "error");
   }
 }
 
@@ -117,21 +246,39 @@ async function saveHero() {
 async function saveChanges() {
   await saveGallery();
   await saveHero();
-  alert('✅ Changes saved!');
+  showToast('✅ Changes saved!', "success");
 }
 
 // --- Refresh gallery from folder ---
 async function refreshGallery() {
   await fetch('/api/gallery/refresh', { method: 'POST' });
   await loadData();
-  alert('🔄 Gallery updated from photos/gallery folder');
+  showToast('🔄 Gallery updated from photos/gallery folder', "success");
 }
 
 // --- Refresh hero from folder ---
 async function refreshHero() {
   await fetch('/api/hero/refresh', { method: 'POST' });
   await loadData();
-  alert('🔄 Hero updated from photos/hero folder');
+  showToast('🔄 Hero updated from photos/hero folder', "success");
+}
+
+// --- Show toast notification ---
+function showToast(message, type = "success", duration = 3000) {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => toast.classList.add("show"));
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.addEventListener("transitionend", () => toast.remove());
+  }, duration);
 }
 
 // --- Initialize ---
