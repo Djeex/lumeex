@@ -80,7 +80,7 @@ h1, h2 {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.2s;
-    margin-top: 10px;
+    margin: 5px 4px 0 4px;
     width:100%;
 }
 
@@ -139,20 +139,22 @@ h1, h2 {
 /* Tags */
 .tag-input {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap-reverse;
+    align-content: flex-start;
     gap: 4px;
     padding: 4px;
     position: relative;
     z-index: 1;
+    margin-top: 10px;
 }
 
 .tag-input input {
   border: none;
   outline: none;
-  flex: 1;
   min-width: 60px;
   background-color: #1f2223;
   border: 1px solid #585858;
+  margin-top: 5px;
 }
 
 .tag {
@@ -195,6 +197,13 @@ h1, h2 {
   background-color: #007782;
 }
 
+.tags-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
 .suggestions li.selected {
   background-color: #007782;
   color: white;
@@ -214,6 +223,7 @@ h1, h2 {
 
 .flex-full {
   flex: 1;
+  flex-direction: column-reverse;
 }
 
 .flex-end {

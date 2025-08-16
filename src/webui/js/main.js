@@ -41,23 +41,30 @@ function renderGallery() {
       <div class="flex-item">
         <img src="/photos/${img.src}">
       </div>
-      <div class="tag-input" data-index="${i}"></div>
+      <div class="tags-display" data-index="${i}"></div>
       <div class="flex-item flex-full">
-        <div class="flex-item flex-end">
-        <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
+      <div class="flex-item flex-end">
+          <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
+        </div>
+        <div class="tag-input" data-index="${i}"></div>
       </div>
     `;
     container.appendChild(div);
 
-    renderTags(div.querySelector('.tag-input'), img.tags || [], i);
+    renderTags(i, img.tags || []);
   });
 }
 
 // --- Render tags for a single image ---
-function renderTags(container, tags, imgIndex) {
-  container.innerHTML = '';
+function renderTags(imgIndex, tags) {
+  const tagsDisplay = document.querySelector(`.tags-display[data-index="${imgIndex}"]`);
+  const inputContainer = document.querySelector(`.tag-input[data-index="${imgIndex}"]`);
 
-  // Render existing tags
+  // vider
+  tagsDisplay.innerHTML = '';
+  inputContainer.innerHTML = '';
+
+  // --- rendre les tags (en haut) ---
   tags.forEach(tag => {
     const span = document.createElement('span');
     span.className = 'tag';
@@ -69,23 +76,23 @@ function renderTags(container, tags, imgIndex) {
     remove.onclick = () => {
       tags.splice(tags.indexOf(tag), 1);
       updateTags(imgIndex, tags);
-      renderTags(container, tags, imgIndex);
+      renderTags(imgIndex, tags);
     };
 
     span.appendChild(remove);
-    container.appendChild(span);
+    tagsDisplay.appendChild(span);
   });
 
-  // Input for new tags
+  // --- input (en bas) ---
   const input = document.createElement('input');
   input.type = 'text';
   input.placeholder = 'Add tag...';
-  container.appendChild(input);
+  inputContainer.appendChild(input);
 
-  // Suggestion dropdown
+  // suggestion box
   const suggestionBox = document.createElement('ul');
   suggestionBox.className = 'suggestions';
-  container.appendChild(suggestionBox);
+  inputContainer.appendChild(suggestionBox);
 
   let selectedIndex = -1;
 
@@ -93,8 +100,8 @@ function renderTags(container, tags, imgIndex) {
     tag = tag.trim();
     if (!tag) return;
     if (!tags.includes(tag)) tags.push(tag);
-    updateTags(imgIndex, tags); // save to galleryImages and server
-    renderTags(container, tags, imgIndex);
+    updateTags(imgIndex, tags);
+    renderTags(imgIndex, tags);
   };
 
   const updateSuggestions = () => {
@@ -107,7 +114,6 @@ function renderTags(container, tags, imgIndex) {
     const allTagsSorted = Object.keys(tagCount)
       .sort((a, b) => tagCount[b] - tagCount[a]);
 
-    // Show suggestions that start with input (or all if empty)
     const suggestions = allTagsSorted.filter(t => t.toLowerCase().startsWith(value) && !tags.includes(t));
 
     suggestionBox.innerHTML = '';
@@ -141,8 +147,7 @@ function renderTags(container, tags, imgIndex) {
   };
 
   input.addEventListener('input', updateSuggestions);
-
-  input.addEventListener('focus', updateSuggestions); // Show suggestions on focus
+  input.addEventListener('focus', updateSuggestions);
 
   input.addEventListener('keydown', (e) => {
     const items = suggestionBox.querySelectorAll('li');
@@ -176,14 +181,13 @@ function renderTags(container, tags, imgIndex) {
   input.addEventListener('blur', () => {
     setTimeout(() => {
       suggestionBox.style.display = 'none';
-      input.value = ''; // Clear input without saving
+      input.value = '';
     }, 150);
   });
 
   input.focus();
-  updateSuggestions(); // show suggestions on render
+  updateSuggestions();
 }
-
 
 // --- Update tags in galleryImages array ---
 function updateTags(index, tags) {
