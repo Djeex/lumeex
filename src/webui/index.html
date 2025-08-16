@@ -8,40 +8,72 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 </head>
 <body>
+  <!-- Top bar -->	
+		<div class="nav-bar">
+			<div class="content-inner nav">
+				<div class="nav-cta">
+				  	<div class="arrow">
+             →
+            </div>
+              <a class="button" href="#" target="_blank"><span id="step">🚀 Build !<i class="fa-solid fa-envelope"></i></span></a>
+				  </div>
+			  <input type="checkbox" id="nav-check">
+			  <div class="nav-header">
+			    <div class="nav-title">
+			      <img src="{{ url_for('static', filename='img/logo.svg') }}">
+			    </div>
+			  </div>
+
+			  <div class="nav-btn">
+			  	<label for="nav-check">
+      			<span></span>
+     				<span></span>
+     				<span></span>
+    			</label>
+			  </div>
+			  
+			  <div class="nav-links">
+			  	<ul class="nav-list">
+				    <li class="nav-item appear2"><a href="#">Site info</a>
+				    <li class="nav-item appear2"><a href="#qui-suis-je">Theme info</a>
+				    <li class="nav-item appear2"><a href="#mariages">Gallery</a>
+				  </ul>
+				  
+			  </div>
+
+		  </div>
+		</div>
   <!-- Toast container for notifications -->
-  <div id="toast-container"></div>
-  <h1>Photo WebUI</h1>
-  <!-- Toolbar with refresh and save buttons -->
-  <!--
-  <div class="toolbar">
-    <button onclick="refreshGallery()">🔄 Refresh Gallery</button>
-    <button onclick="refreshHero()">🔄 Refresh Hero</button>
-    <button onclick="saveChanges()">💾 Save Changes</button>
-  </div>
-  -->
+  <div class="content-inner">
+    <div id="toast-container"></div>
 
-  <!-- Hero Upload Section -->
-  <div class="upload-section">
-    <h2>Hero</h2>
-    <label>
-      Upload Image:
-      <input type="file" id="upload-hero" accept=".png,.jpg,.jpeg,.webp" multiple>
-    </label>
-    <div id="hero"></div>
-  </div>
-  
-  <!-- Gallery Upload Section -->
-  <div class="upload-section">
-    <h2>Gallery</h2>
-    <label>
-      Upload Image:
-      <input type="file" id="upload-gallery" accept=".png,.jpg,.jpeg,.webp" multiple>
-    </label>
-    <div id="gallery"></div>
-  </div>
+    <h1>Gallery editor</h1>
 
-  <!-- JS files for rendering, uploading, and actions -->
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+    <!-- Hero Upload Section -->
+    <div class="upload-section">
+      <h2>Title Carrousel</h2>
+      <p> Select photos to display in the Title Carrousel</p>
+      <label for="upload-hero" class="custom-upload-btn">
+        📸 Upload photos
+      </label>
+      <input type="file" id="upload-hero" accept=".png,.jpg,.jpeg,.webp" multiple hidden>
+      <div id="hero"></div>
+    </div>
+
+    <!-- Gallery Upload Section -->
+    <div class="upload-section">
+      <h2>Gallery</h2>
+      <p> Select and tags photos to display in the Gallery</p>
+      <label for="upload-gallery" class="custom-upload-btn">
+        📸 Upload photos
+      </label>
+      <input type="file" id="upload-gallery" accept=".png,.jpg,.jpeg,.webp" multiple hidden>
+      <div id="gallery"></div>
+    </div>
+
+    <!-- JS files for rendering, uploading, and actions -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+  </div>
 </body>
 </html>
