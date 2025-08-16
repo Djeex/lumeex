@@ -36,11 +36,16 @@ function renderGallery() {
   container.innerHTML = '';
   galleryImages.forEach((img, i) => {
     const div = document.createElement('div');
-    div.className = 'photo';
+    div.className = 'photo flex-item flex-column';
     div.innerHTML = `
-      <img src="/photos/${img.src}">
+      <div class="flex-item">
+        <img src="/photos/${img.src}">
+      </div>
       <div class="tag-input" data-index="${i}"></div>
-      <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
+      <div class="flex-item flex-full">
+        <div class="flex-item flex-end">
+        <button onclick="deleteGalleryImage(${i})">🗑 Delete</button>
+      </div>
     `;
     container.appendChild(div);
 
@@ -192,10 +197,15 @@ function renderHero() {
   container.innerHTML = '';
   heroImages.forEach((img, i) => {
     const div = document.createElement('div');
-    div.className = 'photo';
+    div.className = 'photo flex-item flex-column';
     div.innerHTML = `
-      <img src="/photos/${img.src}">
-      <button onclick="deleteHeroImage(${i})">🗑 Delete</button>
+      <div class="flex-item">
+        <img src="/photos/${img.src}">
+      </div>
+      <div class="flex-item flex-full">
+        <div class="flex-item flex-end">
+        <button onclick="deleteHeroImage(${i})">🗑 Delete</button>
+      </div>
     `;
     container.appendChild(div);
   });
