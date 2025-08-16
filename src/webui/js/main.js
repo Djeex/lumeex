@@ -80,8 +80,6 @@ function renderTags(container, tags, imgIndex) {
   // Suggestion dropdown
   const suggestionBox = document.createElement('ul');
   suggestionBox.className = 'suggestions';
-  suggestionBox.style.fontStyle = 'italic';
-  suggestionBox.style.textAlign = 'left';
   container.appendChild(suggestionBox);
 
   let selectedIndex = -1;
@@ -90,14 +88,22 @@ function renderTags(container, tags, imgIndex) {
     tag = tag.trim();
     if (!tag) return;
     if (!tags.includes(tag)) tags.push(tag);
-    updateAllTags();
-    updateTags(imgIndex, tags);
+    updateTags(imgIndex, tags); // save to galleryImages and server
     renderTags(container, tags, imgIndex);
   };
 
   const updateSuggestions = () => {
     const value = input.value.toLowerCase();
-    const suggestions = allTags.filter(t => !tags.includes(t) && t.toLowerCase().startsWith(value));
+
+    const allTagsFlat = galleryImages.flatMap(img => img.tags || []);
+    const tagCount = {};
+    allTagsFlat.forEach(t => tagCount[t] = (tagCount[t] || 0) + 1);
+
+    const allTagsSorted = Object.keys(tagCount)
+      .sort((a, b) => tagCount[b] - tagCount[a]);
+
+    // Show suggestions that start with input (or all if empty)
+    const suggestions = allTagsSorted.filter(t => t.toLowerCase().startsWith(value) && !tags.includes(t));
 
     suggestionBox.innerHTML = '';
     selectedIndex = -1;
@@ -106,10 +112,21 @@ function renderTags(container, tags, imgIndex) {
       suggestionBox.style.display = 'block';
       suggestions.forEach((s, idx) => {
         const li = document.createElement('li');
+        li.style.fontStyle = 'italic';
+        li.style.textAlign = 'left';
+
         const boldPart = `<b>${s.substring(0, input.value.length)}</b>`;
         const rest = s.substring(input.value.length);
         li.innerHTML = boldPart + rest;
-        li.onclick = () => addTag(s);
+
+        li.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          addTag(s);
+          input.value = '';
+          input.focus();
+          updateSuggestions();
+        });
+
         li.onmouseover = () => selectedIndex = idx;
         suggestionBox.appendChild(li);
       });
@@ -119,45 +136,49 @@ function renderTags(container, tags, imgIndex) {
   };
 
   input.addEventListener('input', updateSuggestions);
-  input.addEventListener('focus', updateSuggestions);
 
-  // Keyboard navigation
+  input.addEventListener('focus', updateSuggestions); // Show suggestions on focus
+
   input.addEventListener('keydown', (e) => {
     const items = suggestionBox.querySelectorAll('li');
-    if (items.length) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % items.length;
-        items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-        items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (selectedIndex >= 0) addTag(items[selectedIndex].textContent.replace(/×$/,''));
-        else addTag(input.value);
-      } else if (e.key === 'Escape') {
-        suggestionBox.style.display = 'none';
-      } else if ([' ', ','].includes(e.key)) {
-        e.preventDefault();
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!items.length) return;
+      selectedIndex = (selectedIndex + 1) % items.length;
+      items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!items.length) return;
+      selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+      items.forEach((li, i) => li.classList.toggle('selected', i === selectedIndex));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex >= 0 && items[selectedIndex]) {
+        addTag(items[selectedIndex].textContent);
+      } else {
         addTag(input.value);
       }
-    } else if (['Enter', ' ', ','].includes(e.key)) {
+      input.value = '';
+      updateSuggestions();
+    } else if ([' ', ','].includes(e.key)) {
       e.preventDefault();
       addTag(input.value);
+      input.value = '';
+      updateSuggestions();
     }
   });
 
   input.addEventListener('blur', () => {
     setTimeout(() => {
-      if (input.value.trim()) addTag(input.value);
       suggestionBox.style.display = 'none';
-    }, 100);
+      input.value = ''; // Clear input without saving
+    }, 150);
   });
 
   input.focus();
+  updateSuggestions(); // show suggestions on render
 }
+
 
 // --- Update tags in galleryImages array ---
 function updateTags(index, tags) {
