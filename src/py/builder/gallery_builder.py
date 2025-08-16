@@ -10,6 +10,7 @@ GALLERY_DIR = Path("config/photos/gallery")
 HERO_DIR = Path("config/photos/hero")
 
 def load_yaml(path):
+    """Load gallery config .yaml file"""
     print(f"[→] Loading {path}...")
     if not os.path.exists(path):
         print(f"[✗] File not found: {path}")
@@ -21,11 +22,13 @@ def load_yaml(path):
         return data
 
 def save_yaml(data, path):
+    """Save modified gallery config .yaml file"""
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, sort_keys=False, allow_unicode=True)
     print(f"[✓] Saved updated YAML to {path}")
 
 def get_all_image_paths(directory):
+    """Get the path to record for builded site"""
     return sorted([
         str(p.relative_to(directory.parent)).replace("\\", "/")
         for p in directory.rglob("*")
@@ -33,6 +36,7 @@ def get_all_image_paths(directory):
     ])
 
 def update_gallery():
+    """Update the gallery photo list"""
     print("\n=== Updating gallery.yaml (gallery section) ===")
     gallery = load_yaml(GALLERY_YAML)
 
@@ -71,6 +75,7 @@ def update_gallery():
         print("[✓] No changes to gallery.yaml (gallery)")
 
 def update_hero():
+    """Update the hero photo list"""
     print("\n=== Updating gallery.yaml (hero section) ===")
     gallery = load_yaml(GALLERY_YAML)
 

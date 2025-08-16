@@ -3,6 +3,7 @@ from pathlib import Path
 from shutil import copyfile
 
 def generate_css_variables(colors_dict, output_path):
+    """Generate css variables for theme colors"""
     css_lines = [":root {"]
     for key, value in colors_dict.items():
         css_lines.append(f"  --color-{key.replace('_', '-')}: {value};")
@@ -13,6 +14,7 @@ def generate_css_variables(colors_dict, output_path):
     logging.info(f"[✓] CSS variables written to {output_path}")
 
 def generate_fonts_css(fonts_dir, output_path, fonts_cfg=None):
+    """Generate css variables fonts"""
     font_files = list(fonts_dir.glob("*"))
     font_faces = {}
     preload_links = []
@@ -57,6 +59,7 @@ def generate_fonts_css(fonts_dir, output_path, fonts_cfg=None):
     return preload_links
 
 def generate_google_fonts_link(fonts):
+    """Generate src link for Google fonts"""
     if not fonts:
         return ""
     families = []
