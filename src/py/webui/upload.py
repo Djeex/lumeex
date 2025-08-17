@@ -63,3 +63,4 @@ def upload_photo(section: str):
         return {"status": "ok", "uploaded": uploaded}
 
     return {"error": "No valid files uploaded"}, 400
+

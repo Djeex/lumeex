@@ -63,6 +63,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const convertImagesCheckbox = document.getElementById("convert-images-checkbox");
   const resizeImagesCheckbox = document.getElementById("resize-images-checkbox");
 
+  // --- Theme select ---
+  const themeSelect = document.getElementById("theme-select");
+
+  // --- Thumbnail upload ---
+  const thumbnailInput = form?.elements["social.thumbnail"];
+  const thumbnailUpload = document.getElementById("thumbnail-upload");
+  const thumbnailPreview = document.getElementById("thumbnail-preview");
+
+  if (thumbnailUpload) {
+    thumbnailUpload.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/thumbnail/upload", { method: "POST", body: formData });
+      const result = await res.json();
+      if (result.status === "ok") {
+        if (thumbnailInput) thumbnailInput.value = result.filename;
+        if (thumbnailPreview) {
+          thumbnailPreview.src = `/photos/${result.filename}`;
+          thumbnailPreview.style.display = "block";
+        }
+        status.textContent = "✅ Thumbnail uploaded!";
+        setTimeout(() => status.textContent = "", 2000);
+      } else {
+        status.textContent = "❌ Error uploading thumbnail";
+        setTimeout(() => status.textContent = "", 2000);
+      }
+    });
+  }
+
+  // Fetch theme list and populate select
+  if (themeSelect) {
+    fetch("/api/themes")
+      .then(res => res.json())
+      .then(themes => {
+        themeSelect.innerHTML = "";
+        themes.forEach(theme => {
+          const option = document.createElement("option");
+          option.value = theme;
+          option.textContent = theme;
+          themeSelect.appendChild(option);
+        });
+        // Set selected value after loading config
+        fetch("/api/site-info")
+          .then(res => res.json())
+          .then(data => {
+            themeSelect.value = data.build?.theme || "";
+          });
+      });
+  }
+
   // Load config
   if (form) {
     fetch("/api/site-info")
@@ -81,10 +133,16 @@ document.addEventListener("DOMContentLoaded", () => {
         form.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
         form.elements["info.author"].value = data.info?.author || "";
         form.elements["social.instagram_url"].value = data.social?.instagram_url || "";
-        form.elements["social.thumbnail"].value = data.social?.thumbnail || "";
+        if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
+        if (thumbnailPreview && data.social?.thumbnail) {
+          thumbnailPreview.src = `/photos/${data.social.thumbnail}`;
+          thumbnailPreview.style.display = "block";
+        }
         form.elements["footer.copyright"].value = data.footer?.copyright || "";
         form.elements["footer.legal_label"].value = data.footer?.legal_label || "";
-        form.elements["build.theme"].value = data.build?.theme || "";
+        if (themeSelect) {
+          themeSelect.value = data.build?.theme || "";
+        }
         form.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
         form.elements["legals.hoster_adress"].value = data.legals?.hoster_adress || "";
         form.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
@@ -149,9 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
       updateMenuItemsFromInputs();
       updateIpParagraphsFromInputs();
 
-      // --- Build object with checkboxes ---
+      // --- Build object with checkboxes and theme select ---
       const build = {
-        theme: form.elements["build.theme"].value,
+        theme: themeSelect ? themeSelect.value : "",
         convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
         resize_images: !!(resizeImagesCheckbox && resizeImagesCheckbox.checked)
       };
@@ -167,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         social: {
           instagram_url: form.elements["social.instagram_url"].value,
-          thumbnail: form.elements["social.thumbnail"].value
+          thumbnail: thumbnailInput ? thumbnailInput.value : ""
         },
         menu: {
           items: menuItems

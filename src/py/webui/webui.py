@@ -136,6 +136,10 @@ def photos(section, filename):
     """Serve uploaded photos from disk."""
     return send_from_directory(PHOTOS_DIR / section, filename)
 
+@app.route("/photos/<path:filename>")
+def serve_photo(filename):
+    photos_dir = Path(__file__).resolve().parents[3] / "config" / "photos"
+    return send_from_directory(photos_dir, filename)
 
 @app.route("/site-info")
 def site_info():
@@ -154,6 +158,28 @@ def update_site_info():
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
     return jsonify({"status": "ok"})
 
+@app.route("/api/themes")
+def list_themes():
+    themes_dir = Path(__file__).resolve().parents[3] / "config" / "themes"
+    themes = [d.name for d in themes_dir.iterdir() if d.is_dir()]
+    return jsonify(themes)
+
+
+@app.route("/api/thumbnail/upload", methods=["POST"])
+def upload_thumbnail():
+    PHOTOS_DIR = app.config["PHOTOS_DIR"]
+    file = request.files.get("file")
+    if not file:
+        return {"error": "No file provided"}, 400
+    filename = "thumbnail.png"
+    file.save(PHOTOS_DIR / filename)
+    # Update site.yaml
+    with open(SITE_YAML, "r") as f:
+        data = yaml.safe_load(f)
+    data.setdefault("social", {})["thumbnail"] = filename
+    with open(SITE_YAML, "w") as f:
+        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+    return jsonify({"status": "ok", "filename": filename})
 
 # --- Run server ---
 if __name__ == "__main__":

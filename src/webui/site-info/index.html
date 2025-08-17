@@ -55,8 +55,10 @@
       <fieldset>
         <legend>Social</legend>
         <label>Instagram URL: <input type="text" name="social.instagram_url"></label><br>
-        <label>Thumbnail: <input type="text" name="social.thumbnail"></label><br>
-      </fieldset>
+        <label>Thumbnail: <input type="text" name="social.thumbnail" readonly></label>
+        <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp">
+        <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
+        </fieldset>
       <fieldset>
         <legend>Menu</legend>
         <div id="menu-items-list"></div>
@@ -69,7 +71,9 @@
       </fieldset>
       <fieldset>
         <legend>Build</legend>
-        <label>Theme: <input type="text" name="build.theme"></label><br>
+        <label>Theme:
+            <select name="build.theme" id="theme-select"></select>
+        </label>
         <label>
             <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">
             Convert images
