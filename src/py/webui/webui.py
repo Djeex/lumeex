@@ -1,4 +1,5 @@
 import logging
+import yaml
 from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from src.py.builder.gallery_builder import (
@@ -17,6 +18,8 @@ app = Flask(
     static_folder=WEBUI_PATH,
     static_url_path=""
 )
+
+SITE_YAML = Path(__file__).resolve().parents[3] / "config" / "site.yaml"
 
 # --- Photos directory (configurable) ---
 PHOTOS_DIR = Path(__file__).resolve().parents[3] / "config" / "photos"
@@ -132,6 +135,25 @@ def delete_all_hero_photos():
 def photos(section, filename):
     """Serve uploaded photos from disk."""
     return send_from_directory(PHOTOS_DIR / section, filename)
+
+
+@app.route("/site-info")
+def site_info():
+    return render_template("site-info/index.html")
+
+@app.route("/api/site-info", methods=["GET"])
+def get_site_info():
+    with open(SITE_YAML, "r") as f:
+        data = yaml.safe_load(f)
+    return jsonify(data)
+
+@app.route("/api/site-info", methods=["POST"])
+def update_site_info():
+    data = request.json
+    with open(SITE_YAML, "w") as f:
+        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+    return jsonify({"status": "ok"})
+
 
 # --- Run server ---
 if __name__ == "__main__":

@@ -24,6 +24,8 @@ footer:
 # Build parameters
 build:
   theme: modern # choose a theme in config/theme folder
+  convert_images: true # true to enable image conversion
+  resize_images: true # true to enable image resizing
 
 # Change this by your legals
 legals:

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Lumeex</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+<body>
+  <!-- Top bar -->	
+  <div class="nav-bar">
+    <div class="content-inner nav">
+      <div class="nav-cta">
+        <div class="arrow">→</div>
+        <a class="button" href="#" target="_blank">
+          <span id="step">🚀 Build !<i class="fa-solid fa-envelope"></i></span>
+        </a>
+      </div>
+      <input type="checkbox" id="nav-check">
+      <div class="nav-header">
+        <div class="nav-title">
+          <img src="{{ url_for('static', filename='img/logo.svg') }}">
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <ul class="nav-list">
+          <li class="nav-item appear2"><a href="#">Site info</a>
+          <li class="nav-item appear2"><a href="#">Theme info</a>
+          <li class="nav-item appear2"><a href="#">Gallery</a>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Toast container for notifications -->
+  <div class="content-inner">
+    <div id="toast-container"></div>
+    <h1>Edit Site Info</h1>
+    <form id="site-info-form">
+      <fieldset>
+        <legend>Info</legend>
+        <label>Title: <input type="text" name="info.title"></label><br>
+        <label>Subtitle: <input type="text" name="info.subtitle"></label><br>
+        <label>Description: <textarea name="info.description"></textarea></label><br>
+        <label>Canonical URL: <input type="text" name="info.canonical"></label><br>
+        <label>Keywords (comma separated): <input type="text" name="info.keywords"></label><br>
+        <label>Author: <input type="text" name="info.author"></label><br>
+      </fieldset>
+      <fieldset>
+        <legend>Social</legend>
+        <label>Instagram URL: <input type="text" name="social.instagram_url"></label><br>
+        <label>Thumbnail: <input type="text" name="social.thumbnail"></label><br>
+      </fieldset>
+      <fieldset>
+        <legend>Menu</legend>
+        <div id="menu-items-list"></div>
+        <button type="button" id="add-menu-item">+ Add menu item</button>
+      </fieldset>
+      <fieldset>
+        <legend>Footer</legend>
+        <label>Copyright: <input type="text" name="footer.copyright"></label><br>
+        <label>Legal Label: <input type="text" name="footer.legal_label"></label><br>
+      </fieldset>
+      <fieldset>
+        <legend>Build</legend>
+        <label>Theme: <input type="text" name="build.theme"></label><br>
+        <label>
+            <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">
+            Convert images
+        </label><br>
+        <label>
+            <input type="checkbox" name="build.resize_images" id="resize-images-checkbox">
+            Resize images
+        </label><br>
+    </fieldset>
+      <fieldset>
+        <legend>Legals</legend>
+        <label>Hoster Name: <input type="text" name="legals.hoster_name"></label><br>
+        <label>Hoster Address: <input type="text" name="legals.hoster_adress"></label><br>
+        <label>Hoster Contact: <input type="text" name="legals.hoster_contact"></label><br>
+        <div>
+            <label>Intellectual Property:</label>
+            <div id="ip-list"></div>
+            <button type="button" id="add-ip-paragraph">+ Add paragraph</button>
+        </div>
+    </fieldset>
+      <button type="submit">Save</button>
+    </form>
+    <div id="site-info-status"></div>
+  </div>
+  <div id="delete-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="delete-modal-close" class="modal-close">&times;</span>
+      <h3>Confirm Deletion</h3>
+      <p id="delete-modal-text">Are you sure you want to delete this image?</p>
+      <div class="modal-actions">
+        <button id="delete-modal-confirm" class="modal-btn danger">Delete</button>
+        <button id="delete-modal-cancel" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+  <script src="{{ url_for('static', filename='js/site-info.js') }}"></script>
+</body>
+</html>
