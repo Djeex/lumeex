@@ -181,6 +181,22 @@ def upload_thumbnail():
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
     return jsonify({"status": "ok", "filename": filename})
 
+@app.route("/api/thumbnail/remove", methods=["POST"])
+def remove_thumbnail():
+    PHOTOS_DIR = app.config["PHOTOS_DIR"]
+    thumbnail_path = PHOTOS_DIR / "thumbnail.png"
+    # Remove thumbnail file if exists
+    if thumbnail_path.exists():
+        thumbnail_path.unlink()
+    # Update site.yaml to remove thumbnail key
+    with open(SITE_YAML, "r") as f:
+        data = yaml.safe_load(f)
+    if "social" in data and "thumbnail" in data["social"]:
+        data["social"]["thumbnail"] = ""
+    with open(SITE_YAML, "w") as f:
+        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+    return jsonify({"status": "ok"})
+
 # --- Run server ---
 if __name__ == "__main__":
     logging.info("Starting WebUI at http://127.0.0.1:5000")

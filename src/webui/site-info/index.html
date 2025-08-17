@@ -31,9 +31,9 @@
       </div>
       <div class="nav-links">
         <ul class="nav-list">
-          <li class="nav-item appear2"><a href="#">Site info</a>
-          <li class="nav-item appear2"><a href="#">Theme info</a>
-          <li class="nav-item appear2"><a href="#">Gallery</a>
+          <li class="nav-item appear2"><a href="#">Site info</a></li>
+          <li class="nav-item appear2"><a href="#">Theme info</a></li>
+          <li class="nav-item appear2"><a href="#">Gallery</a></li>
         </ul>
       </div>
     </div>
@@ -43,107 +43,131 @@
     <div id="toast-container"></div>
     <h1>Edit Site Info</h1>
     <form id="site-info-form">
+      <!-- Info Section -->
       <fieldset>
         <legend>Info</legend>
-        <div class="input-field">
+        <div class="fields">
+          <div class="input-field">
             <label>Title:</label>
             <input type="text" name="info.title">
-        </div>
-        <div class="input-field">
+          </div>
+          <div class="input-field">
             <label>Subtitle:</label>
             <input type="text" name="info.subtitle">
-        </div>
-        <div class="input-field">
+          </div>
+          <div class="input-field">
             <label>Description:</label>
-            <textarea name="info.description"></textarea>
-        </div>
-        <div class="input-field">
-          <label>Canonical URL:</label>
-          <input type="text" name="info.canonical">
-        </div>
-        <div class="input-field">
+            <input type="text" name="info.description"></input>
+          </div>
+          <div class="input-field">
+            <label>Canonical URL:</label>
+            <input type="text" name="info.canonical">
+          </div>
+          <div class="input-field">
             <label>Keywords (comma separated):</label>
             <input type="text" name="info.keywords">
-        </div>
-        <div class="input-field">
+          </div>
+          <div class="input-field">
             <label>Author:</label>
             <input type="text" name="info.author">
+          </div>
         </div>
       </fieldset>
+      <!-- Social Section -->
       <fieldset>
         <legend>Social</legend>
+        <div class="fields">
           <div class="input-field">
-            <label>Instagram URL: </label>
+            <label>Instagram URL:</label>
             <input type="text" name="social.instagram_url">
+            <label>Upload Thumbnail:</label>
+            <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            <button type="button" id="choose-thumbnail-btn" class="up-btn">Choose a photo</button>
+            <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
+            <button type="button" id="remove-thumbnail-btn" class="up-btn danger" style="display:none;">Remove</button>
           </div>
-          <div class="input-field">
-            <label>Thumbnail: </label>
-            <input type="text" name="social.thumbnail" readonly>
-          </div>
-          <div class="input-field">
-              <label>Upload Thumbnail: </label>
-              <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp">
-              <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
-          </div>
+        </div>
       </fieldset>
+      <!-- Menu Section -->
       <fieldset>
         <legend>Menu</legend>
-        <div id="menu-items-list">
+        <div class="fields">
+          <div class="input-field" style="flex: 1 1 100%;">
+            <div id="menu-items-list"></div>
+            <button type="button" id="add-menu-item">+ Add menu item</button>
+          </div>
         </div>
-        <button type="button" id="add-menu-item">+ Add menu item</button>
       </fieldset>
+      <!-- Footer Section -->
       <fieldset>
         <legend>Footer</legend>
-        <div class="input-field">
-          <label>Copyright: </label>
-          <input type="text" name="footer.copyright"></label>
-        </div>
-        <div class="input-field">
-          <label>Legal Label: </label>
-          <input type="text" name="footer.legal_label"></label>
-        </div>
-      </fieldset>
-      <fieldset>
-        <legend>Build</legend>
-        <div class="input-field">
-          <label>Theme:</label>
-          <select name="build.theme" id="theme-select"></select>
-        </div>
-        <div class="input-field">
-          <label>Convert images</label>
-          <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">
-        </div>
-        <div class="input-field">
-          <label>Resize images</label>
-          <input type="checkbox" name="build.resize_images" id="resize-images-checkbox">
+        <div class="fields">
+          <div class="input-field">
+            <label>Copyright:</label>
+            <input type="text" name="footer.copyright">
+          </div>
+          <div class="input-field">
+            <label>Legal Label:</label>
+            <input type="text" name="footer.legal_label">
+          </div>
         </div>
       </fieldset>
+      <!-- Legals Section -->
       <fieldset>
         <legend>Legals</legend>
-        <div class="input-field">
-          <label>Hoster Name:</label>
-          <input type="text" name="legals.hoster_name">
+        <div class="fields">
+          <div class="input-field">
+            <label>Hoster Name:</label>
+            <input type="text" name="legals.hoster_name">
+          </div>
+          <div class="input-field">
+            <label>Hoster Address:</label>
+            <input type="text" name="legals.hoster_adress">
+          </div>
+          <div class="input-field">
+            <label>Hoster Contact:</label>
+            <input type="text" name="legals.hoster_contact">
+          </div>
+          <div class="input-field" style="flex: 1 1 100%;">
+            <label>Intellectual Property:</label>
+            <div id="ip-list"></div>
+            <button type="button" id="add-ip-paragraph">+ Add paragraph</button>
+          </div>
         </div>
-        <div class="input-field">
-          <label>Hoster Address:</label>
-          <input type="text" name="legals.hoster_adress">
+      </fieldset>
+      <!-- Build Section -->
+      <fieldset>
+        <legend>Build</legend>
+        <div class="fields">
+          <div class="input-field">
+            <label>Theme:</label>
+            <select name="build.theme" id="theme-select"></select>
+            <label>
+              <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">
+              Convert images
+            </label>
+            <label>
+              <input type="checkbox" name="build.resize_images" id="resize-images-checkbox">
+              Resize images
+            </label>
+          </div>
         </div>
-        <div class="input-field">
-          <label>Hoster Contact:</label>
-          <input type="text" name="legals.hoster_contact">
-        </div>
-        <div class="input-field">
-          <label>Intellectual Property:</label>
-          <div id="ip-list"></div>
-          <button type="button" id="add-ip-paragraph">+ Add paragraph</button>
-        </div>
-        </div>
-    </fieldset>
+      </fieldset>
       <button type="submit">Save</button>
-    
+    </form>
+  </div>
+<!-- Delete confirmation modal (now outside .content-inner) -->
+  <div id="delete-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="delete-modal-close" class="modal-close">&times;</span>
+      <h3>Confirm Deletion</h3>
+      <p id="delete-modal-text">Are you sure you want to delete this image?</p>
+      <div class="modal-actions">
+        <button id="delete-modal-confirm" class="modal-btn danger">Delete</button>
+        <button id="delete-modal-cancel" class="modal-btn">Cancel</button>
+      </div>
     </div>
   </div>
-  
-  <script src="{{ url_for('static', filename='js/site-info.js') }}"></script>
+<script src="{{ url_for('static', filename='js/site-info.js')}}"></script>
 </body>
 </html>

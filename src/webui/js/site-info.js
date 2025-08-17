@@ -1,6 +1,19 @@
+function showToast(message, type = "success", duration = 3000) {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.addEventListener("transitionend", () => toast.remove());
+  }, duration);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("site-info-form");
-  const status = document.getElementById("site-info-status");
   const menuList = document.getElementById("menu-items-list");
   const addMenuBtn = document.getElementById("add-menu-item");
 
@@ -45,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       div.style.gap = "8px";
       div.style.marginBottom = "6px";
       div.innerHTML = `
-        <input type="text" placeholder="Paragraph" value="${item.paragraph || ""}" style="flex:1;" data-idx="${idx}">
+        <textarea placeholder="Paragraph" style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
         <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
       `;
       ipList.appendChild(div);
@@ -53,9 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateIpParagraphsFromInputs() {
-    const inputs = ipList.querySelectorAll("input");
-    ipParagraphs = Array.from(inputs).map(input => ({
-      paragraph: input.value.trim()
+    const textareas = ipList.querySelectorAll("textarea");
+    ipParagraphs = Array.from(textareas).map(textarea => ({
+      paragraph: textarea.value.trim()
     })).filter(item => item.paragraph !== "");
   }
 
@@ -66,10 +79,36 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Theme select ---
   const themeSelect = document.getElementById("theme-select");
 
-  // --- Thumbnail upload ---
+  // --- Thumbnail upload & modal logic ---
   const thumbnailInput = form?.elements["social.thumbnail"];
   const thumbnailUpload = document.getElementById("thumbnail-upload");
+  const chooseThumbnailBtn = document.getElementById("choose-thumbnail-btn");
   const thumbnailPreview = document.getElementById("thumbnail-preview");
+  const removeThumbnailBtn = document.getElementById("remove-thumbnail-btn");
+
+  // Modal elements
+  const deleteModal = document.getElementById("delete-modal");
+  const deleteModalClose = document.getElementById("delete-modal-close");
+  const deleteModalConfirm = document.getElementById("delete-modal-confirm");
+  const deleteModalCancel = document.getElementById("delete-modal-cancel");
+
+  // Show/hide remove button, preview, and choose button
+  function updateThumbnailPreview(src) {
+    if (thumbnailPreview) {
+      thumbnailPreview.src = src || "";
+      thumbnailPreview.style.display = src ? "block" : "none";
+    }
+    if (removeThumbnailBtn) {
+      removeThumbnailBtn.style.display = src ? "inline-block" : "none";
+    }
+    if (chooseThumbnailBtn) {
+      chooseThumbnailBtn.style.display = src ? "none" : "inline-block";
+    }
+  }
+
+  if (chooseThumbnailBtn && thumbnailUpload) {
+    chooseThumbnailBtn.addEventListener("click", () => thumbnailUpload.click());
+  }
 
   if (thumbnailUpload) {
     thumbnailUpload.addEventListener("change", async (e) => {
@@ -81,17 +120,43 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (result.status === "ok") {
         if (thumbnailInput) thumbnailInput.value = result.filename;
-        if (thumbnailPreview) {
-          thumbnailPreview.src = `/photos/${result.filename}`;
-          thumbnailPreview.style.display = "block";
-        }
-        status.textContent = "✅ Thumbnail uploaded!";
-        setTimeout(() => status.textContent = "", 2000);
+        updateThumbnailPreview(`/photos/${result.filename}`);
+        showToast("Thumbnail uploaded!", "success");
       } else {
-        status.textContent = "❌ Error uploading thumbnail";
-        setTimeout(() => status.textContent = "", 2000);
+        showToast("Error uploading thumbnail", "error");
       }
     });
+  }
+
+  // Attach modal logic to remove button
+  if (removeThumbnailBtn) {
+    removeThumbnailBtn.addEventListener("click", () => {
+      deleteModal.style.display = "flex";
+    });
+  }
+
+  // Modal logic
+  if (deleteModal && deleteModalClose && deleteModalConfirm && deleteModalCancel) {
+    deleteModalClose.onclick = deleteModalCancel.onclick = () => {
+      deleteModal.style.display = "none";
+    };
+    window.onclick = function(event) {
+      if (event.target === deleteModal) {
+        deleteModal.style.display = "none";
+      }
+    };
+    deleteModalConfirm.onclick = async () => {
+      const res = await fetch("/api/thumbnail/remove", { method: "POST" });
+      const result = await res.json();
+      if (result.status === "ok") {
+        if (thumbnailInput) thumbnailInput.value = "";
+        updateThumbnailPreview("");
+        showToast("Thumbnail removed!", "success");
+      } else {
+        showToast("Error removing thumbnail", "error");
+      }
+      deleteModal.style.display = "none";
+    };
   }
 
   // Fetch theme list and populate select
@@ -134,10 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.elements["info.author"].value = data.info?.author || "";
         form.elements["social.instagram_url"].value = data.social?.instagram_url || "";
         if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
-        if (thumbnailPreview && data.social?.thumbnail) {
-          thumbnailPreview.src = `/photos/${data.social.thumbnail}`;
-          thumbnailPreview.style.display = "block";
-        }
+        updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}` : "");
         form.elements["footer.copyright"].value = data.footer?.copyright || "";
         form.elements["footer.legal_label"].value = data.footer?.legal_label || "";
         if (themeSelect) {
@@ -207,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateMenuItemsFromInputs();
       updateIpParagraphsFromInputs();
 
-      // --- Build object with checkboxes and theme select ---
       const build = {
         theme: themeSelect ? themeSelect.value : "",
         convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
@@ -248,8 +309,11 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(payload)
       });
       const result = await res.json();
-      status.textContent = result.status === "ok" ? "✅ Saved!" : "❌ Error saving";
-      setTimeout(() => status.textContent = "", 2000);
+      if (result.status === "ok") {
+        showToast("Site info saved!", "success");
+      } else {
+        showToast("Error saving site info", "error");
+      }
     });
   }
 });
