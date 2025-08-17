@@ -1,3 +1,4 @@
+/* --- Base Styles --- */
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   margin: 20px;
@@ -11,10 +12,12 @@ body {
   max-width: 90%;
   margin: 0 auto;
 }
+
 h1, h2 {
   color: #FBFBFB;
 }
 
+/* --- Toolbar --- */
 .toolbar {
   margin-bottom: 20px;
 }
@@ -34,6 +37,7 @@ h1, h2 {
   background-color: #45a049;
 }
 
+/* --- Upload Section --- */
 .upload-section {
   margin-bottom: 30px;
 }
@@ -42,6 +46,7 @@ h1, h2 {
   cursor: pointer;
 }
 
+/* --- Gallery & Hero Grid --- */
 #gallery, #hero {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -49,6 +54,7 @@ h1, h2 {
   margin-top: 30px;
 }
 
+/* --- Photo Card --- */
 .photo {
   background-color: rgb(67 67 67 / 26%);
   border-radius: 6px;
@@ -68,26 +74,25 @@ h1, h2 {
   padding: 4px 6px;
   border-radius: 30px;
   color: rgb(221, 221, 221);
-  
 }
 
 .photo button {
-    padding: 4px;
-    border: none;
-    background-color:rgb(121 26 19);
-    color: white;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin: 5px 4px 0 4px;
-    width:100%;
+  padding: 4px;
+  border: none;
+  background-color:rgb(121 26 19);
+  color: white;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin: 5px 4px 0 4px;
+  width:100%;
 }
 
 .photo button:hover {
   background-color: #d32f2f;
 }
 
-/* Responsive adjustments */
+/* --- Responsive Adjustments --- */
 @media (max-width: 500px) {
   body {
     margin: 10px;
@@ -104,7 +109,7 @@ h1, h2 {
   }
 }
 
-/* Toast notifications */
+/* --- Toast Notifications --- */
 #toast-container {
   position: fixed;
   bottom: 1rem;
@@ -136,16 +141,16 @@ h1, h2 {
 .toast.success { background-color: #28a7468c; }
 .toast.error { background-color: #dc3545; }
 
-/* Tags */
+/* --- Tags --- */
 .tag-input {
-    display: flex;
-    flex-wrap: wrap-reverse;
-    align-content: flex-start;
-    gap: 4px;
-    padding: 4px;
-    position: relative;
-    z-index: 1;
-    margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-content: flex-start;
+  gap: 4px;
+  padding: 4px;
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
 }
 
 .tag-input input {
@@ -184,9 +189,9 @@ h1, h2 {
   padding: 0;
   max-height: 150px;
   overflow-y: auto;
-  z-index: 999; /* ensure it displays above other elements */
+  z-index: 999;
   display: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* subtle shadow for visibility */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .tag-input ul.suggestions li {
@@ -214,6 +219,7 @@ h1, h2 {
   cursor: pointer;
 }
 
+/* --- Flex Utilities --- */
 .flex-item {
   display: flex;
 }
@@ -232,8 +238,7 @@ h1, h2 {
   width: 100%
 }
 
-/* Top bar */
-
+/* --- Top Bar & Navigation --- */
 .nav {
   height: 100%;
 }
@@ -246,11 +251,10 @@ h1, h2 {
   z-index: 1;
   backdrop-filter:  blur(20px);
   border-bottom: 1px solid #21212157;
-
 }
 
 .nav img {
-	height: 30px;
+  height: 30px;
   padding: 0px;
   margin-top: 10px;
 } 
@@ -280,14 +284,13 @@ h1, h2 {
 }
 
 .nav-item {
-	display: inline;
-
+  display: inline;
 }
 
 .nav-list {
-	 list-style-type: disc;
-	 margin: 0px;
-	 padding: 0px;
+  list-style-type: disc;
+  margin: 0px;
+  padding: 0px;
 }
 
 .nav > .nav-links > .nav-list > .nav-item > a {
@@ -297,7 +300,6 @@ h1, h2 {
   height: 100%;
   font-weight: 700;
   color:#fff
-
 }
 
 .nav > .nav-links > .nav-list > .nav-item > a:hover {
@@ -308,32 +310,31 @@ h1, h2 {
   display: none;
 }
 
-
 .nav-list > li + li::before{
   content: " → ";
   color: #ffc700;
 }
 
 .nav-cta {
-	  display: inline;
-    float: right;
-    height: 70px;
-    line-height: 70px;
+  display: inline;
+  float: right;
+  height: 70px;
+  line-height: 70px;
 }
 
 .nav-cta > .arrow {
-	font-size: 12px;
-	display: inline;
+  font-size: 12px;
+  display: inline;
   color: #ffc700;
   font-weight: 700;
 }
 
 .nav-cta > .button {
-	padding: 10px 25px;
-	border-radius: 40px;
-	margin: 15px 20px 15px 10px;
-	font-size: 12px;
-	display: inline;
+  padding: 10px 25px;
+  border-radius: 40px;
+  margin: 15px 20px 15px 10px;
+  font-size: 12px;
+  display: inline;
   background: linear-gradient(135deg, #26c4ff, #016074);
   transition: all 0.2s ease;
   text-decoration: none;
@@ -342,15 +343,15 @@ h1, h2 {
 }
 
 .nav-cta > .button:hover {
-	    background: linear-gradient(135deg, #72d9ff, #26657e);
-      transition: all 0.2s ease;
+  background: linear-gradient(135deg, #72d9ff, #26657e);
+  transition: all 0.2s ease;
 }
 
 .nav-links > ul {
-	display: inline-block;
+  display: inline-block;
 }
 
-/* Custom upload buttons */
+/* --- Custom Upload Buttons --- */
 .up-btn {
   display: inline-block;
   background: #09A0C1;
@@ -371,7 +372,7 @@ h1, h2 {
   background: #55c3ec;
 }
 
-/* Modal styles */
+/* --- Modal Styles --- */
 .modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -379,8 +380,8 @@ h1, h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  
 }
+
 .modal-content {
   background: #ffffff29;
   color: #fff;
@@ -393,6 +394,7 @@ h1, h2 {
   text-align: center;
   backdrop-filter: blur(20px);
 }
+
 .modal-close {
   position: absolute;
   top: 12px; right: 18px;
@@ -402,12 +404,14 @@ h1, h2 {
   opacity: 0.7;
 }
 .modal-close:hover { opacity: 1; }
+
 .modal-actions {
   margin-top: 2rem;
   display: flex;
   gap: 1rem;
   justify-content: center;
 }
+
 .modal-btn {
   padding: 0.5em 1.5em;
   border-radius: 30px;
@@ -419,17 +423,20 @@ h1, h2 {
   font-size: 1rem;
   transition: background 0.2s;
 }
+
 .modal-btn.danger {
   background: #c62828;
 }
+
 .modal-btn:hover {
   background: #55c3ec;
 }
+
 .modal-btn.danger:hover {
   background: #d32f2f;
 }
 
-/* Add this for horizontal alignment of upload and remove-all buttons */
+/* --- Upload Actions Row --- */
 .upload-actions-row {
   display: flex;
   align-items: center;
@@ -437,12 +444,13 @@ h1, h2 {
   margin-bottom: 10px;
 }
 
-/* Style for Remove All buttons to match upload button look */
-
-
+/* Remove All Buttons */
 #remove-all-hero, #remove-all-gallery {
-   background: rgb(121, 26, 19);
+  background: rgb(121, 26, 19);
+  color: white;
+  display: none;
 }
+
 #remove-all-gallery:hover,
 #remove-all-hero:hover {
   background: #d32f2f;

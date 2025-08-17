@@ -51,7 +51,7 @@
         <label for="upload-hero" class="up-btn">
           📸 Upload photos
         </label>
-        <button id="remove-all-hero" class="up-btn">🗑 Remove All</button>
+        <button id="remove-all-hero" class="up-btn">🗑 Delete all</button>
       </div>
       <input type="file" id="upload-hero" accept=".png,.jpg,.jpeg,.webp" multiple hidden>
       <div id="hero"></div>
@@ -65,14 +65,13 @@
         <label for="upload-gallery" class="up-btn">
           📸 Upload photos
         </label>
-        <button id="remove-all-gallery" class="up-btn">🗑 Remove All</button>
+        <button id="remove-all-gallery" class="up-btn">🗑 Delete all</button>
       </div>
       <input type="file" id="upload-gallery" accept=".png,.jpg,.jpeg,.webp" multiple hidden>
       <div id="gallery"></div>
     </div>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/upload.js') }}" defer></script>
   </div>
   <!-- Delete confirmation modal -->
   <div id="delete-modal" class="modal" style="display:none;">
