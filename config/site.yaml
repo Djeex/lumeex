@@ -1,26 +1,36 @@
+# Please change this by your settings.
 info:
-  title: ''
-  subtitle: ''
-  description: ''
-  canonical: ''
-  keywords: []
-  author: ''
+  title:
+  subtitle:
+  description:
+  canonical:
+  keywords:
+  author:
+
 social:
-  instagram_url: ''
-  thumbnail: ''
+  instagram_url:
+  thumbnail:
+  
 menu:
   items:
   - label: Home
     href: /
+
 footer:
   copyright: Copyright © 2025
+  legal_link: '/legals/'
   legal_label: Legal notice
+
+# Build parameters
 build:
-  theme: modern
-  convert_images: true
-  resize_images: true
+  theme: modern # choose a theme in config/theme folder
+  convert_images: true # true to enable image conversion
+  resize_images: true # true to enable image resizing
+
+# Change this by your legals
 legals:
-  hoster_name: ''
-  hoster_adress: ''
-  hoster_contact: ''
-  intellectual_property: []
+  hoster_name:
+  hoster_adress:
+  hoster_contact:
+  intellectual_property:
+    - paragraph: ""
