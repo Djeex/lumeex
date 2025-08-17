@@ -39,7 +39,6 @@ h1, h2 {
 }
 
 .upload-section label {
-  margin-right: 20px;
   cursor: pointer;
 }
 
@@ -108,7 +107,7 @@ h1, h2 {
 /* Toast notifications */
 #toast-container {
   position: fixed;
-  top: 1rem;
+  bottom: 1rem;
   right: 1rem;
   display: flex;
   flex-direction: column;
@@ -120,12 +119,13 @@ h1, h2 {
   background: rgba(0,0,0,0.85);
   color: white;
   padding: 0.75rem 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 30px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
   pointer-events: none;
+  backdrop-filter: blur(20px);
 }
 
 .toast.show {
@@ -133,7 +133,7 @@ h1, h2 {
   transform: translateY(0);
 }
 
-.toast.success { background-color: #28a745; }
+.toast.success { background-color: #28a7468c; }
 .toast.error { background-color: #dc3545; }
 
 /* Tags */
@@ -351,7 +351,7 @@ h1, h2 {
 }
 
 /* Custom upload buttons */
-.custom-upload-btn {
+.up-btn {
   display: inline-block;
   background: #09A0C1;
   color: #fff;
@@ -363,9 +363,11 @@ h1, h2 {
   transition: all 0.1s ease;
   user-select: none;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  font-size: 14px;
+  border: none;
 }
 
-.custom-upload-btn:hover {
+.up-btn:hover {
   background: #55c3ec;
 }
 
@@ -425,4 +427,32 @@ h1, h2 {
 }
 .modal-btn.danger:hover {
   background: #d32f2f;
+}
+
+/* Add this for horizontal alignment of upload and remove-all buttons */
+.upload-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+/* Style for Remove All buttons to match upload button look */
+
+
+#remove-all-hero, #remove-all-gallery {
+   background: rgb(121, 26, 19);
+}
+#remove-all-gallery:hover,
+#remove-all-hero:hover {
+  background: #d32f2f;
+}
+
+/* Responsive: stack buttons vertically on small screens */
+@media (max-width: 500px) {
+  .upload-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 }

@@ -43,7 +43,7 @@ function renderGallery() {
       </div>
       <div class="tags-display" data-index="${i}"></div>
       <div class="flex-item flex-full">
-      <div class="flex-item flex-end">
+        <div class="flex-item flex-end">
           <button onclick="showDeleteModal('gallery', ${i})">🗑 Delete</button>
         </div>
         <div class="tag-input" data-index="${i}"></div>
@@ -53,6 +53,12 @@ function renderGallery() {
 
     renderTags(i, img.tags || []);
   });
+
+  // Show/hide Remove All button
+  const removeAllBtn = document.getElementById('remove-all-gallery');
+  if (removeAllBtn) {
+    removeAllBtn.style.display = galleryImages.length > 0 ? 'inline-block' : 'none';
+  }
 }
 
 // --- Render tags for a single image ---
@@ -60,11 +66,9 @@ function renderTags(imgIndex, tags) {
   const tagsDisplay = document.querySelector(`.tags-display[data-index="${imgIndex}"]`);
   const inputContainer = document.querySelector(`.tag-input[data-index="${imgIndex}"]`);
 
-  // vider
   tagsDisplay.innerHTML = '';
   inputContainer.innerHTML = '';
 
-  // --- rendre les tags (en haut) ---
   tags.forEach(tag => {
     const span = document.createElement('span');
     span.className = 'tag';
@@ -83,13 +87,11 @@ function renderTags(imgIndex, tags) {
     tagsDisplay.appendChild(span);
   });
 
-  // --- input (en bas) ---
   const input = document.createElement('input');
   input.type = 'text';
   input.placeholder = 'Add tag...';
   inputContainer.appendChild(input);
 
-  // suggestion box
   const suggestionBox = document.createElement('ul');
   suggestionBox.className = 'suggestions';
   inputContainer.appendChild(suggestionBox);
@@ -208,13 +210,19 @@ function renderHero() {
       </div>
       <div class="flex-item flex-full">
         <div class="flex-item flex-end">
-        <button onclick="showDeleteModal('hero', ${i})">🗑 Delete</button>
+          <button onclick="showDeleteModal('hero', ${i})">🗑 Delete</button>
+        </div>
       </div>
     `;
     container.appendChild(div);
   });
-}
 
+  // Show/hide Remove All button
+  const removeAllBtn = document.getElementById('remove-all-hero');
+  if (removeAllBtn) {
+    removeAllBtn.style.display = heroImages.length > 0 ? 'inline-block' : 'none';
+  }
+}
 
 // --- Save gallery to server ---
 async function saveGallery() {
@@ -273,11 +281,19 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
-let pendingDelete = null; // { type: 'gallery'|'hero', index: number }
+let pendingDelete = null; // { type: 'gallery'|'hero'|'gallery-all'|'hero-all', index: number|null }
 
 // --- Show delete confirmation modal ---
-function showDeleteModal(type, index) {
+function showDeleteModal(type, index = null) {
   pendingDelete = { type, index };
+  const modalText = document.getElementById('delete-modal-text');
+  if (type === 'gallery-all') {
+    modalText.textContent = "Are you sure you want to delete ALL gallery images?";
+  } else if (type === 'hero-all') {
+    modalText.textContent = "Are you sure you want to delete ALL hero images?";
+  } else {
+    modalText.textContent = "Are you sure you want to delete this image?";
+  }
   document.getElementById('delete-modal').style.display = 'flex';
 }
 
@@ -294,17 +310,13 @@ async function confirmDelete() {
     await actuallyDeleteGalleryImage(pendingDelete.index);
   } else if (pendingDelete.type === 'hero') {
     await actuallyDeleteHeroImage(pendingDelete.index);
+  } else if (pendingDelete.type === 'gallery-all') {
+    await actuallyDeleteAllGalleryImages();
+  } else if (pendingDelete.type === 'hero-all') {
+    await actuallyDeleteAllHeroImages();
   }
   hideDeleteModal();
 }
-
-
-// --- Modal event listeners ---
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('delete-modal-close').onclick = hideDeleteModal;
-  document.getElementById('delete-modal-cancel').onclick = hideDeleteModal;
-  document.getElementById('delete-modal-confirm').onclick = confirmDelete;
-});
 
 // --- Actual delete functions ---
 async function actuallyDeleteGalleryImage(index) {
@@ -349,14 +361,51 @@ async function actuallyDeleteHeroImage(index) {
   }
 }
 
-// --- Modal event listeners ---
+// --- Bulk delete functions ---
+async function actuallyDeleteAllGalleryImages() {
+  try {
+    const res = await fetch('/api/gallery/delete_all', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      galleryImages = [];
+      renderGallery();
+      await saveGallery();
+      showToast("✅ All gallery images removed!", "success");
+    } else showToast("Error: " + data.error, "error");
+  } catch(err) {
+    console.error(err);
+    showToast("Server error!", "error");
+  }
+}
+
+async function actuallyDeleteAllHeroImages() {
+  try {
+    const res = await fetch('/api/hero/delete_all', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      heroImages = [];
+      renderHero();
+      await saveHero();
+      showToast("✅ All hero images removed!", "success");
+    } else showToast("Error: " + data.error, "error");
+  } catch(err) {
+    console.error(err);
+    showToast("Server error!", "error");
+  }
+}
+
+// --- Modal event listeners and bulk delete buttons ---
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('delete-modal-close').onclick = hideDeleteModal;
   document.getElementById('delete-modal-cancel').onclick = hideDeleteModal;
   document.getElementById('delete-modal-confirm').onclick = confirmDelete;
+
+  // Bulk delete buttons
+  const removeAllGalleryBtn = document.getElementById('remove-all-gallery');
+  const removeAllHeroBtn = document.getElementById('remove-all-hero');
+  if (removeAllGalleryBtn) removeAllGalleryBtn.onclick = () => showDeleteModal('gallery-all');
+  if (removeAllHeroBtn) removeAllHeroBtn.onclick = () => showDeleteModal('hero-all');
 });
-
-
 
 // --- Initialize ---
 loadData();

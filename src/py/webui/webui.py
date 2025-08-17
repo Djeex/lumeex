@@ -96,6 +96,38 @@ def delete_hero_photo():
         return {"status": "ok"}
     return {"error": "File not found"}, 404
 
+@app.route("/api/gallery/delete_all", methods=["POST"])
+def delete_all_gallery_photos():
+    """Delete all gallery photos from disk and YAML."""
+    gallery_dir = PHOTOS_DIR / "gallery"
+    deleted = 0
+    # Remove all files in gallery folder
+    for file in gallery_dir.glob("*"):
+        if file.is_file():
+            file.unlink()
+            deleted += 1
+    # Clear YAML gallery images
+    data = load_yaml(GALLERY_YAML)
+    data["gallery"]["images"] = []
+    save_yaml(data, GALLERY_YAML)
+    return jsonify({"status": "ok", "deleted": deleted})
+
+@app.route("/api/hero/delete_all", methods=["POST"])
+def delete_all_hero_photos():
+    """Delete all hero photos from disk and YAML."""
+    hero_dir = PHOTOS_DIR / "hero"
+    deleted = 0
+    # Remove all files in hero folder
+    for file in hero_dir.glob("*"):
+        if file.is_file():
+            file.unlink()
+            deleted += 1
+    # Clear YAML hero images
+    data = load_yaml(GALLERY_YAML)
+    data["hero"]["images"] = []
+    save_yaml(data, GALLERY_YAML)
+    return jsonify({"status": "ok", "deleted": deleted})
+
 @app.route("/photos/<section>/<path:filename>")
 def photos(section, filename):
     """Serve uploaded photos from disk."""
