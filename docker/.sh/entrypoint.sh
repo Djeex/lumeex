@@ -52,7 +52,7 @@ start_server() {
 
 if [ $# -eq 0 ]; then
   echo -e "${CYAN}╭───────────────────────────────────────────╮${NC}"
-  echo -e "${CYAN}│${NC}          Lum${CYAN}eex${NC} - Version 1.3.1${NC}           ${CYAN}│${NC}"
+  echo -e "${CYAN}│${NC}          Lum${CYAN}eex${NC} - Version 1.3.2${NC}           ${CYAN}│${NC}"
   echo -e "${CYAN}├───────────────────────────────────────────┤${NC}"
   echo -e "${CYAN}│${NC} Source: https://git.djeex.fr/Djeex/lumeex ${CYAN}│${NC}"
   echo -e "${CYAN}│${NC} Mirror: https://github.com/Djeex/lumeex   ${CYAN}│${NC}"

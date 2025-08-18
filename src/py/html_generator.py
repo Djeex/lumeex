@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 
 def render_template(template_path, context):
+    """Render html templates"""
     with open(template_path, encoding="utf-8") as f:
         content = f.read()
     for key, value in context.items():
@@ -11,6 +12,7 @@ def render_template(template_path, context):
     return content
 
 def render_gallery_images(images):
+    """Render the photo gallery"""
     html = ""
     for img in images:
         tags = " ".join(img.get("tags", []))
@@ -24,6 +26,7 @@ def render_gallery_images(images):
     return html
 
 def generate_gallery_json_from_images(images, output_dir):
+    """Generte the hero carrousel photo list"""
     try:
         img_list = [img["src"] for img in images]
         output_path = output_dir / "data" / "gallery.json"
@@ -35,6 +38,7 @@ def generate_gallery_json_from_images(images, output_dir):
         logging.error(f"[✗] Error generating gallery JSON: {e}")
 
 def generate_robots_txt(canonical_url, allowed_paths, output_dir):
+    """Generate the robot.txt"""
     robots_lines = ["User-agent: *"]
 
     # Block everything by default
@@ -62,6 +66,7 @@ def generate_robots_txt(canonical_url, allowed_paths, output_dir):
         logging.error(f"[✗] Failed to write robots.txt: {e}")
 
 def generate_sitemap_xml(canonical_url, allowed_paths, output_dir):
+    """Generate the sitemap"""
     urlset_start = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     urlset_end = '</urlset>\n'
     urls = ""

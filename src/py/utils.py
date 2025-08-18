@@ -4,6 +4,7 @@ from pathlib import Path
 from shutil import copytree, rmtree, copyfile
 
 def load_yaml(path):
+    """Load gallery and site .yaml conf"""
     if not path.exists():
         logging.warning(f"[!] YAML file not found: {path}")
         return {}
@@ -11,6 +12,7 @@ def load_yaml(path):
         return yaml.safe_load(f)
 
 def load_theme_config(theme_name, themes_dir):
+    """Load theme.yaml"""
     theme_dir = themes_dir / theme_name
     theme_config_path = theme_dir / "theme.yaml"
     if not theme_config_path.exists():
@@ -20,26 +22,25 @@ def load_theme_config(theme_name, themes_dir):
     return theme_vars, theme_dir
 
 def clear_dir(path: Path):
+    """Clear the output dir"""
     if not path.exists():
         path.mkdir(parents=True)
         return
-
-    # Remove all files and subdirectories inside path, but not path itself
     for child in path.iterdir():
         if child.is_file() or child.is_symlink():
-            child.unlink()  # delete file or symlink
+            child.unlink()
         elif child.is_dir():
-            rmtree(child)  # delete directory and contents
-
-# Then replace your ensure_dir with this:
+            rmtree(child)
 
 def ensure_dir(path: Path):
+    """Create the output dir if it does not exist"""
     if not path.exists():
         path.mkdir(parents=True)
     else:
         clear_dir(path)
 
 def copy_assets(js_dir, style_dir, build_dir):
+    """Copy public assets to output dir"""
     for folder in [js_dir, style_dir]:
         if folder.exists():
             dest = build_dir / folder.name
