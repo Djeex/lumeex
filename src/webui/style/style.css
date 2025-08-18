@@ -17,6 +17,9 @@ body {
 h1, h2 {
   color: #FBFBFB;
 }
+h2 {
+  color: #55c3ec;
+}
 
 /* --- Toolbar --- */
 .toolbar {
@@ -488,26 +491,13 @@ h1, h2 {
   padding: 0 40px 40px 40px;
 }
 
-
-#site-info-form fieldset {
-  border: none;
-  margin-bottom: 28px;
-  padding: 0;
-  background: rgba(0, 41, 48, 0.45);
-  border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-  padding: 32px 28px;
-  margin: 32px auto;
-  backdrop-filter: blur(12px);
-}
-
 #site-info-form fieldset {
   background-color: rgb(67 67 67 / 26%);
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #2f2e2e80;
   margin-bottom: 28px;
-  padding: 32px 28px;
+  padding: 0 28px 32px 28px;
   margin: 32px auto;
 }
 
