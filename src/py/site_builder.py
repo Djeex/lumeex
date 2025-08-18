@@ -23,7 +23,7 @@ SITE_FILE = SRC_DIR / "config/site.yaml"
 THEMES_DIR = SRC_DIR / "config/themes"
 
 def build():
-    build_version = "v1.3.1"
+    build_version = "v1.3.2"
     logging.info("\n")
     logging.info("=" * 24)
     logging.info(f"🚀 Lumeex builder {build_version}")

@@ -143,10 +143,12 @@ const disableRightClickAndDrag = () => {
 
 // Scroll to top button
 const setupScrollToTopButton = () => {
-  const scrollToTopButton = document.querySelector('.scroll-to-top');
-  if (!scrollToTopButton) return;
-  scrollToTopButton.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+   const scrollBtn = document.getElementById("scrollToTop");
+  window.addEventListener("scroll", () => {
+    scrollBtn.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 };
 
