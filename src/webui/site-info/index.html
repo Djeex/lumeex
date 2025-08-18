@@ -49,27 +49,27 @@
         <div class="fields">
           <div class="input-field">
             <label>Title</label>
-            <input type="text" name="info.title" placeholder="Your site title">
+            <input type="text" name="info.title" placeholder="Your site title" required>
           </div>
           <div class="input-field">
             <label>Subtitle</label>
-            <input type="text" name="info.subtitle" placeholder="Your site subtitle">
+            <input type="text" name="info.subtitle" placeholder="Your site subtitle" required>
           </div>
           <div class="input-field">
             <label>Description</label>
-            <input type="text" name="info.description" placeholder="Your site description">
+            <input type="text" name="info.description" placeholder="Your site description" required>
           </div>
           <div class="input-field">
             <label>Canonical URL</label>
-            <input type="text" name="info.canonical" placeholder="https://yoursite.com">
+            <input type="text" name="info.canonical" placeholder="https://yoursite.com" required>
           </div>
           <div class="input-field">
             <label>Keywords (comma separated)</label>
-            <input type="text" name="info.keywords" placeholder="photo, gallery, photography">
+            <input type="text" name="info.keywords" placeholder="photo, gallery, photography" required>
           </div>
           <div class="input-field">
             <label>Author</label>
-            <input type="text" name="info.author" placeholder="Your Name">
+            <input type="text" name="info.author" placeholder="Your Name" required>
           </div>
         </div>
       </fieldset>
@@ -79,9 +79,9 @@
         <div class="fields">
           <div class="input-field">
             <label>Instagram URL</label>
-            <input type="text" name="social.instagram_url" placeholder="https://instagram.com/yourprofile">
+            <input type="text" name="social.instagram_url" placeholder="https://instagram.com/yourprofile" required>
             <label class="thumbnail-form-label">Thumbnail</label>
-            <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;" required>
             <button type="button" id="choose-thumbnail-btn" class="up-btn">📸 Upload a photo</button>
             <div class="thumbnail-form">
             <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
@@ -106,11 +106,11 @@
         <div class="fields">
           <div class="input-field">
             <label>Copyright</label>
-            <input type="text" name="footer.copyright">
+            <input type="text" name="footer.copyright" required>
           </div>
           <div class="input-field">
             <label>Legal Label</label>
-            <input type="text" name="footer.legal_label">
+            <input type="text" name="footer.legal_label" re>
           </div>
         </div>
       </fieldset>
@@ -143,7 +143,7 @@
         <div class="fields">
           <div class="input-field">
             <label>Theme</label>
-            <select name="build.theme" id="theme-select"></select>
+            <select name="build.theme" id="theme-select" required></select>
             <input type="file" id="theme-upload" webkitdirectory directory multiple style="display:none;">
             <button type="button" id="choose-theme-btn" class="up-btn">📂 Upload custom theme folder</button>
             <label class="thumbnail-form-label">Images processing</label>

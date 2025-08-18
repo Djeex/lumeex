@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
       div.style.gap = "8px";
       div.style.marginBottom = "6px";
       div.innerHTML = `
-        <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label">
-        <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href">
+        <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label" required>
+        <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href" required>
         <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
       `;
       menuList.appendChild(div);

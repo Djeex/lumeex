@@ -48,7 +48,7 @@ h2 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #2f2e2e80;
   border-radius: 8px;
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
 }
 
 .upload-section label {
@@ -491,7 +491,7 @@ h2 {
   padding: 0 40px 40px 40px;
 }
 
-#site-info-form fieldset {
+fieldset {
   background-color: rgb(67 67 67 / 26%);
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -501,7 +501,7 @@ h2 {
   margin: 32px auto;
 }
 
-#site-info-form legend {
+legend {
   font-size: 1.2em;
   font-weight: 700;
   color: #26c4ff;
@@ -509,13 +509,13 @@ h2 {
   letter-spacing: 1px;
 }
 
-#site-info-form .fields {
+.fields {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
 }
 
-#site-info-form .input-field {
+.input-field {
   flex: 1 1 calc(33.333% - 18px);
   min-width: 220px;
   max-width: 100%;
@@ -525,7 +525,7 @@ h2 {
   margin-bottom: 10px;
 }
 
-#site-info-form label {
+label {
   font-size: 13px;
   font-weight: 600;
   color: #e3e3e3;
@@ -533,9 +533,9 @@ h2 {
   letter-spacing: 0.5px;
 }
 
-#site-info-form input,
-#site-info-form textarea,
-#site-info-form select {
+#site-info-form input, #theme-editor-form input,
+#site-info-form textarea, #theme-editor-form textarea,
+#site-info-form select, #theme-editor-form select {
   /* background: rgba(4, 44, 60, 0.55);*/
   background: #1f2223;
   color: #fff;
@@ -551,23 +551,29 @@ h2 {
 }
 
 #site-info-form input::placeholder,
-#site-info-form textarea::placeholder {
+#theme-editor-form input::placeholder,
+#site-info-form textarea::placeholder,
+#theme-editor-form textarea::placeholder {
   color: #585858;
   font-style: italic;
 }
 
 #site-info-form input:focus,
+#theme-editor-form input:focus,
 #site-info-form textarea:focus,
-#site-info-form select:focus {
+#theme-editor-form textarea:focus,
+#site-info-form select:focus,
+#theme-editor-form select:focus {
   border-color: #585858;
   background: #161616;
 }
-#site-info-form textarea {
+#site-info-form textarea,
+#theme-editor-form textarea {
   min-height: 60px;
   resize: vertical;
 }
 
-#site-info-form input[type="file"] {
+#input[type="file"] {
   background: none;
   color: #fff;
   border: none;
@@ -575,13 +581,13 @@ h2 {
   margin-top: 2px;
 }
 
-#site-info-form img#thumbnail-preview {
+img#thumbnail-preview {
   margin-top: 8px;
   border-radius: 8px;
   border: 1px solid #585858;
 }
 
-#site-info-form button[type="submit"] {
+#site-info-form button[type="submit"], #theme-editor-form button[type="submit"] {
   background: linear-gradient(135deg, #26c4ff, #016074);
   color: #fff;
   font-weight: 700;
@@ -595,11 +601,11 @@ h2 {
   transition: background 0.2s;
 }
 
-#site-info-form button[type="submit"]:hover {
+#site-info-form button[type="submit"]:hover,  #theme-editor-form button[type="submit"]:hover {
   background: linear-gradient(135deg, #72d9ff, #26657e);
 }
 
-#site-info-form button[type="button"] {
+#site-info-form button[type="button"], #theme-editor-form button[type="button"] {
   background: #00000000;
   color: #fff;
   border: none;
@@ -612,47 +618,47 @@ h2 {
   border: 1px solid #585858;
 }
 
-#site-info-form button[type="button"]:hover {
+#site-info-form button[type="button"]:hover, #theme-editor-form button[type="button"]:hover {
   background: #2d2d2d;
   color: #fff;
 }
 
 @media (max-width: 900px) {
-  #site-info-form {
+  #site-info-form, #theme-editor-form {
     padding: 18px 8px;
   }
-  #site-info-form .fields,
-  #site-info-form fieldset {
+  .fields,
+  fieldset {
     flex-direction: column;
     gap: 0;
   }
-  #site-info-form .input-field {
+  .input-field {
     min-width: 100%;
     margin-bottom: 12px;
   }
 }
 
-#site-info-form button.remove-menu-item, #site-info-form button.remove-ip-paragraph {
+#site-info-form button.remove-menu-item, #site-info-form button.remove-ip-paragraph, #theme-editor-form button.remove-menu-item, #theme-editor-form button.remove-ip-paragraph {
   margin-top: 0px;
   margin-bottom: 4px;
   border-radius: 30px;
   background: #2d2d2d;
 }
 
-#site-info-form button.remove-menu-item:hover, #site-info-form button.remove-ip-paragraph:hover {
+#site-info-form button.remove-menu-item:hover, #site-info-form button.remove-ip-paragraph:hover, #theme-editor-form button.remove-menu-item:hover, #theme-editor-form button.remove-ip-paragraph:hover {
   background: rgb(121, 26, 19);
 }
 
-#site-info-form button.remove-btn {
+#site-info-form button.remove-btn, #theme-editor-form button.remove-btn {
 
   border-radius: 30px;
   background: #2d2d2d;
 }
 
-#site-info-form button.remove-btn:hover{
+#site-info-form button.remove-btn:hover, #theme-editor-form button.remove-btn:hover {
   background: rgb(121, 26, 19);
 }
 
-#site-info-form .thumbnail-form-label {
+#site-info-form .thumbnail-form-label, #theme-editor-form .thumbnail-form-label {
   margin-top: 10px;
 }
