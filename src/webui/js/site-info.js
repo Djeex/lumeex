@@ -13,12 +13,14 @@ function showToast(message, type = "success", duration = 3000) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Form and menu logic
   const form = document.getElementById("site-info-form");
   const menuList = document.getElementById("menu-items-list");
   const addMenuBtn = document.getElementById("add-menu-item");
 
   let menuItems = [];
 
+  // Render menu items
   function renderMenuItems() {
     menuList.innerHTML = "";
     menuItems.forEach((item, idx) => {
@@ -28,13 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
       div.style.marginBottom = "6px";
       div.innerHTML = `
         <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label">
-        <input type="text" placeholder="?=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href">
+        <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href">
         <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
       `;
       menuList.appendChild(div);
     });
   }
 
+  // Update menu items from inputs
   function updateMenuItemsFromInputs() {
     const inputs = menuList.querySelectorAll("input");
     const items = [];
@@ -46,10 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
     menuItems = items;
   }
 
+  // Intellectual property paragraphs logic
   const ipList = document.getElementById("ip-list");
   const addIpBtn = document.getElementById("add-ip-paragraph");
   let ipParagraphs = [];
 
+  // Render IP paragraphs
   function renderIpParagraphs() {
     ipList.innerHTML = "";
     ipParagraphs.forEach((item, idx) => {
@@ -65,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Update IP paragraphs from textareas
   function updateIpParagraphsFromInputs() {
     const textareas = ipList.querySelectorAll("textarea");
     ipParagraphs = Array.from(textareas).map(textarea => ({
@@ -72,27 +78,27 @@ document.addEventListener("DOMContentLoaded", () => {
     })).filter(item => item.paragraph !== "");
   }
 
-  // --- Build checkboxes ---
+  // Build options
   const convertImagesCheckbox = document.getElementById("convert-images-checkbox");
   const resizeImagesCheckbox = document.getElementById("resize-images-checkbox");
 
-  // --- Theme select ---
+  // Theme select
   const themeSelect = document.getElementById("theme-select");
 
-  // --- Thumbnail upload & modal logic ---
+  // Thumbnail upload and modal logic
   const thumbnailInput = form?.elements["social.thumbnail"];
   const thumbnailUpload = document.getElementById("thumbnail-upload");
   const chooseThumbnailBtn = document.getElementById("choose-thumbnail-btn");
   const thumbnailPreview = document.getElementById("thumbnail-preview");
   const removeThumbnailBtn = document.getElementById("remove-thumbnail-btn");
 
-  // Modal elements
+  // Modal elements for delete confirmation
   const deleteModal = document.getElementById("delete-modal");
   const deleteModalClose = document.getElementById("delete-modal-close");
   const deleteModalConfirm = document.getElementById("delete-modal-confirm");
   const deleteModalCancel = document.getElementById("delete-modal-cancel");
 
-  // Show/hide remove button, preview, and choose button
+  // Show/hide thumbnail preview, remove button, and choose button
   function updateThumbnailPreview(src) {
     if (thumbnailPreview) {
       thumbnailPreview.src = src || "";
@@ -106,10 +112,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Choose thumbnail button triggers file input
   if (chooseThumbnailBtn && thumbnailUpload) {
     chooseThumbnailBtn.addEventListener("click", () => thumbnailUpload.click());
   }
 
+  // Handle thumbnail upload and refresh preview (with cache busting)
   if (thumbnailUpload) {
     thumbnailUpload.addEventListener("change", async (e) => {
       const file = e.target.files[0];
@@ -128,14 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Attach modal logic to remove button
+  // Remove thumbnail button triggers modal
   if (removeThumbnailBtn) {
     removeThumbnailBtn.addEventListener("click", () => {
       deleteModal.style.display = "flex";
     });
   }
 
-  // Modal logic
+  // Modal logic for thumbnail deletion
   if (deleteModal && deleteModalClose && deleteModalConfirm && deleteModalCancel) {
     deleteModalClose.onclick = deleteModalCancel.onclick = () => {
       deleteModal.style.display = "none";
@@ -159,6 +167,40 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // Theme upload logic (custom theme folder)
+  const themeUpload = document.getElementById("theme-upload");
+  const chooseThemeBtn = document.getElementById("choose-theme-btn");
+  if (chooseThemeBtn && themeUpload) {
+    chooseThemeBtn.addEventListener("click", () => themeUpload.click());
+    themeUpload.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append("files", file, file.webkitRelativePath || file.name);
+      });
+      const res = await fetch("/api/theme/upload", { method: "POST", body: formData });
+      const result = await res.json();
+      if (result.status === "ok") {
+        showToast("Theme uploaded!", "success");
+        // Refresh theme select after upload
+        fetch("/api/themes")
+          .then(res => res.json())
+          .then(themes => {
+            themeSelect.innerHTML = "";
+            themes.forEach(theme => {
+              const option = document.createElement("option");
+              option.value = theme;
+              option.textContent = theme;
+              themeSelect.appendChild(option);
+            });
+          });
+      } else {
+        showToast("Error uploading theme", "error");
+      }
+    });
+  }
+
   // Fetch theme list and populate select
   if (themeSelect) {
     fetch("/api/themes")
@@ -180,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // Load config
+  // Load config from server and populate form
   if (form) {
     fetch("/api/site-info")
       .then(res => res.json())
@@ -206,9 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
           themeSelect.value = data.build?.theme || "";
         }
         form.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
-        form.elements["legals.hoster_adress"].value = data.legals?.hoster_adress || "";
+        form.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
         form.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
-        // --- Build checkboxes ---
+        // Build checkboxes
         if (convertImagesCheckbox) {
           convertImagesCheckbox.checked = !!data.build?.convert_images;
         }
@@ -262,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateIpParagraphsFromInputs();
   });
 
-  // Save config
+  // Save config to server
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -298,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
         build,
         legals: {
           hoster_name: form.elements["legals.hoster_name"].value,
-          hoster_adress: form.elements["legals.hoster_adress"].value,
+          hoster_address: form.elements["legals.hoster_address"].value,
           hoster_contact: form.elements["legals.hoster_contact"].value,
           intellectual_property: ipParagraphs
         }
@@ -310,9 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const result = await res.json();
       if (result.status === "ok") {
-        showToast("Site info saved!", "success");
+        showToast("✅ Site info saved!", "success");
       } else {
-        showToast("Error saving site info", "error");
+        showToast("❌ Error saving site info", "error");
       }
     });
   }

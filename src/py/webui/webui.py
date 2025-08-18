@@ -197,6 +197,24 @@ def remove_thumbnail():
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
     return jsonify({"status": "ok"})
 
+@app.route("/api/theme/upload", methods=["POST"])
+def upload_theme():
+    themes_dir = Path(__file__).resolve().parents[3] / "config" / "themes"
+    files = request.files.getlist("files")
+    if not files:
+        return jsonify({"error": "No files provided"}), 400
+    # Get folder name from first file's webkitRelativePath
+    first_path = files[0].filename
+    folder_name = first_path.split("/")[0] if "/" in first_path else "custom"
+    theme_folder = themes_dir / folder_name
+    theme_folder.mkdir(parents=True, exist_ok=True)
+    for file in files:
+        rel_path = Path(file.filename)
+        dest_path = theme_folder / rel_path.relative_to(folder_name)
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        file.save(dest_path)
+    return jsonify({"status": "ok", "theme": folder_name})
+
 # --- Run server ---
 if __name__ == "__main__":
     logging.info("Starting WebUI at http://127.0.0.1:5000")

@@ -31,7 +31,7 @@
       </div>
       <div class="nav-links">
         <ul class="nav-list">
-          <li class="nav-item appear2"><a href="#">Site info</a></li>
+          <li class="nav-item appear2"><a href="/site-info">Site info</a></li>
           <li class="nav-item appear2"><a href="#">Theme info</a></li>
           <li class="nav-item appear2"><a href="#">Gallery</a></li>
         </ul>
@@ -80,12 +80,12 @@
           <div class="input-field">
             <label>Instagram URL</label>
             <input type="text" name="social.instagram_url" placeholder="https://instagram.com/yourprofile">
-            <label class="thumbnail-form-label">Upload Thumbnail</label>
+            <label class="thumbnail-form-label">Thumbnail</label>
             <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;">
-            <button type="button" id="choose-thumbnail-btn" class="up-btn">Choose a photo</button>
+            <button type="button" id="choose-thumbnail-btn" class="up-btn">📸 Upload a photo</button>
             <div class="thumbnail-form">
             <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
-            <button type="button" id="remove-thumbnail-btn" class="up-btn danger" style="display:none;">Remove</button>
+            <button type="button" id="remove-thumbnail-btn" class="remove-btn up-btn danger" style="display:none;">Remove</button>
             </div>
           </div>
         </div>
@@ -120,15 +120,15 @@
         <div class="fields">
           <div class="input-field">
             <label>Hoster Name</label>
-            <input type="text" name="legals.hoster_name">
+            <input type="text" name="legals.hoster_name" placeholder="Name">
           </div>
           <div class="input-field">
             <label>Hoster Address</label>
-            <input type="text" name="legals.hoster_adress">
+            <input type="text" name="legals.hoster_address" placeholder="Street, Postal Code, City, Country">
           </div>
           <div class="input-field">
             <label>Hoster Contact</label>
-            <input type="text" name="legals.hoster_contact">
+            <input type="text" name="legals.hoster_contact" placeholder="Email or/and Phone">
           </div>
           <div class="input-field" style="flex: 1 1 100%;">
             <label>Intellectual Property</label>
@@ -144,8 +144,11 @@
           <div class="input-field">
             <label>Theme</label>
             <select name="build.theme" id="theme-select"></select>
+            <input type="file" id="theme-upload" webkitdirectory directory multiple style="display:none;">
+            <button type="button" id="choose-theme-btn" class="up-btn">📂 Upload custom theme folder</button>
+            <label class="thumbnail-form-label">Images processing</label>
             <label>
-              <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">
+              <input class="thumbnail-form-label" type="checkbox" name="build.convert_images" id="convert-images-checkbox">
               Convert images
             </label>
             <label>
@@ -163,9 +166,9 @@
     <div class="modal-content">
       <span id="delete-modal-close" class="modal-close">&times;</span>
       <h3>Confirm Deletion</h3>
-      <p id="delete-modal-text">Are you sure you want to delete this image?</p>
+      <p id="delete-modal-text">Are you sure you want to remove this thumbnail?</p>
       <div class="modal-actions">
-        <button id="delete-modal-confirm" class="modal-btn danger">Delete</button>
+        <button id="delete-modal-confirm" class="modal-btn danger">Remove</button>
         <button id="delete-modal-cancel" class="modal-btn">Cancel</button>
       </div>
     </div>
