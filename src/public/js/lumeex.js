@@ -69,7 +69,8 @@ const setupTagFilter = () => {
   const allSections = document.querySelectorAll('.section[data-tags]');
   const allTags = document.querySelectorAll('.tag');
   let activeTags = [];
-  let lastClickedTag = null; // mémorise le dernier tag cliqué
+  let lastClickedTag = null; // remembers the last clicked tag
+  let lastClickedSection = null; // remembers the last clicked section (photo)
 
   const applyFilter = () => {
     let filteredSections = [];
@@ -81,30 +82,41 @@ const setupTagFilter = () => {
       section.style.display = hasAllTags ? '' : 'none';
 
       if (hasAllTags) {
-        filteredSections.push(section);
-        if (lastClickedTag && sectionTags.includes(lastClickedTag) && !matchingSection) {
+        if (lastClickedSection === section) {
           matchingSection = section;
+        } else {
+          filteredSections.push(section);
         }
       }
     });
 
-    // Réorganise : la photo correspondante au dernier tag cliqué en premier
-    if (matchingSection && galleryContainer.contains(matchingSection)) {
-      galleryContainer.prepend(matchingSection);
+    // Remove all filtered sections from DOM before reordering
+    if (galleryContainer) {
+      [matchingSection, ...filteredSections].forEach(section => {
+        if (section && galleryContainer.contains(section)) {
+          galleryContainer.removeChild(section);
+        }
+      });
+      if (matchingSection) {
+        galleryContainer.prepend(matchingSection);
+      }
+      filteredSections.forEach(section => {
+        galleryContainer.appendChild(section);
+      });
     }
 
-    // Met à jour le style des tags
+    // Update tag styles
     allTags.forEach((tagEl) => {
       const tagText = tagEl.textContent.replace('#', '').toLowerCase();
       tagEl.classList.toggle('active', activeTags.includes(tagText));
     });
 
-    // Met à jour l'URL
+    // Update the URL
     const base = window.location.pathname;
     const query = activeTags.length > 0 ? `?tag=${activeTags.join(',')}` : '';
     window.history.pushState({}, '', base + query);
 
-    // Scroll jusqu'à la galerie
+    // Scroll to the gallery
     if (galleryContainer) {
       galleryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -113,7 +125,8 @@ const setupTagFilter = () => {
   allTags.forEach((tagEl) => {
     tagEl.addEventListener('click', () => {
       const tagText = tagEl.textContent.replace('#', '').toLowerCase();
-      lastClickedTag = tagText; // mémorise le dernier tag cliqué
+      lastClickedTag = tagText; // remembers the last clicked tag
+      lastClickedSection = tagEl.closest('.section'); // remembers the last clicked section
 
       if (activeTags.includes(tagText)) {
         activeTags = activeTags.filter((t) => t !== tagText);
@@ -130,6 +143,7 @@ const setupTagFilter = () => {
     if (urlTags) {
       activeTags = urlTags.split(',').map((t) => t.toLowerCase());
       lastClickedTag = activeTags[activeTags.length - 1] || null;
+      lastClickedSection = null; // No section selected from URL
       applyFilter();
     }
   });
@@ -141,12 +155,14 @@ const disableRightClickAndDrag = () => {
   document.addEventListener('dragstart', (e) => e.preventDefault());
 };
 
-// Scroll to top button
+// Scroll-to-top button functionality
 const setupScrollToTopButton = () => {
-  const scrollToTopButton = document.querySelector('.scroll-to-top');
-  if (!scrollToTopButton) return;
-  scrollToTopButton.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollBtn = document.getElementById("scrollToTop");
+  window.addEventListener("scroll", () => {
+    scrollBtn.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 };
 
