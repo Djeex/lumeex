@@ -39,7 +39,7 @@
     </div>
   </div>
   <!-- Toast container for notifications -->
-  <div class="content-inner">
+  <div id="site-info" class="content-inner">
     <div id="toast-container"></div>
     <h1>Edit Site Info</h1>
     <form id="site-info-form">
@@ -48,28 +48,28 @@
         <legend>Info</legend>
         <div class="fields">
           <div class="input-field">
-            <label>Title:</label>
-            <input type="text" name="info.title">
+            <label>Title</label>
+            <input type="text" name="info.title" placeholder="Your site title">
           </div>
           <div class="input-field">
-            <label>Subtitle:</label>
-            <input type="text" name="info.subtitle">
+            <label>Subtitle</label>
+            <input type="text" name="info.subtitle" placeholder="Your site subtitle">
           </div>
           <div class="input-field">
-            <label>Description:</label>
-            <input type="text" name="info.description"></input>
+            <label>Description</label>
+            <input type="text" name="info.description" placeholder="Your site description">
           </div>
           <div class="input-field">
-            <label>Canonical URL:</label>
-            <input type="text" name="info.canonical">
+            <label>Canonical URL</label>
+            <input type="text" name="info.canonical" placeholder="https://yoursite.com">
           </div>
           <div class="input-field">
-            <label>Keywords (comma separated):</label>
-            <input type="text" name="info.keywords">
+            <label>Keywords (comma separated)</label>
+            <input type="text" name="info.keywords" placeholder="photo, gallery, photography">
           </div>
           <div class="input-field">
-            <label>Author:</label>
-            <input type="text" name="info.author">
+            <label>Author</label>
+            <input type="text" name="info.author" placeholder="Your Name">
           </div>
         </div>
       </fieldset>
@@ -78,13 +78,15 @@
         <legend>Social</legend>
         <div class="fields">
           <div class="input-field">
-            <label>Instagram URL:</label>
-            <input type="text" name="social.instagram_url">
-            <label>Upload Thumbnail:</label>
+            <label>Instagram URL</label>
+            <input type="text" name="social.instagram_url" placeholder="https://instagram.com/yourprofile">
+            <label class="thumbnail-form-label">Upload Thumbnail</label>
             <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;">
             <button type="button" id="choose-thumbnail-btn" class="up-btn">Choose a photo</button>
+            <div class="thumbnail-form">
             <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
             <button type="button" id="remove-thumbnail-btn" class="up-btn danger" style="display:none;">Remove</button>
+            </div>
           </div>
         </div>
       </fieldset>
@@ -103,11 +105,11 @@
         <legend>Footer</legend>
         <div class="fields">
           <div class="input-field">
-            <label>Copyright:</label>
+            <label>Copyright</label>
             <input type="text" name="footer.copyright">
           </div>
           <div class="input-field">
-            <label>Legal Label:</label>
+            <label>Legal Label</label>
             <input type="text" name="footer.legal_label">
           </div>
         </div>
@@ -117,19 +119,19 @@
         <legend>Legals</legend>
         <div class="fields">
           <div class="input-field">
-            <label>Hoster Name:</label>
+            <label>Hoster Name</label>
             <input type="text" name="legals.hoster_name">
           </div>
           <div class="input-field">
-            <label>Hoster Address:</label>
+            <label>Hoster Address</label>
             <input type="text" name="legals.hoster_adress">
           </div>
           <div class="input-field">
-            <label>Hoster Contact:</label>
+            <label>Hoster Contact</label>
             <input type="text" name="legals.hoster_contact">
           </div>
           <div class="input-field" style="flex: 1 1 100%;">
-            <label>Intellectual Property:</label>
+            <label>Intellectual Property</label>
             <div id="ip-list"></div>
             <button type="button" id="add-ip-paragraph">+ Add paragraph</button>
           </div>
@@ -140,7 +142,7 @@
         <legend>Build</legend>
         <div class="fields">
           <div class="input-field">
-            <label>Theme:</label>
+            <label>Theme</label>
             <select name="build.theme" id="theme-select"></select>
             <label>
               <input type="checkbox" name="build.convert_images" id="convert-images-checkbox">

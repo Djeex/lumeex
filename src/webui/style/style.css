@@ -364,7 +364,7 @@ h1, h2 {
   text-align: center;
   transition: all 0.1s ease;
   user-select: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  /* box-shadow: 0 4px 10px rgba(0,0,0,0.25);*/
   font-size: 14px;
   border: none;
 }
@@ -469,9 +469,14 @@ h1, h2 {
 /* --- Site Info --- */
 
 /* --- Site Info Form --- */
-#site-info-form {
-  max-width: 950px;
+
+#site-info.content-inner {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
+  padding-bottom: 40px;
 }
+
 
 #site-info-form fieldset {
   border: none;
@@ -533,6 +538,12 @@ h1, h2 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
+#site-info-form input::placeholder,
+#site-info-form textarea::placeholder {
+  color: #83a8b7be;
+  font-style: italic;
+}
+
 #site-info-form input:focus,
 #site-info-form textarea:focus,
 #site-info-form select:focus {
@@ -587,7 +598,6 @@ h1, h2 {
   font-size: 0.98em;
   margin-top: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(38,196,255,0.09);
   transition: background 0.2s;
 }
 
@@ -609,4 +619,14 @@ h1, h2 {
     min-width: 100%;
     margin-bottom: 12px;
   }
+}
+
+#site-info-form button.remove-menu-item{
+  margin-top: 0px;
+  margin-bottom: 4px;
+  border-radius: 30px;
+}
+
+#site-info-form .thumbnail-form-label {
+  margin-top: 10px;
 }

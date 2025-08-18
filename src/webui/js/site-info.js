@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       div.style.marginBottom = "6px";
       div.innerHTML = `
         <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label">
-        <input type="text" placeholder="URL" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href">
+        <input type="text" placeholder="?=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href">
         <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
       `;
       menuList.appendChild(div);
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (result.status === "ok") {
         if (thumbnailInput) thumbnailInput.value = result.filename;
-        updateThumbnailPreview(`/photos/${result.filename}`);
+        updateThumbnailPreview(`/photos/${result.filename}?t=${Date.now()}`);
         showToast("Thumbnail uploaded!", "success");
       } else {
         showToast("Error uploading thumbnail", "error");
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.elements["info.author"].value = data.info?.author || "";
         form.elements["social.instagram_url"].value = data.social?.instagram_url || "";
         if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
-        updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}` : "");
+        updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
         form.elements["footer.copyright"].value = data.footer?.copyright || "";
         form.elements["footer.legal_label"].value = data.footer?.legal_label || "";
         if (themeSelect) {
