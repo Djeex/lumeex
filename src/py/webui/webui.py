@@ -69,6 +69,11 @@ def index():
     return render_template("index.html")
 
 # --- Gallery & Hero API ---
+@app.route("/gallery-editor")
+def gallery_editor():
+    """Render gallery editor page."""
+    return render_template("gallery-editor/index.html")
+
 @app.route("/api/gallery", methods=["GET"])
 def get_gallery():
     """Get gallery images."""

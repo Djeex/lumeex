@@ -560,7 +560,6 @@ label {
 #site-info-form input, #theme-editor-form input,
 #site-info-form textarea, #theme-editor-form textarea,
 #site-info-form select, #theme-editor-form select {
-  /* background: rgba(4, 44, 60, 0.55);*/
   background: #1f2223;
   color: #fff;
   border: 1px solid #585858;
