@@ -96,8 +96,8 @@ function renderLocalFonts(fonts) {
   fonts.forEach(font => {
     listDiv.innerHTML += `
       <div class="font-item">
-        <span>${font}</span>
-        <button type="button" class="remove-font-btn danger" data-font="${font}">Remove</button>
+        <span class="font-name">${font}</span>
+        <button type="button" class="remove-font-btn danger remove-btn" data-font="${font}">🗑️</button>
       </div>
     `;
   });
@@ -170,30 +170,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (fontUploadInput) {
-    fontUploadInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (!["woff", "woff2"].includes(ext)) {
-        fontUploadStatus.textContent = "Only .woff and .woff2 fonts are allowed.";
-        return;
-      }
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("theme", themeInfo.theme_name);
-      const res = await fetch("/api/font/upload", { method: "POST", body: formData });
-      const result = await res.json();
-      if (result.status === "ok") {
-        fontUploadStatus.textContent = "Font uploaded!";
-        showToast("Font uploaded!", "success");
-        localFonts = await fetchLocalFonts(themeInfo.theme_name);
-        refreshLocalFonts();
-      } else {
-        fontUploadStatus.textContent = "Error uploading font.";
-        showToast("Error uploading font.", "error");
-      }
-    });
-  }
+  fontUploadInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!["woff", "woff2"].includes(ext)) {
+      showToast("Only .woff and .woff2 fonts are allowed.", "error");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("theme", themeInfo.theme_name);
+    const res = await fetch("/api/font/upload", { method: "POST", body: formData });
+    const result = await res.json();
+    if (result.status === "ok") {
+      showToast("✅ Font uploaded!", "success");
+      localFonts = await fetchLocalFonts(themeInfo.theme_name);
+      refreshLocalFonts();
+    } else {
+      showToast("Error uploading font.", "error");
+    }
+  });
+}
 
   // Remove font button triggers modal
   if (localFontsList) {
@@ -223,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!fontToDelete) return;
       const result = await removeFont(themeInfo.theme_name, fontToDelete);
       if (result.status === "ok") {
-        showToast("Font removed!", "success");
+        showToast("Font removed!", "✅ success");
         localFonts = await fetchLocalFonts(themeInfo.theme_name);
         refreshLocalFonts();
       } else {
@@ -282,7 +280,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (result.status === "ok") {
         faviconInput.value = result.filename;
         updateFaviconPreview(`/themes/${themeInfo.theme_name}/${result.filename}?t=${Date.now()}`);
-        showToast("Favicon uploaded!", "success");
+        showToast("✅ Favicon uploaded!", "success");
       } else {
         showToast("Error uploading favicon", "error");
       }
@@ -314,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (result.status === "ok") {
         faviconInput.value = "";
         updateFaviconPreview("");
-        showToast("Favicon removed!", "success");
+        showToast("✅ Favicon removed!", "success");
       } else {
         showToast("Error removing favicon", "error");
       }
@@ -393,7 +391,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       body: JSON.stringify({ theme_name: themeInfo.theme_name, theme_yaml: data })
     });
     if (res.ok) {
-      showToast("Theme saved!", "success");
+      showToast("✅ Theme saved!", "success");
     } else {
       showToast("Error saving theme.", "error");
     }

@@ -693,3 +693,28 @@ input[type="color"].color-input {
   top:0;
   opacity:0;
 }
+
+fieldset p {
+    font-size: 14px;
+    font-style: italic;
+    color: #b3b3b3;
+    margin-top: 0px;
+}
+
+.font-name {
+  background: #1f2223;
+  color: #b3b3b3;
+  border: 1px solid #585858;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+#theme-editor-form button[type="button"]#choose-font-btn {
+  margin-top: 16px;
+}
