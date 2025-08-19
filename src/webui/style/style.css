@@ -7,6 +7,7 @@ body {
   color: #FBFBFB;
   min-height: 100vh;
   margin:0px;
+  padding-top: 70px;
 }
 
 .content-inner {
@@ -256,12 +257,14 @@ h2 {
 }
 
 .nav-bar {
-  height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 70px;
   background-color: #0c0d0c29;
-  position: relative;
-  z-index: 1;
-  backdrop-filter:  blur(20px);
+  z-index: 1000;
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid #21212157;
 }
 
@@ -285,6 +288,15 @@ h2 {
 
 .nav > .nav-btn {
   display: none;
+}
+
+.nav-btn label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
 }
 
 .nav > .nav-links {
@@ -345,7 +357,7 @@ h2 {
   font-weight: 700;
 }
 
-.nav-cta > .button {
+.nav-bar .button {
   padding: 10px 25px;
   border-radius: 40px;
   margin: 15px 20px 15px 10px;
@@ -356,17 +368,29 @@ h2 {
   text-decoration: none;
   color: #fff;
   font-weight: 700;
+  border: none;
+  cursor: pointer;
 }
 
-.nav-cta > .button:hover {
+.nav-bar .button:hover {
   background: linear-gradient(135deg, #72d9ff, #26657e);
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .nav-links > ul {
   display: inline-block;
 }
 
+.nav-btn span {
+  display: block;
+  height: 4px;
+  width: 28px;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
 /* --- Custom Upload Buttons --- */
 .up-btn {
   display: inline-block;

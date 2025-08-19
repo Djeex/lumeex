@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       div.style.gap = "8px";
       div.style.marginBottom = "6px";
       div.innerHTML = `
-        <textarea placeholder="Paragraph" style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
+        <textarea placeholder="Paragraph" required style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
         <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
       `;
       ipList.appendChild(div);
@@ -129,9 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.status === "ok") {
         if (thumbnailInput) thumbnailInput.value = result.filename;
         updateThumbnailPreview(`/photos/${result.filename}?t=${Date.now()}`);
-        showToast("Thumbnail uploaded!", "success");
+        showToast("✅ Thumbnail uploaded!", "success");
       } else {
-        showToast("Error uploading thumbnail", "error");
+        showToast("❌ Error uploading thumbnail", "error");
       }
     });
   }
@@ -159,9 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.status === "ok") {
         if (thumbnailInput) thumbnailInput.value = "";
         updateThumbnailPreview("");
-        showToast("Thumbnail removed!", "success");
+        showToast("✅ Thumbnail removed!", "success");
       } else {
-        showToast("Error removing thumbnail", "error");
+        showToast("❌ Error removing thumbnail", "error");
       }
       deleteModal.style.display = "none";
     };
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/theme/upload", { method: "POST", body: formData });
       const result = await res.json();
       if (result.status === "ok") {
-        showToast("Theme uploaded!", "success");
+        showToast("✅ Theme uploaded!", "success");
         // Refresh theme select after upload
         fetch("/api/themes")
           .then(res => res.json())
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           });
       } else {
-        showToast("Error uploading theme", "error");
+        showToast("❌ Error uploading theme", "error");
       }
     });
   }
@@ -310,6 +310,12 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       updateMenuItemsFromInputs();
       updateIpParagraphsFromInputs();
+
+      // Check if thumbnail is set before saving (uploaded or present in input)
+      if (!thumbnailInput || !thumbnailInput.value) {
+        showToast("❌ Thumbnail is required.", "error");
+        return;
+      }
 
       const build = {
         theme: themeSelect ? themeSelect.value : "",

@@ -7,19 +7,13 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 </head>
 <body>
-  <!-- Top bar -->
+  <!-- Top bar -->	
   <div class="nav-bar">
     <div class="content-inner nav">
-      <div class="nav-cta">
-        <div class="arrow">→</div>
-        <a class="button" href="/site-info">
-          <span id="step">← Back to Site Info</span>
-        </a>
-      </div>
       <input type="checkbox" id="nav-check">
       <div class="nav-header">
         <div class="nav-title">
-          <img src="../img/logo.svg">
+          <img src="{{ url_for('static', filename='img/logo.svg') }}">
         </div>
       </div>
       <div class="nav-btn">
@@ -31,9 +25,12 @@
       </div>
       <div class="nav-links">
         <ul class="nav-list">
-          <li class="nav-item appear2"><a href="/site-info">Site info</a></li>
-          <li class="nav-item appear2"><a href="/theme-editor">Theme editor</a></li>
-          <li class="nav-item appear2"><a href="#">Gallery</a></li>
+          <li class="nav-item"><a href="/gallery-editor">Gallery</a>
+          <li class="nav-item"><a href="/site-info">Site info</a></li>
+          <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
+          <li class="nav-item">
+            <button id="build-btn" class="button">Build !</button>
+          </li>
         </ul>
       </div>
     </div>
@@ -197,6 +194,17 @@
       </div>
     </div>
   </div>
+  <!-- Build success modal -->
+  <div id="build-success-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="build-success-modal-close" class="modal-close">&times;</span>
+      <h3>✅ Build completed!</h3>
+      <p>Your files are available in the output folder.</p>
+      <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
+      <div id="zip-loader" style="display:none;">Creating ZIP...</div>
+    </div>
+  </div>
   <script src="{{ url_for('static', filename='js/theme-editor.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/build.js') }}"></script>
 </body>
 </html>

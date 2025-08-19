@@ -10,12 +10,6 @@
   <!-- Top bar -->	
   <div class="nav-bar">
     <div class="content-inner nav">
-      <div class="nav-cta">
-        <div class="arrow">→</div>
-        <a class="button" href="#" target="_blank">
-          <span id="step">🚀 Build !<i class="fa-solid fa-envelope"></i></span>
-        </a>
-      </div>
       <input type="checkbox" id="nav-check">
       <div class="nav-header">
         <div class="nav-title">
@@ -31,9 +25,12 @@
       </div>
       <div class="nav-links">
         <ul class="nav-list">
-          <li class="nav-item appear2"><a href="/site-info">Site info</a></li>
-          <li class="nav-item appear2"><a href="/theme-editor">Theme info</a></li>
-          <li class="nav-item appear2"><a href="#">Gallery</a></li>
+          <li class="nav-item"><a href="/gallery-editor">Gallery</a>
+          <li class="nav-item"><a href="/site-info">Site info</a></li>
+          <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
+          <li class="nav-item">
+            <button id="build-btn" class="button">Build !</button>
+          </li>
         </ul>
       </div>
     </div>
@@ -81,9 +78,10 @@
             <label>Instagram URL</label>
             <input type="text" name="social.instagram_url" placeholder="https://instagram.com/yourprofile" required>
             <label class="thumbnail-form-label">Thumbnail</label>
-            <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;" required>
+            <input type="file" id="thumbnail-upload" accept="image/png,image/jpeg,image/webp" style="display:none;">
             <button type="button" id="choose-thumbnail-btn" class="up-btn">📸 Upload a photo</button>
             <div class="thumbnail-form">
+            <input type="hidden" name="social.thumbnail" id="social-thumbnail">
             <img id="thumbnail-preview" src="" alt="Thumbnail preview" style="max-width:100px;display:none;">
             <button type="button" id="remove-thumbnail-btn" class="remove-btn up-btn danger" style="display:none;">Remove</button>
             </div>
@@ -120,15 +118,15 @@
         <div class="fields">
           <div class="input-field">
             <label>Hoster Name</label>
-            <input type="text" name="legals.hoster_name" placeholder="Name">
+            <input type="text" name="legals.hoster_name" placeholder="Name" required>
           </div>
           <div class="input-field">
             <label>Hoster Address</label>
-            <input type="text" name="legals.hoster_address" placeholder="Street, Postal Code, City, Country">
+            <input type="text" name="legals.hoster_address" placeholder="Street, Postal Code, City, Country" required>
           </div>
           <div class="input-field">
             <label>Hoster Contact</label>
-            <input type="text" name="legals.hoster_contact" placeholder="Email or/and Phone">
+            <input type="text" name="legals.hoster_contact" placeholder="Email or/and Phone" required>
           </div>
           <div class="input-field" style="flex: 1 1 100%;">
             <label>Intellectual Property</label>
@@ -173,6 +171,17 @@
       </div>
     </div>
   </div>
+  <!-- Build success modal -->
+  <div id="build-success-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="build-success-modal-close" class="modal-close">&times;</span>
+      <h3>✅ Build completed!</h3>
+      <p>Your files are available in the output folder.</p>
+      <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
+      <div id="zip-loader" style="display:none;">Creating ZIP...</div>
+    </div>
+  </div>
 <script src="{{ url_for('static', filename='js/site-info.js')}}"></script>
+<script src="{{ url_for('static', filename='js/build.js') }}"></script>
 </body>
 </html>
