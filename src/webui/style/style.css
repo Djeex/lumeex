@@ -484,7 +484,7 @@ h2 {
 
 /* --- Site Info Form --- */
 
-#site-info.content-inner {
+#site-info.content-inner, #theme-editor.content-inner {
   margin-right: auto;
   margin-left: auto;
   max-width: 1140px;
@@ -661,4 +661,35 @@ img#thumbnail-preview {
 
 #site-info-form .thumbnail-form-label, #theme-editor-form .thumbnail-form-label {
   margin-top: 10px;
+}
+
+#favicon-preview {
+  margin-top: 8px;
+}
+
+
+.color-fields {
+  gap: 8px;
+  position: relative;
+}
+
+
+#theme-editor button.color-btn {
+  height: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 0px;
+  margin-bottom: 4px;
+}
+
+input[type="color"].color-input {
+  margin:0;
+  padding: 0;
+  cursor: pointer;
+  height:100%;
+  position:absolute; 
+  left:0; 
+  top:0;
+  opacity:0;
 }

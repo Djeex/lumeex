@@ -31,19 +31,27 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
-function setColorInput(colorId, textId, value) {
+function setupColorPicker(colorId, btnId, textId, initial) {
   const colorInput = document.getElementById(colorId);
+  const colorBtn = document.getElementById(btnId);
   const textInput = document.getElementById(textId);
-  if (colorInput) colorInput.value = value;
-  if (textInput) textInput.value = value;
-  if (colorInput && textInput) {
-    colorInput.addEventListener("input", () => {
-      textInput.value = colorInput.value;
-    });
-    textInput.addEventListener("input", () => {
+
+  colorInput.value = initial;
+  colorBtn.style.background = initial;
+  textInput.value = initial.toUpperCase();
+
+  // Color input is positioned over the button and is clickable
+  colorInput.addEventListener("input", () => {
+    colorBtn.style.background = colorInput.value;
+    textInput.value = colorInput.value.toUpperCase();
+  });
+
+  textInput.addEventListener("input", () => {
+    if (/^#[0-9A-F]{6}$/i.test(textInput.value)) {
       colorInput.value = textInput.value;
-    });
-  }
+      colorBtn.style.background = textInput.value;
+    }
+  });
 }
 
 function setFontDropdown(selectId, value, options) {
@@ -75,7 +83,7 @@ function renderGoogleFonts(googleFonts) {
         <input type="text" name="google_fonts[${idx}][family]" value="${font.family || ""}">
         <label>Weights (comma separated)</label>
         <input type="text" name="google_fonts[${idx}][weights]" value="${(font.weights || []).join(',')}">
-        <button type="button" class="remove-google-font" data-idx="${idx}">Remove</button>
+        <button type="button" class="remove-google-font remove-btn" data-idx="${idx}"> 🗑️ Remove</button>
       </div>
     `;
   });
@@ -106,13 +114,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Colors
   if (themeYaml.colors) {
-    setColorInput("color-primary", "color-primary-text", themeYaml.colors.primary || "#0065a1");
-    setColorInput("color-primary-dark", "color-primary-dark-text", themeYaml.colors.primary_dark || "#005384");
-    setColorInput("color-secondary", "color-secondary-text", themeYaml.colors.secondary || "#00b0f0");
-    setColorInput("color-accent", "color-accent-text", themeYaml.colors.accent || "#ffc700");
-    setColorInput("color-text-dark", "color-text-dark-text", themeYaml.colors.text_dark || "#616161");
-    setColorInput("color-background", "color-background-text", themeYaml.colors.background || "#fff");
-    setColorInput("color-browser-color", "color-browser-color-text", themeYaml.colors.browser_color || "#fff");
+    setupColorPicker("color-primary", "color-primary-btn", "color-primary-text", themeYaml.colors.primary || "#0065a1");
+    setupColorPicker("color-primary-dark", "color-primary-dark-btn", "color-primary-dark-text", themeYaml.colors.primary_dark || "#005384");
+    setupColorPicker("color-secondary", "color-secondary-btn", "color-secondary-text", themeYaml.colors.secondary || "#00b0f0");
+    setupColorPicker("color-accent", "color-accent-btn", "color-accent-text", themeYaml.colors.accent || "#ffc700");
+    setupColorPicker("color-text-dark", "color-text-dark-btn", "color-text-dark-text", themeYaml.colors.text_dark || "#616161");
+    setupColorPicker("color-background", "color-background-btn", "color-background-text", themeYaml.colors.background || "#fff");
+    setupColorPicker("color-browser-color", "color-browser-color-btn", "color-browser-color-text", themeYaml.colors.browser_color || "#fff");
   }
 
   // Fonts
@@ -243,13 +251,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updateFaviconPreview(src) {
     if (faviconPreview) {
       faviconPreview.src = src || "";
-      faviconPreview.style.display = src ? "inline-block" : "none";
+      faviconPreview.style.display = src ? "block" : "none";
     }
     if (removeFaviconBtn) {
-      removeFaviconBtn.style.display = src ? "inline-block" : "none";
+      removeFaviconBtn.style.display = src ? "block" : "none";
     }
     if (chooseFaviconBtn) {
-      chooseFaviconBtn.style.display = src ? "none" : "inline-block";
+      chooseFaviconBtn.style.display = src ? "none" : "block";
     }
   }
 
