@@ -13,7 +13,7 @@
       <input type="checkbox" id="nav-check">
       <div class="nav-header">
         <div class="nav-title">
-          <img src="{{ url_for('static', filename='img/logo.svg') }}">
+          <a href="/"><img src="{{ url_for('static', filename='img/logo.svg') }}"></a>
         </div>
       </div>
       <div class="nav-btn">
@@ -25,11 +25,11 @@
       </div>
       <div class="nav-links">
         <ul class="nav-list">
-          <li class="nav-item"><a href="/gallery-editor">Gallery</a>
+          <li class="nav-item"><a href="/gallery-editor">Gallery</a></li>
           <li class="nav-item"><a href="/site-info">Site info</a></li>
           <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
           <li class="nav-item">
-            <button id="build-btn" class="button">Build !</button>
+            <button id="build-btn" class="button">🚀 Build !</button>
           </li>
         </ul>
       </div>
@@ -166,6 +166,19 @@
       </fieldset>
       <button type="submit">Save</button>
     </form>
+    <div class="section">
+        <h2>Steps</h2>
+        <p> Follow the steps to generate your static gallery</p>
+        <ul id="stepper">
+          <li><a href="/gallery-editor">Upload your photos</a></li>
+          <div>→</div>
+          <li><a class="step-active" href="/site-info">Configure site info</a></li>
+          <div>→</div>
+          <li><a href="/theme-editor">Customize your theme</a></li>
+          <div>→</div>
+          <li><button id="stepper-build">Generate your static site!</button></li>
+        </ul>
+      </div>
   </div>
 <!-- Delete confirmation modal (now outside .content-inner) -->
   <div id="delete-modal" class="modal" style="display:none;">

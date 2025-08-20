@@ -13,6 +13,7 @@ body {
 .content-inner {
   max-width: 90%;
   margin: 0 auto;
+  max-width: 1140px;
 }
 
 h1, h2 {
@@ -43,7 +44,7 @@ h2 {
 }
 
 /* --- Upload Section --- */
-.upload-section {
+.section {
   margin-bottom: 30px;
   background-color: rgb(67 67 67 / 26%);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -52,7 +53,7 @@ h2 {
   padding: 0px 20px 20px 20px;
 }
 
-.upload-section label {
+.section label {
   cursor: pointer;
 }
 
@@ -114,7 +115,7 @@ h2 {
     width: 100%;
   }
 
-  .upload-section label {
+  .section label {
     display: block;
     margin-bottom: 10px;
   }
@@ -327,11 +328,11 @@ h2 {
 }
 
 .nav > .nav-links > .nav-list > .nav-item > a:hover {
-  color: #00b0f0;
+  color: #55c3ec;
 }
 
 .nav > .nav-links > .nav-list > .nav-item > a:active {
-  color: #00b0f0;
+  color: #55c3ec;
 }
 
 .nav > #nav-check {
@@ -361,7 +362,7 @@ h2 {
   padding: 10px 25px;
   border-radius: 40px;
   margin: 15px 20px 15px 10px;
-  font-size: 12px;
+  font-size: 14px;
   display: inline;
   background: linear-gradient(135deg, #26c4ff, #016074);
   transition: all 0.2s ease;
@@ -618,7 +619,7 @@ img#thumbnail-preview {
   border-radius: 30px;
   padding: 12px 32px;
   font-size: 1.1em;
-  margin-top: 18px;
+  margin: 0 0 45px 0;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(38,196,255,0.15);
   transition: background 0.2s;
@@ -717,7 +718,7 @@ input[type="color"].color-input {
   opacity:0;
 }
 
-fieldset p {
+fieldset p, .section p {
     font-size: 14px;
     font-style: italic;
     color: #b3b3b3;
@@ -740,4 +741,91 @@ fieldset p {
 
 #theme-editor-form button[type="button"]#choose-font-btn {
   margin-top: 16px;
+}
+
+/* --- Home --- */
+
+#stepper {
+  display: flex;
+  gap: 18px;
+  flex-wrap: nowrap;
+  align-items: stretch; /* Ensures all children match tallest height */
+  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#stepper li,
+#stepper > div {
+  display: flex;
+  align-items: center;
+  
+}
+
+#stepper li a, #stepper li button, #stepper > div  {
+justify-content: center;
+  min-width: 100px;
+  border: 1px solid #585858;
+  padding: 16px;
+  border-radius: 8px;
+  background: #111010;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#stepper li a, #stepper li button {
+  height: 100%;
+  align-items: center;
+  display: flex;
+  font-weight: bold;
+}
+
+#stepper li button#stepper-build {
+  background: linear-gradient(135deg, #26c4ff, #016074);
+  transition: all 0.2s ease;
+  font-weight: bold;
+  color:#fff;
+  font-size: 16px;
+}
+
+#stepper li button#stepper-build:hover {
+  background: linear-gradient(135deg, #72d9ff, #26657e);
+  transition: all 0.2s ease;
+  color:#fff;
+  cursor: pointer;
+}
+
+#stepper li a:hover, #stepper li a.step-active {
+  color: #fff;
+  transition: all 0.2s ease;
+  background: #277fa0;
+  font-weight: bold;
+}
+
+#stepper li button#stepper-build::before {
+  content: "🚀 ";
+  margin-right: 8px;
+}
+
+#stepper li a {
+  text-decoration: none;
+  color:#d3d3d3
+}
+
+#stepper li {
+  flex: 1 1 auto; /* li can grow/shrink, width is flexible */
+}
+
+#stepper > div {
+  flex: 0 0 auto; /* Do not grow or shrink, width is auto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffc700;
+  border: none;
+  background: none;
+  padding: 0;
+  min-width: 0; /* Prevent unwanted minimum width */
+  width: auto;   /* Let width fit content */
 }

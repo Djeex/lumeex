@@ -21,24 +21,32 @@ function showToast(message, type = "success", duration = 3000) {
 document.addEventListener("DOMContentLoaded", () => {
   // Get build button and modal elements
   const buildBtn = document.getElementById("build-btn");
+  const stepperBuildBtn = document.getElementById("stepper-build"); // Added for stepper build button
   const buildModal = document.getElementById("build-success-modal");
   const buildModalClose = document.getElementById("build-success-modal-close");
   const downloadZipBtn = document.getElementById("download-zip-btn");
   const zipLoader = document.getElementById("zip-loader");
 
+  // Build action handler
+  async function handleBuildClick() {
+    // Trigger build on backend
+    const res = await fetch("/api/build", { method: "POST" });
+    const result = await res.json();
+    if (result.status === "ok") {
+      // Show build success modal
+      if (buildModal) buildModal.style.display = "flex";
+    } else {
+      showToast(result.message || "❌ Build failed!", "error");
+    }
+  }
+
   // Handle build button click
   if (buildBtn) {
-    buildBtn.addEventListener("click", async () => {
-      // Trigger build on backend
-      const res = await fetch("/api/build", { method: "POST" });
-      const result = await res.json();
-      if (result.status === "ok") {
-        // Show build success modal
-        if (buildModal) buildModal.style.display = "flex";
-      } else {
-        showToast(result.message || "❌ Build failed!", "error");
-      }
-    });
+    buildBtn.addEventListener("click", handleBuildClick);
+  }
+  // Handle stepper-build button click
+  if (stepperBuildBtn) {
+    stepperBuildBtn.addEventListener("click", handleBuildClick);
   }
 
   // Handle download zip button click
