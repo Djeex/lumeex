@@ -259,6 +259,25 @@ def upload_theme():
         file.save(dest_path)
     return jsonify({"status": "ok", "theme": folder_name})
 
+@app.route("/api/theme/remove", methods=["POST"])
+def remove_theme():
+    """Remove a custom theme folder."""
+    data = request.get_json()
+    theme_name = data.get("theme")
+    if not theme_name:
+        return jsonify({"error": "❌ Missing theme"}), 400
+    themes_dir = Path(__file__).resolve().parents[3] / "config" / "themes"
+    theme_folder = themes_dir / theme_name
+    if not theme_folder.exists() or not theme_folder.is_dir():
+        return jsonify({"error": "❌ Theme not found"}), 404
+    # Prevent removing default themes
+    if theme_name in ["modern", "classic"]:
+        return jsonify({"error": "❌ Cannot remove default theme"}), 400
+    # Remove folder and all contents
+    import shutil
+    shutil.rmtree(theme_folder)
+    return jsonify({"status": "ok"})
+
 # --- Theme editor page & API ---
 @app.route("/theme-editor")
 def theme_editor():
@@ -283,6 +302,20 @@ def api_theme_info():
         theme_name = data.get("theme_name", theme_name)
         save_theme_yaml(theme_name, theme_yaml)
         return jsonify({"status": "ok"})
+
+@app.route("/api/theme-google-fonts", methods=["POST"])
+def update_theme_google_fonts():
+    """Update only google_fonts in theme.yaml for current theme."""
+    data = request.get_json()
+    theme_name = data.get("theme_name")
+    google_fonts = data.get("google_fonts", [])
+    theme_yaml_path = Path(__file__).resolve().parents[3] / "config" / "themes" / theme_name / "theme.yaml"
+    with open(theme_yaml_path, "r") as f:
+        theme_yaml = yaml.safe_load(f)
+    theme_yaml["google_fonts"] = google_fonts
+    with open(theme_yaml_path, "w") as f:
+        yaml.safe_dump(theme_yaml, f, sort_keys=False, allow_unicode=True)
+    return jsonify({"status": "ok"})
 
 @app.route("/api/local-fonts")
 def api_local_fonts():

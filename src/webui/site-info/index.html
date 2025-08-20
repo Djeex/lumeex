@@ -43,6 +43,7 @@
       <!-- Info Section -->
       <fieldset>
         <h2>Info</h2>
+        <p>Set the basic information for your site and SEO</p>
         <div class="fields">
           <div class="input-field">
             <label>Title</label>
@@ -73,6 +74,7 @@
       <!-- Social Section -->
       <fieldset>
         <h2>Social</h2>
+        <p>Set your social media links and thumbnail for link sharing</p>
         <div class="fields">
           <div class="input-field">
             <label>Instagram URL</label>
@@ -91,6 +93,7 @@
       <!-- Menu Section -->
       <fieldset>
         <h2>Menu</h2>
+        <p>Manage your site menu items. You can use tag combination to propose custom filters</p>
         <div class="fields">
           <div class="input-field" style="flex: 1 1 100%;">
             <div id="menu-items-list"></div>
@@ -101,6 +104,7 @@
       <!-- Footer Section -->
       <fieldset>
         <h2>Footer</h2>
+        <p>Set your copyright informations and legal link name</p>
         <div class="fields">
           <div class="input-field">
             <label>Copyright</label>
@@ -115,6 +119,7 @@
       <!-- Legals Section -->
       <fieldset>
         <h2>Legals</h2>
+        <p>Set your legal informations</p>
         <div class="fields">
           <div class="input-field">
             <label>Hoster Name</label>
@@ -138,13 +143,16 @@
       <!-- Build Section -->
       <fieldset>
         <h2>Build</h2>
+        <p>Select a theme from the dropdown menu or add your custom theme folder</p>
         <div class="fields">
           <div class="input-field">
             <label>Theme</label>
             <select name="build.theme" id="theme-select" required></select>
+            <button type="button" id="remove-theme-btn" class="remove-btn up-btn danger">🗑 Remove selected theme</button>
             <input type="file" id="theme-upload" webkitdirectory directory multiple style="display:none;">
             <button type="button" id="choose-theme-btn" class="up-btn">📂 Upload custom theme folder</button>
             <label class="thumbnail-form-label">Images processing</label>
+            <p>If checked, images will be converted for web and resized to fit the theme</p>
             <label>
               <input class="thumbnail-form-label" type="checkbox" name="build.convert_images" id="convert-images-checkbox">
               Convert images
@@ -168,6 +176,18 @@
       <div class="modal-actions">
         <button id="delete-modal-confirm" class="modal-btn danger">Remove</button>
         <button id="delete-modal-cancel" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <!-- Delete theme confirmation modal -->
+  <div id="delete-theme-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="delete-theme-modal-close" class="modal-close">&times;</span>
+      <h3>Confirm Theme Deletion</h3>
+      <p id="delete-theme-modal-text">Are you sure you want to remove this theme?</p>
+      <div class="modal-actions">
+        <button id="delete-theme-modal-confirm" class="modal-btn danger">Remove</button>
+        <button id="delete-theme-modal-cancel" class="modal-btn">Cancel</button>
       </div>
     </div>
   </div>

@@ -170,28 +170,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (fontUploadInput) {
-  fontUploadInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (!["woff", "woff2"].includes(ext)) {
-      showToast("Only .woff and .woff2 fonts are allowed.", "error");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("theme", themeInfo.theme_name);
-    const res = await fetch("/api/font/upload", { method: "POST", body: formData });
-    const result = await res.json();
-    if (result.status === "ok") {
-      showToast("✅ Font uploaded!", "success");
-      localFonts = await fetchLocalFonts(themeInfo.theme_name);
-      refreshLocalFonts();
-    } else {
-      showToast("Error uploading font.", "error");
-    }
-  });
-}
+    fontUploadInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!["woff", "woff2"].includes(ext)) {
+        showToast("Only .woff and .woff2 fonts are allowed.", "error");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("theme", themeInfo.theme_name);
+      const res = await fetch("/api/font/upload", { method: "POST", body: formData });
+      const result = await res.json();
+      if (result.status === "ok") {
+        showToast("✅ Font uploaded!", "success");
+        localFonts = await fetchLocalFonts(themeInfo.theme_name);
+        refreshLocalFonts();
+      } else {
+        showToast("Error uploading font.", "error");
+      }
+    });
+  }
 
   // Remove font button triggers modal
   if (localFontsList) {
@@ -333,20 +333,75 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Add Google Font
   const addGoogleFontBtn = document.getElementById("add-google-font");
   if (addGoogleFontBtn) {
-    addGoogleFontBtn.addEventListener("click", () => {
+    addGoogleFontBtn.addEventListener("click", async () => {
       googleFonts.push({ family: "", weights: [] });
+      // Save immediately to backend
+      await fetch("/api/theme-google-fonts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
+      });
+      // Fetch updated theme info and refresh dropdowns
+      const updatedThemeInfo = await fetchThemeInfo();
+      const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
+      googleFonts.length = 0;
+      googleFonts.push(...updatedGoogleFonts);
       renderGoogleFonts(googleFonts);
+      refreshFontDropdowns();
     });
   }
 
-  // Remove Google Font
   const googleFontsFields = document.getElementById("google-fonts-fields");
   if (googleFontsFields) {
-    googleFontsFields.addEventListener("click", (e) => {
-      if (e.target.classList.contains("remove-google-font")) {
-        const idx = parseInt(e.target.dataset.idx, 10);
-        googleFonts.splice(idx, 1);
+    // Save on blur for family/weights fields
+    googleFontsFields.addEventListener("blur", async (e) => {
+      if (
+        e.target.name &&
+        (e.target.name.endsWith("[family]") || e.target.name.endsWith("[weights]"))
+      ) {
+        // Update googleFonts array from the form fields
+        const fontFields = googleFontsFields.querySelectorAll(".input-field");
+        googleFonts.length = 0;
+        fontFields.forEach(field => {
+          const family = field.querySelector('input[name^="google_fonts"][name$="[family]"]').value.trim();
+          const weights = field.querySelector('input[name^="google_fonts"][name$="[weights]"]').value
+            .split(",").map(w => w.trim()).filter(Boolean);
+          googleFonts.push({ family, weights });
+        });
+        // Save immediately to backend
+        await fetch("/api/theme-google-fonts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
+        });
+        // Fetch updated theme info and refresh dropdowns
+        const updatedThemeInfo = await fetchThemeInfo();
+        const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
+        googleFonts.length = 0;
+        googleFonts.push(...updatedGoogleFonts);
         renderGoogleFonts(googleFonts);
+        refreshFontDropdowns();
+      }
+    }, true); // Use capture phase to catch blur from children
+
+    // Delegate remove button click for Google Fonts
+    googleFontsFields.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("remove-google-font")) {
+        const idx = Number(e.target.dataset.idx);
+        googleFonts.splice(idx, 1);
+        // Save immediately to backend
+        await fetch("/api/theme-google-fonts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
+        });
+        // Fetch updated theme info and refresh dropdowns
+        const updatedThemeInfo = await fetchThemeInfo();
+        const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
+        googleFonts.length = 0;
+        googleFonts.push(...updatedGoogleFonts);
+        renderGoogleFonts(googleFonts);
+        refreshFontDropdowns();
       }
     });
   }

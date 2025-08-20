@@ -98,6 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteModalConfirm = document.getElementById("delete-modal-confirm");
   const deleteModalCancel = document.getElementById("delete-modal-cancel");
 
+  // Modal elements for theme deletion
+  const deleteThemeModal = document.getElementById("delete-theme-modal");
+  const deleteThemeModalClose = document.getElementById("delete-theme-modal-close");
+  const deleteThemeModalConfirm = document.getElementById("delete-theme-modal-confirm");
+  const deleteThemeModalCancel = document.getElementById("delete-theme-modal-cancel");
+  const deleteThemeModalText = document.getElementById("delete-theme-modal-text");
+  let themeToDelete = null;
+
   // Show/hide thumbnail preview, remove button, and choose button
   function updateThumbnailPreview(src) {
     if (thumbnailPreview) {
@@ -199,6 +207,64 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("❌ Error uploading theme", "error");
       }
     });
+  }
+
+  // Remove theme button triggers modal
+  const removeThemeBtn = document.getElementById("remove-theme-btn");
+  if (removeThemeBtn && themeSelect) {
+    removeThemeBtn.addEventListener("click", () => {
+      const theme = themeSelect.value;
+      if (!theme) return showToast("❌ No theme selected", "error");
+      if (["modern", "classic"].includes(theme)) {
+        showToast("❌ Cannot remove default theme", "error");
+        return;
+      }
+      themeToDelete = theme;
+      deleteThemeModalText.textContent = `Are you sure you want to remove theme "${theme}"?`;
+      deleteThemeModal.style.display = "flex";
+    });
+  }
+
+  // Modal logic for theme deletion
+  if (deleteThemeModal && deleteThemeModalClose && deleteThemeModalConfirm && deleteThemeModalCancel) {
+    deleteThemeModalClose.onclick = deleteThemeModalCancel.onclick = () => {
+      deleteThemeModal.style.display = "none";
+      themeToDelete = null;
+    };
+    window.onclick = function(event) {
+      if (event.target === deleteThemeModal) {
+        deleteThemeModal.style.display = "none";
+        themeToDelete = null;
+      }
+    };
+    deleteThemeModalConfirm.onclick = async () => {
+      if (!themeToDelete) return;
+      const res = await fetch("/api/theme/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme: themeToDelete })
+      });
+      const result = await res.json();
+      if (result.status === "ok") {
+        showToast("✅ Theme removed!", "success");
+        // Refresh theme select
+        fetch("/api/themes")
+          .then(res => res.json())
+          .then(themes => {
+            themeSelect.innerHTML = "";
+            themes.forEach(theme => {
+              const option = document.createElement("option");
+              option.value = theme;
+              option.textContent = theme;
+              themeSelect.appendChild(option);
+            });
+          });
+      } else {
+        showToast(result.error || "❌ Error removing theme", "error");
+      }
+      deleteThemeModal.style.display = "none";
+      themeToDelete = null;
+    };
   }
 
   // Fetch theme list and populate select
