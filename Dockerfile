@@ -6,9 +6,8 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY build.py gallery.py VERSION /app/
 COPY ./src/ ./src/
-COPY ./build.py ./build.py
-COPY ./gallery.py ./gallery.py
 COPY ./config /app/default
 COPY ./docker/.sh/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh

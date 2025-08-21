@@ -18,6 +18,10 @@ from src.py.webui.upload import upload_bp
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # --- Flask app setup ---
+VERSION_FILE = Path(__file__).resolve().parents[3] / "VERSION"
+with open(VERSION_FILE, "r") as vf:
+    lumeex_version = vf.read().strip()
+
 WEBUI_PATH = Path(__file__).parents[2] / "webui"  # Path to static/templates
 app = Flask(
     __name__,
@@ -67,6 +71,10 @@ def get_local_fonts(theme_name):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.context_processor
+def inject_version():
+    return dict(lumeex_version=lumeex_version)
 
 # --- Gallery & Hero API ---
 @app.route("/gallery-editor")
@@ -479,5 +487,5 @@ def download_output_zip():
 
 # --- Run server ---
 if __name__ == "__main__":
-    logging.info("Starting WebUI at http://127.0.0.1:5000")
-    app.run(debug=True)
+    logging.info("Starting WebUI at http://0.0.0.0:5000")
+    app.run(host="0.0.0.0", port=5000, debug=True)

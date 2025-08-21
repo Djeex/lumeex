@@ -43,16 +43,24 @@ start_server() {
   cat /tmp/build_logs_fifo >&2 &
   cat /tmp/build_logs_fifo2 >&2 &
 
-  echo "Starting HTTP server on port 3000..."
+  echo "Starting preview HTTP server on port 3000..."
   python3 -u -m http.server 3000 -d /app/output &
   SERVER_PID=$!
-  trap "echo 'Stopping server...'; kill -TERM $SERVER_PID 2>/dev/null; wait $SERVER_PID; exit 0" SIGINT SIGTERM
+
+  echo "Starting Lumeex Flask webui..."
+  python3 -u -m src.py.webui.webui &
+  WEBUI_PID=$!
+
+  trap "echo 'Stopping servers...'; kill -TERM $SERVER_PID $WEBUI_PID 2>/dev/null; wait $SERVER_PID $WEBUI_PID; exit 0" SIGINT SIGTERM
+
   wait $SERVER_PID
+  wait $WEBUI_PID
 }
 
+VERSION=$(cat VERSION)
 if [ $# -eq 0 ]; then
   echo -e "${CYAN}╭───────────────────────────────────────────╮${NC}"
-  echo -e "${CYAN}│${NC}          Lum${CYAN}eex${NC} - Version 1.3.1${NC}           ${CYAN}│${NC}"
+  echo -e "${CYAN}│${NC}          Lum${CYAN}eex${NC} - Version ${VERSION}${NC}           ${CYAN}│${NC}"
   echo -e "${CYAN}├───────────────────────────────────────────┤${NC}"
   echo -e "${CYAN}│${NC} Source: https://git.djeex.fr/Djeex/lumeex ${CYAN}│${NC}"
   echo -e "${CYAN}│${NC} Mirror: https://github.com/Djeex/lumeex   ${CYAN}│${NC}"
