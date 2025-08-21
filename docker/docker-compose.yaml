@@ -7,5 +7,5 @@ services:
       - ../output:/app/output  # mount output directory
     ports:
       - "3000:3000"
-      - "5005:5000"
+      - "5000:5000"
       
