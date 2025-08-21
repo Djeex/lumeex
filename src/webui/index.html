@@ -36,10 +36,11 @@
     </div>
   </div>
   <!-- Toast container for notifications -->
-  <div class="content-inner">
+  <div class="content-inner first-content">
     <div id="toast-container"></div>
 
     <h1>Static Gallery Generator</h1>
+    <p>Use this generator to create a static gallery from your photos. Then, upload the static files to your preferred web server.</p>
 
     <!-- Hero Upload Section -->
     <div class="section">
@@ -55,6 +56,7 @@
         <li><button id="stepper-build">Generate your static site!</button></li>
       </ul>
     </div>
+  </div>
   <!-- Build success modal -->
   <div id="build-success-modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -63,6 +65,20 @@
       <p>Your files are available in the output folder.</p>
       <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
       <div id="zip-loader" style="display:none;">Creating ZIP...</div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="content-inner">
+      <div class="footer-container">
+        <div class="footer-credit">
+          <p><a href="https//lumeex.djeex.fr"><span class="lum-first">Lum</span><span class="lum-second">eex</span> v1.3</a> — © 2025</p>
+        </div>
+        <div class="footer-links">
+          <a class="footer-link documentation" href="https://lumeex.djeex.fr"><span class="icon"><img src="/img/favicon.svg"></span><span class="icon-text">Documentation</span></a>
+          <a class="footer-link gitea" href="https://gitea.com/Djeex/lumeex"><span class="icon"><img src="/img/gitea.svg"></span><span class="icon-text">Giteex</span></a>
+          <a class="footer-link github" href="https://github.com/Djeex/lumeex"><span class="icon"><img src="/img/github.svg"></span><span class="icon-text">Github</span></a>
+        </div>
+      </div>
     </div>
   </div>
 </body>
