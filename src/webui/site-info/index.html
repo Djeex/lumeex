@@ -1,43 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="UTF-8">
-  <title>Lumeex</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-</head>
-<body>
-  <!-- Top bar -->	
-  <div class="nav-bar">
-    <div class="content-inner nav">
-      <input type="checkbox" id="nav-check">
-      <div class="nav-header">
-        <div class="nav-title">
-          <a href="/"><img src="{{ url_for('static', filename='img/logo.svg') }}"></a>
-        </div>
-      </div>
-      <div class="nav-btn">
-        <label for="nav-check">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-      </div>
-      <div class="nav-links">
-        <ul class="nav-list">
-          <li class="nav-item"><a href="/gallery-editor">Gallery</a></li>
-          <li class="nav-item"><a href="/site-info">Site info</a></li>
-          <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
-          <li class="nav-item">
-            <button id="build-btn" class="button">🚀 Build !</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- Toast container for notifications -->
-  <div id="site-info" class="content-inner">
-    <div id="toast-container"></div>
+{% extends "template/base.html" %}
+
+{% block title %}Gallery Editor{% endblock %}
+
+{% block content %}
+
     <h1>Edit Site Info</h1>
     <form id="site-info-form">
       <!-- Info Section -->
@@ -180,7 +146,7 @@
         </ul>
       </div>
   </div>
-<!-- Delete confirmation modal (now outside .content-inner) -->
+<!-- Delete thumbnail confirmation modal-->
   <div id="delete-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <span id="delete-modal-close" class="modal-close">&times;</span>
@@ -204,31 +170,9 @@
       </div>
     </div>
   </div>
-  <!-- Build success modal -->
-  <div id="build-success-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <span id="build-success-modal-close" class="modal-close">&times;</span>
-      <h3>✅ Build completed!</h3>
-      <p>Your files are available in the output folder.</p>
-      <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
-      <div id="zip-loader" style="display:none;">Creating ZIP...</div>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="content-inner">
-      <div class="footer-container">
-        <div class="footer-credit">
-          <p><a href="https//lumeex.djeex.fr"><span class="lum-first">Lum</span><span class="lum-second">eex</span> v{{ lumeex_version }}</a> — © 2025</p>
-        </div>
-        <div class="footer-links">
-          <a class="footer-link documentation" href="https://lumeex.djeex.fr"><span class="icon"><img src="/img/favicon.svg"></span><span class="icon-text">Documentation</span></a>
-          <a class="footer-link gitea" href="https://gitea.com/Djeex/lumeex"><span class="icon"><img src="/img/gitea.svg"></span><span class="icon-text">Giteex</span></a>
-          <a class="footer-link github" href="https://github.com/Djeex/lumeex"><span class="icon"><img src="/img/github.svg"></span><span class="icon-text">Github</span></a>
-        </div>
-      </div>
-    </div>
-  </div>
-<script src="{{ url_for('static', filename='js/site-info.js')}}"></script>
-<script src="{{ url_for('static', filename='js/build.js') }}"></script>
-</body>
-</html>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/site-info.js') }}"></script>
+{% endblock %}
