@@ -44,7 +44,7 @@ def build():
     theme_vars, theme_dir = load_theme_config(theme_name, THEMES_DIR)
     fonts_dir = theme_dir / "fonts"
     theme_css_path = theme_dir / "theme.css"
-    canonical_url = site_vars.get("info", {}).get("canonical", "").rstrip("/")
+    canonical_url = (site_vars.get("info", {}).get("canonical") or "").rstrip("/")
     canonical_home = f"{canonical_url}/"
     canonical_legals = f"{canonical_url}/legals/"
 
@@ -179,7 +179,7 @@ def build():
 
     # Sitemap and robot.txt generator
     site_info = site_vars.get("info", {})
-    canonical_url = site_info.get("canonical", "").rstrip("/")
+    canonical_url = (site_info.get("canonical") or "").rstrip("/")
     if canonical_url:
         allowed_pages = ["/", "/legals/"]
         generate_robots_txt(canonical_url, allowed_pages, BUILD_DIR)

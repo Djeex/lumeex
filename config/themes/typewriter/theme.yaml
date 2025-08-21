@@ -8,8 +8,8 @@ colors:
   secondary: '#00b0f0'
   accent: '#ffc700'
   text_dark: '#616161'
-  background: '#ffffff'
-  browser_color: '#ffffff'
+  background: '#fff'
+  browser_color: '#fff'
 favicon:
   path: favicon.png
 fonts:
