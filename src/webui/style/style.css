@@ -699,13 +699,14 @@ img#thumbnail-preview {
 }
 
 
-#theme-editor button.color-btn {
-  height: 100%;
-  border-radius: 8px;
+#theme-editor-form button.color-btn {
+  height: 40px;
+  border-radius: 40px;
   cursor: pointer;
   display: inline-block;
   margin-top: 0px;
   margin-bottom: 4px;
+  width: 40px;
 }
 
 input[type="color"].color-input {
