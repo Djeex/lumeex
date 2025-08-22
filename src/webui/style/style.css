@@ -165,7 +165,6 @@ h2 {
 /* --- Tags --- */
 .tag-input {
   display: flex;
-  flex-wrap: wrap-reverse;
   align-content: flex-start;
   gap: 4px;
   padding: 4px;
@@ -889,3 +888,19 @@ justify-content: center;
     display: flex;
 }
 
+.photo button.validate-tag-btn {
+    border-radius: 30px;
+    border: none;
+    background: #049b3d;
+    color: #fff;
+    font-size: 10px;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: all ease 0.2s;
+    width: 35px;
+    border: 1px solid #585858;
+}
+
+.photo button.validate-tag-btn:hover {
+  background: #02cb4e;
+} 

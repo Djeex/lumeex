@@ -92,6 +92,14 @@ function renderTags(imgIndex, tags) {
   input.placeholder = 'Add tag...';
   inputContainer.appendChild(input);
 
+  // --- Validate button ---
+  const validateBtn = document.createElement('button');
+  validateBtn.textContent = '✔️';
+  validateBtn.className = 'validate-tag-btn';
+  validateBtn.style.display = 'none'; // hidden by default
+  validateBtn.style.marginLeft = '4px';
+  inputContainer.appendChild(validateBtn);
+
   const suggestionBox = document.createElement('ul');
   suggestionBox.className = 'suggestions';
   inputContainer.appendChild(suggestionBox);
@@ -148,8 +156,14 @@ function renderTags(imgIndex, tags) {
     }
   };
 
-  input.addEventListener('input', updateSuggestions);
-  input.addEventListener('focus', updateSuggestions);
+  input.addEventListener('input', () => {
+    updateSuggestions();
+    validateBtn.style.display = input.value.trim() ? 'inline-block' : 'none';
+  });
+  input.addEventListener('focus', () => {
+    updateSuggestions();
+    validateBtn.style.display = input.value.trim() ? 'inline-block' : 'none';
+  });
 
   input.addEventListener('keydown', (e) => {
     const items = suggestionBox.querySelectorAll('li');
@@ -172,11 +186,13 @@ function renderTags(imgIndex, tags) {
       }
       input.value = '';
       updateSuggestions();
+      validateBtn.style.display = 'none';
     } else if ([' ', ','].includes(e.key)) {
       e.preventDefault();
       addTag(input.value);
       input.value = '';
       updateSuggestions();
+      validateBtn.style.display = 'none';
     }
   });
 
@@ -184,8 +200,19 @@ function renderTags(imgIndex, tags) {
     setTimeout(() => {
       suggestionBox.style.display = 'none';
       input.value = '';
+      validateBtn.style.display = 'none';
     }, 150);
   });
+
+  // --- Validate button action ---
+  validateBtn.onclick = () => {
+    if (input.value.trim()) {
+      addTag(input.value.trim());
+      input.value = '';
+      updateSuggestions();
+      validateBtn.style.display = 'none';
+    }
+  };
 
   input.focus();
   updateSuggestions();
