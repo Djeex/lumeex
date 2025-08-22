@@ -9,45 +9,46 @@
     <body>
     <!-- Top bar -->	
     <div class="nav-bar">
-        <div class="content-inner nav">
-        <input type="checkbox" id="nav-check">
+    <div class="content-inner nav">
         <div class="nav-header">
-            <div class="nav-title">
-            <a href="/"><img src="{{ url_for('static', filename='img/logo.svg') }}"></a>
-            </div>
+            <a href="/" class="nav-title">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}">
+            </a>
         </div>
-        <div class="nav-btn">
-            <label for="nav-check">
+        <!-- Burger toggle input and label -->
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+        <label for="nav-toggle" class="nav-burger">
             <span></span>
             <span></span>
             <span></span>
-            </label>
-        </div>
+        </label>
         <div class="nav-links">
             <ul class="nav-list">
-            <li class="nav-item"><a href="/gallery-editor">Gallery</a></li>
-            <li class="nav-item"><a href="/site-info">Site info</a></li>
-            <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
-            <li class="nav-item">
-                <button id="build-btn" class="button">🚀 Build !</button>
-            </li>
+                <li class="nav-item"><a href="/gallery-editor">Gallery</a></li>
+                <li class="nav-item"><a href="/site-info">Site info</a></li>
+                <li class="nav-item"><a href="/theme-editor">Theme info</a></li>
+                <li class="nav-item">
+                    <button id="build-btn" class="button">🚀 Build!</button>
+                </li>
             </ul>
         </div>
-        </div>
     </div>
+</div>
     <!-- Toast container for notifications -->
     <div class="content-inner first-content">
         <div id="toast-container"></div>
         <!-- Page content -->
         {% block content %}{% endblock %}
         <!-- Build success modal -->
-        <div id="build-success-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span id="build-success-modal-close" class="modal-close">&times;</span>
-                <h3>✅ Build completed!</h3>
-                <p>Your files are available in the output folder.</p>
-                <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
-                <div id="zip-loader" style="display:none;">Creating ZIP...</div>
+        <div class="content-inner">
+            <div id="build-success-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span id="build-success-modal-close" class="modal-close">&times;</span>
+                    <h3>✅ Build completed!</h3>
+                    <p>Your files are available in the output folder.</p>
+                    <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
+                    <div id="zip-loader" style="display:none;">Creating ZIP...</div>
+                </div>
             </div>
         </div>
         <!-- Footer -->
