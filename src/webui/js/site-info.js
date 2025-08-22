@@ -16,13 +16,13 @@ function showToast(message, type = "success", duration = 3000) {
 function showLoader(text = "Uploading...") {
   const loader = document.getElementById("global-loader");
   if (loader) {
-    loader.style.display = "flex";
+    loader.classList.add("active");
     document.getElementById("loader-text").textContent = text;
   }
 }
 function hideLoader() {
   const loader = document.getElementById("global-loader");
-  if (loader) loader.style.display = "none";
+  if (loader) loader.classList.remove("active");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

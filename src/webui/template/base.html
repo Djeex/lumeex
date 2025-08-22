@@ -66,15 +66,12 @@
             </div>
         </div>
         <!-- Loader -->
-        <div id="global-loader" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:99999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
-            <div style="background:#222;padding:32px 48px;border-radius:16px;box-shadow:0 2px 24px #000;display:flex;flex-direction:column;align-items:center;">
-                <div class="loader-spinner" style="width:48px;height:48px;border:6px solid #55c3ec;border-top:6px solid #222;border-radius:50%;animation:spin 1s linear infinite;"></div>
-                <div style="margin-top:18px;color:#fff;font-size:18px;" id="loader-text">Uploading...</div>
+        <div id="global-loader">
+            <div class="loader-inner">
+                <div class="loader-spinner"></div>
+                <div id="loader-text">Uploading...</div>
             </div>
         </div>
-        <style>
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        </style>
         <!-- Scripts -->
         <script src="{{ url_for('static', filename='js/build.js') }}" defer></script>
         {% block scripts %}{% endblock %}

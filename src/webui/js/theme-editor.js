@@ -35,15 +35,16 @@ function showToast(message, type = "success", duration = 3000) {
 function showLoader(text = "Uploading...") {
   const loader = document.getElementById("global-loader");
   if (loader) {
-    loader.style.display = "flex";
+    loader.classList.add("active");
     document.getElementById("loader-text").textContent = text;
   }
 }
 function hideLoader() {
   const loader = document.getElementById("global-loader");
-  if (loader) loader.style.display = "none";
+  if (loader) loader.classList.remove("active");
 }
 
+// --- Color Picker
 function setupColorPicker(colorId, btnId, textId, initial) {
   const colorInput = document.getElementById(colorId);
   const colorBtn = document.getElementById(btnId);

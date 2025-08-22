@@ -5,18 +5,20 @@
  * @param {number} duration - Duration in ms.
  */
 
-function showLoader(text = "Building...") {
+// --- Loader helpers ---
+function showLoader(text = "Uploading...") {
   const loader = document.getElementById("global-loader");
   if (loader) {
-    loader.style.display = "flex";
+    loader.classList.add("active");
     document.getElementById("loader-text").textContent = text;
   }
 }
 function hideLoader() {
   const loader = document.getElementById("global-loader");
-  if (loader) loader.style.display = "none";
+  if (loader) loader.classList.remove("active");
 }
 
+// --- Toast helpers ---
 function showToast(message, type = "success", duration = 3000) {
   const container = document.getElementById("toast-container");
   if (!container) return;
