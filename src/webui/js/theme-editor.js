@@ -31,6 +31,19 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
+// --- Loader helpers ---
+function showLoader(text = "Uploading...") {
+  const loader = document.getElementById("global-loader");
+  if (loader) {
+    loader.style.display = "flex";
+    document.getElementById("loader-text").textContent = text;
+  }
+}
+function hideLoader() {
+  const loader = document.getElementById("global-loader");
+  if (loader) loader.style.display = "none";
+}
+
 function setupColorPicker(colorId, btnId, textId, initial) {
   const colorInput = document.getElementById(colorId);
   const colorBtn = document.getElementById(btnId);
@@ -40,7 +53,6 @@ function setupColorPicker(colorId, btnId, textId, initial) {
   colorBtn.style.background = initial;
   textInput.value = initial.toUpperCase();
 
-  // Color input is positioned over the button and is clickable
   colorInput.addEventListener("input", () => {
     colorBtn.style.background = colorInput.value;
     textInput.value = colorInput.value.toUpperCase();
@@ -178,11 +190,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast("Only .woff and .woff2 fonts are allowed.", "error");
         return;
       }
+      showLoader("Uploading font...");
       const formData = new FormData();
       formData.append("file", file);
       formData.append("theme", themeInfo.theme_name);
       const res = await fetch("/api/font/upload", { method: "POST", body: formData });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         showToast("✅ Font uploaded!", "success");
         localFonts = await fetchLocalFonts(themeInfo.theme_name);
@@ -219,9 +233,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     deleteFontModalConfirm.onclick = async () => {
       if (!fontToDelete) return;
+      showLoader("Removing font...");
       const result = await removeFont(themeInfo.theme_name, fontToDelete);
+      hideLoader();
       if (result.status === "ok") {
-        showToast("Font removed!", "✅ success");
+        showToast("Font removed!", "success");
         localFonts = await fetchLocalFonts(themeInfo.theme_name);
         refreshLocalFonts();
       } else {
@@ -272,11 +288,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast("Invalid file type for favicon.", "error");
         return;
       }
+      showLoader("Uploading favicon...");
       const formData = new FormData();
       formData.append("file", file);
       formData.append("theme", themeInfo.theme_name);
       const res = await fetch("/api/favicon/upload", { method: "POST", body: formData });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         faviconInput.value = result.filename;
         updateFaviconPreview(`/themes/${themeInfo.theme_name}/${result.filename}?t=${Date.now()}`);
@@ -303,12 +321,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
     deleteFaviconModalConfirm.onclick = async () => {
+      showLoader("Removing favicon...");
       const res = await fetch("/api/favicon/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ theme: themeInfo.theme_name })
       });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         faviconInput.value = "";
         updateFaviconPreview("");
@@ -335,13 +355,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (addGoogleFontBtn) {
     addGoogleFontBtn.addEventListener("click", async () => {
       googleFonts.push({ family: "", weights: [] });
-      // Save immediately to backend
       await fetch("/api/theme-google-fonts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
       });
-      // Fetch updated theme info and refresh dropdowns
       const updatedThemeInfo = await fetchThemeInfo();
       const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
       googleFonts.length = 0;
@@ -353,13 +371,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const googleFontsFields = document.getElementById("google-fonts-fields");
   if (googleFontsFields) {
-    // Save on blur for family/weights fields
     googleFontsFields.addEventListener("blur", async (e) => {
       if (
         e.target.name &&
         (e.target.name.endsWith("[family]") || e.target.name.endsWith("[weights]"))
       ) {
-        // Update googleFonts array from the form fields
         const fontFields = googleFontsFields.querySelectorAll(".input-field");
         googleFonts.length = 0;
         fontFields.forEach(field => {
@@ -368,13 +384,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             .split(",").map(w => w.trim()).filter(Boolean);
           googleFonts.push({ family, weights });
         });
-        // Save immediately to backend
         await fetch("/api/theme-google-fonts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
         });
-        // Fetch updated theme info and refresh dropdowns
         const updatedThemeInfo = await fetchThemeInfo();
         const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
         googleFonts.length = 0;
@@ -382,20 +396,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderGoogleFonts(googleFonts);
         refreshFontDropdowns();
       }
-    }, true); // Use capture phase to catch blur from children
+    }, true);
 
-    // Delegate remove button click for Google Fonts
     googleFontsFields.addEventListener("click", async (e) => {
       if (e.target.classList.contains("remove-google-font")) {
         const idx = Number(e.target.dataset.idx);
         googleFonts.splice(idx, 1);
-        // Save immediately to backend
         await fetch("/api/theme-google-fonts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ theme_name: themeInfo.theme_name, google_fonts: googleFonts })
         });
-        // Fetch updated theme info and refresh dropdowns
         const updatedThemeInfo = await fetchThemeInfo();
         const updatedGoogleFonts = updatedThemeInfo.theme_yaml.google_fonts || [];
         googleFonts.length = 0;
@@ -406,9 +417,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Form submit
   document.getElementById("theme-editor-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    showLoader("Saving theme...");
     const data = {};
     data.colors = {
       primary: document.getElementById("color-primary-text").value,
@@ -445,6 +456,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ theme_name: themeInfo.theme_name, theme_yaml: data })
     });
+    hideLoader();
     if (res.ok) {
       showToast("✅ Theme saved!", "success");
     } else {

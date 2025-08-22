@@ -4,6 +4,19 @@
  * @param {string} type - "success" or "error".
  * @param {number} duration - Duration in ms.
  */
+
+function showLoader(text = "Building...") {
+  const loader = document.getElementById("global-loader");
+  if (loader) {
+    loader.style.display = "flex";
+    document.getElementById("loader-text").textContent = text;
+  }
+}
+function hideLoader() {
+  const loader = document.getElementById("global-loader");
+  if (loader) loader.style.display = "none";
+}
+
 function showToast(message, type = "success", duration = 3000) {
   const container = document.getElementById("toast-container");
   if (!container) return;
@@ -29,9 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Build action handler
   async function handleBuildClick() {
+    showLoader("Building static site...");
     // Trigger build on backend
     const res = await fetch("/api/build", { method: "POST" });
     const result = await res.json();
+    hideLoader();
     if (result.status === "ok") {
       // Show build success modal
       if (buildModal) buildModal.style.display = "flex";

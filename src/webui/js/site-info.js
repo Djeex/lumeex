@@ -12,6 +12,19 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
+// --- Loader helpers ---
+function showLoader(text = "Uploading...") {
+  const loader = document.getElementById("global-loader");
+  if (loader) {
+    loader.style.display = "flex";
+    document.getElementById("loader-text").textContent = text;
+  }
+}
+function hideLoader() {
+  const loader = document.getElementById("global-loader");
+  if (loader) loader.style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Form and menu logic
   const form = document.getElementById("site-info-form");
@@ -130,10 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
     thumbnailUpload.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
+      showLoader("Uploading thumbnail...");
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/thumbnail/upload", { method: "POST", body: formData });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         if (thumbnailInput) thumbnailInput.value = result.filename;
         updateThumbnailPreview(`/photos/${result.filename}?t=${Date.now()}`);
@@ -183,12 +198,14 @@ document.addEventListener("DOMContentLoaded", () => {
     themeUpload.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files);
       if (files.length === 0) return;
+      showLoader("Uploading theme...");
       const formData = new FormData();
       files.forEach(file => {
         formData.append("files", file, file.webkitRelativePath || file.name);
       });
       const res = await fetch("/api/theme/upload", { method: "POST", body: formData });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme uploaded!", "success");
         // Refresh theme select after upload
@@ -239,12 +256,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     deleteThemeModalConfirm.onclick = async () => {
       if (!themeToDelete) return;
+      showLoader("Removing theme...");
       const res = await fetch("/api/theme/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ theme: themeToDelete })
       });
       const result = await res.json();
+      hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme removed!", "success");
         // Refresh theme select
@@ -379,7 +398,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Check if thumbnail is set before saving (uploaded or present in input)
       if (!thumbnailInput || !thumbnailInput.value) {
+        showLoader("Saving...");
         showToast("❌ Thumbnail is required.", "error");
+        hideLoader();
         return;
       }
 
@@ -417,6 +438,8 @@ document.addEventListener("DOMContentLoaded", () => {
           intellectual_property: ipParagraphs
         }
       };
+      // --- REMOVE loader for save ---
+      // showLoader("Saving...");
       const res = await fetch("/api/site-info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
