@@ -24,10 +24,17 @@ h2 {
 
 .content-inner {
   margin: 0 auto;
-  max-width: 1140px;
-  padding: 0 40px;
+  max-width: 1220px;
   padding-top: 70px;
+  width: 100%;
 }
+.inner {
+  padding: 0 40px;
+  margin: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 
 /* --- Navbar & Burger Menu --- */
 
@@ -221,6 +228,8 @@ h2 {
   border: 1px solid #2f2e2e80;
   border-radius: 8px;
   padding: 0px 20px 20px 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section label {
@@ -709,9 +718,10 @@ img#thumbnail-preview {
 }
 
 
-.color-fields {
+.fields.color-fields {
   gap: 8px;
   position: relative;
+  flex-wrap: nowrap;
 }
 
 
@@ -853,6 +863,10 @@ justify-content: center;
   width: auto;
 }
 
+.stepper {
+  width: 100%;
+}
+
 /* --- Footer --- */
 
 #footer {
@@ -965,8 +979,11 @@ justify-content: center;
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
 
-  .content-inner {
-    padding: 70px 20px
+  .nav {
+    padding: 0 20px;
+  }
+  .inner {
+    padding: 0 20px;
   }
   .section label {
     display: block;
@@ -1012,6 +1029,11 @@ justify-content: center;
   }
 
   #color-picker .input-field{
-    min-width: 140px;
+    min-width: 170px;
+  }
+  #theme-editor-form .fields.color-fields {
+    gap: 0 8px;
+    position: relative;
+    flex-wrap: nowrap;
   }
 }
