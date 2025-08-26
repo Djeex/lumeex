@@ -1,0 +1,182 @@
+{% extends "template/base.html" %}
+
+{% block title %}Lumeex - Theme Editor{% endblock %}
+
+{% block content %}
+
+ <h1>Edit Theme</h1>
+    <!-- Show current theme -->
+    <div class="theme-info">
+      <strong>Current theme:</strong> <span id="current-theme"></span>
+    </div>
+    <form id="theme-editor-form">
+      <!-- Colors Section -->
+      <fieldset id="color-picker">
+        <h2>Colors</h2>
+        <p>Set the color values for your theme</p>
+        <div class="fields">
+          <!-- Example for one color field, repeat for all -->
+          <div class="input-field">
+            <label>Primary</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-primary-btn" class="color-btn"></button>
+              <input type="color" name="colors.primary" id="color-primary" class="color-input">
+              <input type="text" name="colors.primary_text" id="color-primary-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Primary Dark</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-primary-dark-btn" class="color-btn"></button>
+              <input type="color" name="colors.primary_dark" id="color-primary-dark" class="color-input">
+              <input type="text" name="colors.primary_dark_text" id="color-primary-dark-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Secondary</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-secondary-btn" class="color-btn"></button>
+              <input type="color" name="colors.secondary" id="color-secondary" class="color-input">
+              <input type="text" name="colors.secondary_text" id="color-secondary-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Accent</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-accent-btn" class="color-btn"></button>
+              <input type="color" name="colors.accent" id="color-accent" class="color-input">
+              <input type="text" name="colors.accent_text" id="color-accent-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Text Dark</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-text-dark-btn" class="color-btn"></button>
+              <input type="color" name="colors.text_dark" id="color-text-dark" class="color-input">
+              <input type="text" name="colors.text_dark_text" id="color-text-dark-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Background</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-background-btn" class="color-btn"></button>
+              <input type="color" name="colors.background" id="color-background" class="color-input">
+              <input type="text" name="colors.background_text" id="color-background-text" style="width:100px;">
+            </div>
+          </div>
+          <div class="input-field">
+            <label>Browser Color</label>
+            <div class="fields color-fields">
+              <button type="button" id="color-browser-color-btn" class="color-btn"></button>
+              <input type="color" name="colors.browser_color" id="color-browser-color" class="color-input">
+              <input type="text" name="colors.browser_color_text" id="color-browser-color-text" style="width:100px;">
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <!-- Google Fonts Section -->
+      <fieldset>
+        <h2>Google Fonts</h2>
+        <p>Add Google Fonts to your theme</p>
+        <div class="fields" id="google-fonts-fields">
+          <!-- JS will render font family and weights inputs here -->
+        </div>
+        <button type="button" id="add-google-font">Add Google Font</button>
+      </fieldset>
+      <!-- Custom Font Upload Section -->
+      <fieldset>
+        <h2>Upload Custom Font</h2>
+        <p>Supported formats: .woff, .woff2</p>
+          <input type="file" id="font-upload" accept=".woff,.woff2" style="display:none;">
+          <div id="local-fonts-list" class="font-list"></div>
+          <button type="button" id="choose-font-btn" class="up-btn">🖋️ Upload font</button>
+      </fieldset>
+      <!-- Fonts Section -->
+      <fieldset>
+        <h2>Fonts</h2>
+        <p>Select where to apply your fonts</p>
+        <div class="fields">
+          <div class="input-field">
+            <label>Primary Font</label>
+            <select name="fonts.primary.name" id="font-primary"></select>
+            <label>Fallback</label>
+            <select name="fonts.primary.fallback" id="font-primary-fallback">
+              <option value="sans-serif">sans-serif</option>
+              <option value="serif">serif</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label>Secondary Font</label>
+            <select name="fonts.secondary.name" id="font-secondary"></select>
+            <label>Fallback</label>
+            <select name="fonts.secondary.fallback" id="font-secondary-fallback">
+              <option value="sans-serif">sans-serif</option>
+              <option value="serif">serif</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+      <!-- Favicon Section -->
+      <fieldset>
+        <h2>Favicon</h2>
+        <p>Supported formats: .png, .jpg, .jpeg</p>
+        <div class="fields">
+          <div class="input-field">
+            <label>Favicon Path</label>
+            <input type="text" name="favicon.path" id="favicon-path" readonly>
+            <input type="file" id="favicon-upload" accept=".png,.jpg,.jpeg,.ico" style="display:none;">
+            <button type="button" id="choose-favicon-btn" class="up-btn">🖼️ Upload favicon</button>
+            <div class="favicon-form">
+              <img id="favicon-preview" src="" alt="Favicon preview" style="max-width:48px;display:none;">
+              <button type="button" id="remove-favicon-btn" class="remove-btn up-btn danger" style="display:none;">Remove</button>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <button type="submit">Save Theme</button>
+    </form>
+    <div class="section">
+      <h2>Steps</h2>
+      <p> Follow the steps to generate your static gallery</p>
+      <ul id="stepper">
+        <li><a href="/gallery-editor">Upload your photos</a></li>
+        <div></div>
+        <li><a href="/site-info">Configure site info</a></li>
+        <div></div>
+        <li><a class="step-active" href="/theme-editor">Customize your theme</a></li>
+        <div></div>
+        <li><button id="stepper-build">Generate your static site!</button></li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  <!-- Delete confirmation modal for favicon -->
+  <div id="delete-favicon-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="delete-favicon-modal-close" class="modal-close">&times;</span>
+      <h3>Confirm Deletion</h3>
+      <p id="delete-favicon-modal-text">Are you sure you want to remove this favicon?</p>
+      <div class="modal-actions">
+        <button id="delete-favicon-modal-confirm" class="modal-btn danger">Remove</button>
+        <button id="delete-favicon-modal-cancel" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <!-- Delete confirmation modal for font -->
+  <div id="delete-font-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="delete-font-modal-close" class="modal-close">&times;</span>
+      <h3>Confirm Deletion</h3>
+      <p id="delete-font-modal-text">Are you sure you want to remove this font?</p>
+      <div class="modal-actions">
+        <button id="delete-font-modal-confirm" class="modal-btn danger">Remove</button>
+        <button id="delete-font-modal-cancel" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/theme-editor.js') }}"></script>
+{% endblock %}

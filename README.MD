@@ -18,7 +18,7 @@ The project includes two thoughtfully designed themes—one modern, one minimali
 - **Typewriter** — [View Demo](https://typewriter.djeex.fr)
 
 > [!NOTE]  
-> This GitHub repository is a mirror of the primary source at [git.djeex.fr/Djeex/lumeex](https://git.djeex.fr/Djeex/lumeex). The main repository includes the full history, releases, and bug-checking assisted by an LLM.
+> _This GitHub repository is a mirror of the primary source at [git.djeex.fr/Djeex/lumeex](https://git.djeex.fr/Djeex/lumeex). The main repository includes the full history and releases_.
 
 
 ## 📌 Table of Contents
@@ -41,20 +41,23 @@ The project includes two thoughtfully designed themes—one modern, one minimali
   - Typewriter — [Demo](https://typewriter.djeex.fr)  
 - Supports Google Fonts and locally hosted fonts
 
-### No-Code Builder (YAML Based)
+### No-Code Builder (WebUI Manager)
 
-- Configure site info, SEO, colors, fonts, and more through simple YAML files  
-- Reference and tag photos without any coding required  
-- *(Optional)* Automatically update photo references via script
+<div align="center">
+  <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex-webui.png" alt="Lumeex Screenshot" />
+</div>
 
-### Simple Build Process
-
-- Compiles static site from YAML configuration files (themes, templates, fonts, colors)  
+- Configure site info, SEO, colors, fonts, and more through a simple convenient WebUI
+- Add and tag your photo photos without any coding required
 - Converts favicon automatically to all required formats  
 - Resizes social sharing thumbnails  
 - *(Optional)* Automatically resizes photos to a maximum width of 1140px  
-- *(Optional)* Converts images to WebP format for optimized performance  
-- Outputs a complete static website ready to deploy on any web server
+- *(Optional)* Converts images to WebP format for optimized performance
+- Build your static site in one click and get a zip archive or an output folder, ready to deploy to your preferred webserver
+
+### Don't want a WebUI ?
+
+- CLI process is documented
 
 ## 🐳 Docker or 🐍 Python Installation
 For comprehensive documentation on installation, configuration options, customization, and demos, please visit:

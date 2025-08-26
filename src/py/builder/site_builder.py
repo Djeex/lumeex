@@ -21,12 +21,14 @@ STYLE_DIR = SRC_DIR / "src/public/style"
 GALLERY_FILE = SRC_DIR / "config/gallery.yaml"
 SITE_FILE = SRC_DIR / "config/site.yaml"
 THEMES_DIR = SRC_DIR / "config/themes"
+VERSION_FILE = SRC_DIR / "VERSION"
+with open(VERSION_FILE, "r") as vf:
+    build_version = vf.read().strip()
 
 def build():
-    build_version = "v1.3.2"
     logging.info("\n")
     logging.info("=" * 24)
-    logging.info(f"🚀 Lumeex builder {build_version}")
+    logging.info(f"🚀 Lumeex builder v{build_version}")
     logging.info("=" * 24)
     logging.info("\n === Starting build === ")
     ensure_dir(BUILD_DIR)
