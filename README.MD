@@ -43,9 +43,12 @@ The project includes two thoughtfully designed themes—one modern, one minimali
 
 ### No-Code Builder (WebUI Manager)
 
+&nbsp;
 <div align="center">
   <img src="https://git.djeex.fr/Djeex/lumeex/raw/branch/main/illustration/lumeex-webui.png" alt="Lumeex Screenshot" />
 </div>
+&nbsp;
+
 
 - Configure site info, SEO, colors, fonts, and more through a simple convenient WebUI
 - Add and tag your photo photos without any coding required
