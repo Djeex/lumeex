@@ -32,6 +32,7 @@ const randomizeHeroBackground = () => {
       if (images.length === 0) return;
       let currentIndex = Math.floor(Math.random() * images.length);
       heroBg.style.backgroundImage = `url(/img/${images[currentIndex]})`;
+      if (images.length < 2) return; // <-- Prevent interval if only one image
       setInterval(() => {
         let nextIndex;
         do {
