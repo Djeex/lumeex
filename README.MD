@@ -53,7 +53,7 @@ The project includes two thoughtfully designed themes—one modern, one minimali
 - Resizes social sharing thumbnails  
 - *(Optional)* Automatically resizes photos to a maximum width of 1140px  
 - *(Optional)* Converts images to WebP format for optimized performance
-- Compiles static site in one click and get a zip archive or an output folder, ready to deploy to your preferred webserver
+- Build your static site in one click and get a zip archive or an output folder, ready to deploy to your preferred webserver
 
 ### Don't want a WebUI ?
 
