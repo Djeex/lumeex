@@ -3,6 +3,13 @@
 
 // Fade in effect for elements with class 'appear'
 const setupIntersectionObserver = () => {
+  document.querySelectorAll('.appear').forEach(parent => {
+    const children = parent.querySelectorAll('.appear');
+    children.forEach((child, i) => {
+      child.style.transitionDelay = `${i * 0.2}s`;
+    });
+  });
+
   const items = document.querySelectorAll('.appear');
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
