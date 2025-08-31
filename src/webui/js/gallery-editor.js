@@ -54,10 +54,34 @@ function renderGallery() {
     renderTags(i, img.tags || []);
   });
 
-  // Show/hide Remove All button
+  // Update gallery count (top)
+  const galleryCount = document.getElementById('gallery-count');
+  if (galleryCount) {
+    galleryCount.innerHTML = `<p>${galleryImages.length} photos</p>`;
+  }
+
+  // Update gallery count (bottom)
+  const galleryCountBottom = document.getElementById('gallery-count-bottom');
+  if (galleryCountBottom) {
+    galleryCountBottom.innerHTML = `<p>${galleryImages.length} photos</p>`;
+  }
+
+  // Show/hide Remove All button (top)
   const removeAllBtn = document.getElementById('remove-all-gallery');
   if (removeAllBtn) {
     removeAllBtn.style.display = galleryImages.length > 0 ? 'inline-block' : 'none';
+  }
+
+  // Show/hide bottom upload row
+  const bottomGalleryUpload = document.getElementById('bottom-gallery-upload');
+  if (bottomGalleryUpload) {
+    bottomGalleryUpload.style.display = galleryImages.length > 0 ? 'flex' : 'none';
+  }
+
+  // Show/hide Remove All button (bottom)
+  const removeAllBtnBottom = document.getElementById('remove-all-gallery-bottom');
+  if (removeAllBtnBottom) {
+    removeAllBtnBottom.style.display = galleryImages.length > 0 ? 'inline-block' : 'none';
   }
 }
 
@@ -244,10 +268,34 @@ function renderHero() {
     container.appendChild(div);
   });
 
-  // Show/hide Remove All button
+  // Update hero count (top)
+  const heroCount = document.getElementById('hero-count');
+  if (heroCount) {
+    heroCount.innerHTML = `<p>${heroImages.length} photos</p>`;
+  }
+
+  // Update hero count (bottom)
+  const heroCountBottom = document.getElementById('hero-count-bottom');
+  if (heroCountBottom) {
+    heroCountBottom.innerHTML = `<p>${heroImages.length} photos</p>`;
+  }
+
+  // Show/hide Remove All button (top)
   const removeAllBtn = document.getElementById('remove-all-hero');
   if (removeAllBtn) {
     removeAllBtn.style.display = heroImages.length > 0 ? 'inline-block' : 'none';
+  }
+
+  // Show/hide bottom upload row
+  const bottomHeroUpload = document.getElementById('bottom-hero-upload');
+  if (bottomHeroUpload) {
+    bottomHeroUpload.style.display = heroImages.length > 0 ? 'flex' : 'none';
+  }
+
+  // Show/hide Remove All button (bottom)
+  const removeAllBtnBottom = document.getElementById('remove-all-hero-bottom');
+  if (removeAllBtnBottom) {
+    removeAllBtnBottom.style.display = heroImages.length > 0 ? 'inline-block' : 'none';
   }
 }
 
@@ -429,9 +477,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Bulk delete buttons
   const removeAllGalleryBtn = document.getElementById('remove-all-gallery');
+  const removeAllGalleryBtnBottom = document.getElementById('remove-all-gallery-bottom');
   const removeAllHeroBtn = document.getElementById('remove-all-hero');
+  const removeAllHeroBtnBottom = document.getElementById('remove-all-hero-bottom');
   if (removeAllGalleryBtn) removeAllGalleryBtn.onclick = () => showDeleteModal('gallery-all');
+  if (removeAllGalleryBtnBottom) removeAllGalleryBtnBottom.onclick = () => showDeleteModal('gallery-all');
   if (removeAllHeroBtn) removeAllHeroBtn.onclick = () => showDeleteModal('hero-all');
+  if (removeAllHeroBtnBottom) removeAllHeroBtnBottom.onclick = () => showDeleteModal('hero-all');
 });
 
 // --- Initialize ---

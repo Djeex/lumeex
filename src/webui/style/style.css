@@ -241,7 +241,7 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
-  margin-top: 30px;
+  margin: 30px 0 0 0;
 }
 
 /* --- Photo Card --- */
@@ -521,18 +521,23 @@ h2 {
   align-items: center;
   gap: 16px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 /* --- Remove All Buttons --- */
-#remove-all-hero, #remove-all-gallery {
+#remove-all-hero, #remove-all-gallery, .bottom-remove-btn {
   background: #2d2d2d;
   color: white;
   display: none;
   margin-bottom: 6px;
 }
 
+.bottom-remove-btn {
+  display: inherit;
+}
+
 #remove-all-gallery:hover,
-#remove-all-hero:hover {
+#remove-all-hero:hover, .bottom-remove-btn:hover {
   background: rgb(121, 26, 19);
 }
 
@@ -541,6 +546,7 @@ h2 {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
@@ -1036,4 +1042,12 @@ justify-content: center;
     position: relative;
     flex-wrap: nowrap;
   }
+}
+
+#hero-count-bottom, #gallery-count-bottom {
+  flex-basis: 100%;
+}
+
+.bottom-action-row {
+  margin-top: 30px;
 }
