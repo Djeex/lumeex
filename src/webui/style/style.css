@@ -7,7 +7,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   margin:0px;
-  width: 100vw;
+  min-width: 320px;
 }
 
 a {
@@ -242,6 +242,14 @@ h2 {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
   margin: 30px 0 0 0;
+}
+
+#hero-count-bottom, #gallery-count-bottom {
+  flex-basis: 100%;
+}
+
+.bottom-action-row {
+  margin-top: 30px;
 }
 
 /* --- Photo Card --- */
@@ -618,6 +626,10 @@ label {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
+#site-info-form button[type="submit"].top-save, #theme-editor-form button[type="submit"].top-save {
+  margin-bottom: 0;
+}
+
 #theme-editor-form input, #theme-editor-form textarea,#theme-editor-form select {
   margin-bottom: 18px;
 }
@@ -626,7 +638,9 @@ label {
   gap: 0 18px;
 }
 
-
+.theme-info {
+  margin-bottom: 25px;
+}
 
 #site-info-form input::placeholder,
 #theme-editor-form input::placeholder,
@@ -919,6 +933,7 @@ justify-content: center;
 
 #footer a {
   color: #fff;
+  margin: auto;
 }
 
 .footer-credit .lum-first::before {
@@ -1035,12 +1050,14 @@ justify-content: center;
     /* Hide the default arrow */
     color: transparent;
   }
-  #site-info-form, #theme-editor-form {
-    padding: 18px 8px;
-  }
+
   .input-field {
     min-width: 100%;
     margin-bottom: 12px;
+  }
+
+  #site-info-form button[type="submit"], #theme-editor-form button[type="submit"] {
+    width: 100%;
   }
 
   #color-picker .input-field{
@@ -1053,10 +1070,3 @@ justify-content: center;
   }
 }
 
-#hero-count-bottom, #gallery-count-bottom {
-  flex-basis: 100%;
-}
-
-.bottom-action-row {
-  margin-top: 30px;
-}
