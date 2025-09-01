@@ -934,6 +934,7 @@ justify-content: center;
     width: 16px;
     height: 16px;
     display: flex;
+    margin: auto;
 }
 
 .icon-text {
