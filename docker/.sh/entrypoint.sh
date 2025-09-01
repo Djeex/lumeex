@@ -5,12 +5,12 @@ CYAN="\033[1;36m"
 NC="\033[0m"
 
 copy_default_config() {
-  echo "Checking configuration directory..."
+  echo "[~] Checking configuration directory..."
   if [ ! -d "/app/config" ]; then
     mkdir -p /app/config
   fi
 
-  echo "Checking if default config files need to be copied..."
+  echo "[~] Checking if default config files need to be copied..."
   files_copied=false
 
   for file in /app/default/*; do
@@ -18,16 +18,16 @@ copy_default_config() {
     target="/app/config/$filename"
 
     if [ ! -e "$target" ]; then
-      echo "Copying default config file: $filename"
+      echo "[→] Copying default config file: $filename"
       cp -r "$file" "$target"
       files_copied=true
     fi
   done
 
   if [ "$files_copied" = true ]; then
-    echo "Default configuration files copied successfully."
+    echo "[✓] Default configuration files copied successfully."
   else
-    echo "No default files needed to be copied."
+    echo "[✓] No default files needed to be copied."
   fi
 }
 
@@ -44,12 +44,12 @@ start_server() {
   cat /tmp/build_logs_fifo2 >&2 &
 
   PREVIEW_PORT="${PREVIEW_PORT:-3000}"
-  echo "Starting preview HTTP server on port 3000..."
-  echo "Preview host port is set to: ${PREVIEW_PORT}"
+  echo "[~]Starting preview HTTP server on port 3000..."
+  echo "[i] Preview host port is set to: ${PREVIEW_PORT}"
   python3 -u -m http.server 3000 -d /app/output &
   SERVER_PID=$!
 
-  echo "Starting Lumeex Flask webui..."
+  echo "[~] Starting Lumeex Flask webui..."
   python3 -u -m src.py.webui.webui &
   WEBUI_PID=$!
 
@@ -74,15 +74,15 @@ fi
 
 case "$1" in
   build)
-    echo "Running build.py..."
+    echo "[~] Running build.py..."
     python3 -u /app/build.py 2>&1 | tee /tmp/build_logs_fifo
     ;;
   gallery)
-    echo "Running gallery.py..."
+    echo "[~] Running gallery.py..."
     python3 -u /app/gallery.py 2>&1 | tee /tmp/build_logs_fifo2
     ;;
   *)
-    echo "Unknown command: $1"
+    echo "[!] Unknown command: $1"
     exec "$@"
     ;;
 esac

@@ -494,6 +494,6 @@ def download_output_zip():
 
 # --- Run server ---
 if __name__ == "__main__":
-    logging.info("Starting WebUI at http://0.0.0.0:5000")
-    logging.info(f"Host port is {WEBUI_PORT}")
+    logging.info("[~] Starting WebUI at http://0.0.0.0:5000")
+    logging.info(f"[i] WebUI host port is set to {WEBUI_PORT}")
     app.run(host="0.0.0.0", port=5000, debug=True)
