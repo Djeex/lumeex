@@ -43,7 +43,9 @@ start_server() {
   cat /tmp/build_logs_fifo >&2 &
   cat /tmp/build_logs_fifo2 >&2 &
 
+  PREVIEW_PORT="${PREVIEW_PORT:-3000}"
   echo "Starting preview HTTP server on port 3000..."
+  echo "Preview host port is set to: ${PREVIEW_PORT}"
   python3 -u -m http.server 3000 -d /app/output &
   SERVER_PID=$!
 

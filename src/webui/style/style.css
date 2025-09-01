@@ -416,6 +416,14 @@ h2 {
   display: flex;
 }
 
+.modal-actions-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+}
+
 .flex-column {
   flex-direction: column;
 }

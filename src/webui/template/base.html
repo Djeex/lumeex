@@ -48,7 +48,10 @@
                         <span id="build-success-modal-close" class="modal-close">&times;</span>
                         <h3>✅ Build completed!</h3>
                         <p>Your files are available in the output folder.</p>
-                        <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
+                        <div class="modal-actions-row">
+                            <button id="preview-site-btn" class="modal-btn" data-preview-port="{{ preview_port }}">🔎 Preview Site</button>
+                            <button id="download-zip-btn" class="modal-btn">📦 Download ZIP</button>
+                        </div>
                         <div id="zip-loader" style="display:none;">Creating ZIP...</div>
                     </div>
                 </div>

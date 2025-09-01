@@ -30,6 +30,8 @@ app = Flask(
     static_url_path=""
 )
 
+WEBUI_PORT = int(os.getenv("WEBUI_PORT", 5000))
+
 # --- Config paths ---
 SITE_YAML = Path(__file__).resolve().parents[3] / "config" / "site.yaml"
 PHOTOS_DIR = Path(__file__).resolve().parents[3] / "config" / "photos"
@@ -72,9 +74,14 @@ def get_local_fonts(theme_name):
 def index():
     return render_template("index.html")
 
+PREVIEW_PORT = int(os.getenv("PREVIEW_PORT", 3000))
+
 @app.context_processor
 def inject_version():
-    return dict(lumeex_version=lumeex_version)
+    return dict(
+        lumeex_version=lumeex_version,
+        preview_port=PREVIEW_PORT
+    )
 
 # --- Gallery & Hero API ---
 @app.route("/gallery-editor")
@@ -488,4 +495,5 @@ def download_output_zip():
 # --- Run server ---
 if __name__ == "__main__":
     logging.info("Starting WebUI at http://0.0.0.0:5000")
+    logging.info(f"Host port is {WEBUI_PORT}")
     app.run(host="0.0.0.0", port=5000, debug=True)
