@@ -30,7 +30,7 @@ build:
 # Change this by your legals
 legals:
   hoster_name:
-  hoster_adress:
+  hoster_address:
   hoster_contact:
   intellectual_property:
     - paragraph: ""

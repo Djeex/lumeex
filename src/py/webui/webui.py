@@ -210,9 +210,21 @@ def get_site_info():
 @app.route("/api/site-info", methods=["POST"])
 def update_site_info():
     """Update site info YAML."""
-    data = request.json
+    new_data = request.json
+    with open(SITE_YAML, "r") as f:
+        old_data = yaml.safe_load(f) or {}
+
+    def deep_merge(old, new):
+        for k, v in new.items():
+            if isinstance(v, dict) and isinstance(old.get(k), dict):
+                old[k] = deep_merge(old[k], v)
+            else:
+                old[k] = v
+        return old
+
+    merged = deep_merge(old_data, new_data)
     with open(SITE_YAML, "w") as f:
-        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+        yaml.safe_dump(merged, f, sort_keys=False, allow_unicode=True)
     return jsonify({"status": "ok"})
 
 # --- Theme management ---
