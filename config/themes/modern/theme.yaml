@@ -16,7 +16,7 @@ fonts:
     fallback: serif
     name: Montserrat
 google_fonts:
-- family: Lato
+- family: ''
   weights:
   - '200'
   - '400'
