@@ -6,8 +6,10 @@ colors:
   text_dark: '#616161'
   background: '#FFFFFF'
   browser_color: '#FFFFFF'
+
 favicon:
   path: favicon.png
+
 fonts:
   primary:
     fallback: sans-serif
@@ -15,8 +17,9 @@ fonts:
   secondary:
     fallback: serif
     name: Montserrat
+    
 google_fonts:
-- family: ''
+- family: 'Lato'
   weights:
   - '200'
   - '400'

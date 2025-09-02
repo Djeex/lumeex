@@ -1,28 +1,33 @@
 info:
-  title: null
-  subtitle: null
-  description: null
-  canonical: null
-  keywords: null
-  author: null
+  title:
+  subtitle:
+  description:
+  canonical:
+  keywords:
+  author:
+
 social:
-  instagram_url: null
+  instagram_url:
   thumbnail: ''
+
 menu:
   items:
   - label: Home
     href: /
+
 footer:
   copyright: Copyright © 2025
   legal_link: /legals/
   legal_label: Legal notice
+
 build:
   theme: modern
   convert_images: true
   resize_images: true
+  
 legals:
-  hoster_name: null
-  hoster_address: null
-  hoster_contact: null
+  hoster_name:
+  hoster_address:
+  hoster_contact:
   intellectual_property:
   - paragraph: ''

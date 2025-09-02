@@ -463,6 +463,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function isSectionSaved(section) {
     const values = getSectionValues(section);
     const config = loadedConfig[section] || {};
+    function normalizeMenuItems(items) {
+      return (items || []).map(item => ({
+        label: item.label || "",
+        href: item.href || ""
+      }));
+    }
     switch (section) {
       case "info":
         return Object.keys(values).every(
@@ -477,8 +483,8 @@ document.addEventListener("DOMContentLoaded", () => {
           values.instagram_url === (config.instagram_url || "") &&
           values.thumbnail === (config.thumbnail || "");
       case "menu":
-        return JSON.stringify(values.items) === JSON.stringify(config.items || []);
-      case "footer":
+        return JSON.stringify(normalizeMenuItems(values.items)) === JSON.stringify(normalizeMenuItems(config.items));
+            case "footer":
         return values.copyright && values.legal_label &&
           values.copyright === (config.copyright || "") &&
           values.legal_label === (config.legal_label || "");
