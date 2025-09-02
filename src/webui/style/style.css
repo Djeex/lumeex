@@ -337,6 +337,20 @@ h2 {
 .toast.success { background-color: #28a7468c; }
 .toast.error { background-color: #dc3545; }
 
+/* img fade in */
+
+.fade-in-img {
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+  will-change: opacity, transform;
+}
+
+.fade-in-img.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
 /* --- Tags --- */
 .tag-input {
   display: flex;

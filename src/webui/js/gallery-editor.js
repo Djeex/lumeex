@@ -48,7 +48,7 @@ function renderGallery() {
     div.className = 'photo flex-item flex-column';
     div.innerHTML = `
       <div class="flex-item">
-        <img src="/photos/${img.src}">
+        <img class="fade-in-img" src="/photos/${img.src}">
       </div>
       <div class="tags-display" data-index="${i}"></div>
       <div class="flex-item flex-full">
@@ -92,6 +92,22 @@ function renderGallery() {
   if (removeAllBtnBottom) {
     removeAllBtnBottom.style.display = imagesToShow.length > 0 ? 'inline-block' : 'none';
   }
+
+  // --- Fade-in effect for loaded images ---
+  const fadeImages = document.querySelectorAll("img.fade-in-img");
+  fadeImages.forEach(img => {
+    const onLoad = () => {
+      img.classList.add("loaded");
+    };
+    if (img.complete && img.naturalHeight !== 0) {
+      onLoad();
+    } else {
+      img.addEventListener("load", onLoad, { once: true });
+      img.addEventListener("error", () => {
+        console.warn("Image failed to load:", img.dataset.src || img.src);
+      });
+    }
+  });
 }
 
 // --- Render tags for a single image ---
@@ -513,6 +529,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (removeAllHeroBtn) removeAllHeroBtn.onclick = () => showDeleteModal('hero-all');
   if (removeAllHeroBtnBottom) removeAllHeroBtnBottom.onclick = () => showDeleteModal('hero-all');
 });
+
+
 
 // --- Initialize ---
 loadData();
