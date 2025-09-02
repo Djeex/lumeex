@@ -2,6 +2,7 @@
 let galleryImages = [];
 let heroImages = [];
 let allTags = []; // global tag list
+let showOnlyUntagged = false;
 
 // --- Load images from server on page load ---
 async function loadData() {
@@ -34,7 +35,15 @@ function updateAllTags() {
 function renderGallery() {
   const container = document.getElementById('gallery');
   container.innerHTML = '';
-  galleryImages.forEach((img, i) => {
+
+  // Filter images if toggle is on
+  let imagesToShow = galleryImages;
+  if (showOnlyUntagged) {
+    imagesToShow = galleryImages.filter(img => !img.tags || img.tags.length === 0);
+  }
+
+  imagesToShow.forEach((img) => {
+    const i = galleryImages.indexOf(img); // Use real index for tag/delete actions
     const div = document.createElement('div');
     div.className = 'photo flex-item flex-column';
     div.innerHTML = `
@@ -57,31 +66,31 @@ function renderGallery() {
   // Update gallery count (top)
   const galleryCount = document.getElementById('gallery-count');
   if (galleryCount) {
-    galleryCount.innerHTML = `<p>${galleryImages.length} photos</p>`;
+    galleryCount.innerHTML = `<p>${imagesToShow.length} photos</p>`;
   }
 
   // Update gallery count (bottom)
   const galleryCountBottom = document.getElementById('gallery-count-bottom');
   if (galleryCountBottom) {
-    galleryCountBottom.innerHTML = `<p>${galleryImages.length} photos</p>`;
+    galleryCountBottom.innerHTML = `<p>${imagesToShow.length} photos</p>`;
   }
 
   // Show/hide Remove All button (top)
   const removeAllBtn = document.getElementById('remove-all-gallery');
   if (removeAllBtn) {
-    removeAllBtn.style.display = galleryImages.length > 0 ? 'inline-block' : 'none';
+    removeAllBtn.style.display = imagesToShow.length > 0 ? 'inline-block' : 'none';
   }
 
   // Show/hide bottom upload row
   const bottomGalleryUpload = document.getElementById('bottom-gallery-upload');
   if (bottomGalleryUpload) {
-    bottomGalleryUpload.style.display = galleryImages.length > 0 ? 'flex' : 'none';
+    bottomGalleryUpload.style.display = imagesToShow.length > 0 ? 'flex' : 'none';
   }
 
   // Show/hide Remove All button (bottom)
   const removeAllBtnBottom = document.getElementById('remove-all-gallery-bottom');
   if (removeAllBtnBottom) {
-    removeAllBtnBottom.style.display = galleryImages.length > 0 ? 'inline-block' : 'none';
+    removeAllBtnBottom.style.display = imagesToShow.length > 0 ? 'inline-block' : 'none';
   }
 }
 
@@ -474,6 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('delete-modal-close').onclick = hideDeleteModal;
   document.getElementById('delete-modal-cancel').onclick = hideDeleteModal;
   document.getElementById('delete-modal-confirm').onclick = confirmDelete;
+
+  // --- Radio toggle for gallery filter ---
+  const showAllRadio = document.getElementById('show-all-radio');
+  const showUntaggedRadio = document.getElementById('show-untagged-radio');
+
+  if (showAllRadio && showUntaggedRadio) {
+    showAllRadio.addEventListener('change', () => {
+      if (showAllRadio.checked) {
+        showOnlyUntagged = false;
+        renderGallery();
+      }
+    });
+    showUntaggedRadio.addEventListener('change', () => {
+      if (showUntaggedRadio.checked) {
+        showOnlyUntagged = true;
+        renderGallery();
+      }
+    });
+  }
 
   // Bulk delete buttons
   const removeAllGalleryBtn = document.getElementById('remove-all-gallery');

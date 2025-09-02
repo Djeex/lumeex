@@ -236,6 +236,19 @@ h2 {
   cursor: pointer;
 }
 
+/* --- Filter Row --- */
+.filter-row label {
+  display: inline-block;
+  margin-right: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filter-row input[type="radio"] {
+  accent-color: #55c3ec;
+  margin-right: 6px;
+}
+
 /* --- Gallery & Hero Grid --- */
 #gallery, #hero {
   display: grid;

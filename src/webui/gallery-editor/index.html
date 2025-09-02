@@ -40,6 +40,16 @@
         </label>
         <button id="remove-all-gallery" class="up-btn">🗑 Delete all</button>
       </div>
+        <div class="filter-row">
+          <label>
+            <input type="radio" name="gallery-filter" id="show-all-radio" checked>
+            All
+          </label>
+          <label>
+            <input type="radio" name="gallery-filter" id="show-untagged-radio">
+            Untagged
+          </label>
+        </div>
       <span id="gallery-count" class="photo-count"></span>
       <input type="file" id="upload-gallery" accept=".png,.jpg,.jpeg,.webp" multiple hidden>
       <div id="gallery"></div>
