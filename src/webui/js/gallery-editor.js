@@ -47,9 +47,9 @@ function renderGallery() {
     const div = document.createElement('div');
     div.className = 'photo flex-item flex-column';
     div.innerHTML = `
-      <div class="flex-item">
-        <img class="fade-in-img" src="/photos/${img.src}">
-      </div>
+        <div class="flex-item">
+          <img class="fade-in-img" src="/photos/${img.src}">
+        </div>
       <div class="tags-display" data-index="${i}"></div>
       <div class="flex-item flex-full">
         <div class="flex-item flex-end">
@@ -93,7 +93,7 @@ function renderGallery() {
     removeAllBtnBottom.style.display = imagesToShow.length > 0 ? 'inline-block' : 'none';
   }
 
-  // --- Fade-in effect for loaded images ---
+  // Fade-in effect for loaded images
   const fadeImages = document.querySelectorAll("img.fade-in-img");
   fadeImages.forEach(img => {
     const onLoad = () => {
