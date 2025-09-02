@@ -26,14 +26,19 @@ function hideLoader() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Form and menu logic
-  const form = document.getElementById("site-info-form");
+  // --- Section Forms ---
+  const infoForm = document.getElementById("info-form");
+  const socialForm = document.getElementById("social-form");
+  const menuForm = document.getElementById("menu-form");
+  const footerForm = document.getElementById("footer-form");
+  const legalsForm = document.getElementById("legals-form");
+  const buildForm = document.getElementById("build-form");
+
+  // --- Menu logic ---
   const menuList = document.getElementById("menu-items-list");
   const addMenuBtn = document.getElementById("add-menu-item");
-
   let menuItems = [];
 
-  // Render menu items
   function renderMenuItems() {
     menuList.innerHTML = "";
     menuItems.forEach((item, idx) => {
@@ -50,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Update menu items from inputs
   function updateMenuItemsFromInputs() {
     const inputs = menuList.querySelectorAll("input");
     const items = [];
@@ -62,12 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
     menuItems = items;
   }
 
-  // Intellectual property paragraphs logic
+  // --- Intellectual property paragraphs logic ---
   const ipList = document.getElementById("ip-list");
   const addIpBtn = document.getElementById("add-ip-paragraph");
   let ipParagraphs = [];
 
-  // Render IP paragraphs
   function renderIpParagraphs() {
     ipList.innerHTML = "";
     ipParagraphs.forEach((item, idx) => {
@@ -83,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Update IP paragraphs from textareas
   function updateIpParagraphsFromInputs() {
     const textareas = ipList.querySelectorAll("textarea");
     ipParagraphs = Array.from(textareas).map(textarea => ({
@@ -91,27 +93,27 @@ document.addEventListener("DOMContentLoaded", () => {
     })).filter(item => item.paragraph !== "");
   }
 
-  // Build options
+  // --- Build options ---
   const convertImagesCheckbox = document.getElementById("convert-images-checkbox");
   const resizeImagesCheckbox = document.getElementById("resize-images-checkbox");
 
-  // Theme select
+  // --- Theme select ---
   const themeSelect = document.getElementById("theme-select");
 
-  // Thumbnail upload and modal logic
-  const thumbnailInput = form?.elements["social.thumbnail"];
+  // --- Thumbnail upload and modal logic ---
+  const thumbnailInput = document.getElementById("social-thumbnail");
   const thumbnailUpload = document.getElementById("thumbnail-upload");
   const chooseThumbnailBtn = document.getElementById("choose-thumbnail-btn");
   const thumbnailPreview = document.getElementById("thumbnail-preview");
   const removeThumbnailBtn = document.getElementById("remove-thumbnail-btn");
 
-  // Modal elements for delete confirmation
+  // --- Modal elements for delete confirmation ---
   const deleteModal = document.getElementById("delete-modal");
   const deleteModalClose = document.getElementById("delete-modal-close");
   const deleteModalConfirm = document.getElementById("delete-modal-confirm");
   const deleteModalCancel = document.getElementById("delete-modal-cancel");
 
-  // Modal elements for theme deletion
+  // --- Modal elements for theme deletion ---
   const deleteThemeModal = document.getElementById("delete-theme-modal");
   const deleteThemeModalClose = document.getElementById("delete-theme-modal-close");
   const deleteThemeModalConfirm = document.getElementById("delete-theme-modal-confirm");
@@ -119,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteThemeModalText = document.getElementById("delete-theme-modal-text");
   let themeToDelete = null;
 
-  // Show/hide thumbnail preview, remove button, and choose button
+  // --- Show/hide thumbnail preview, remove button, and choose button ---
   function updateThumbnailPreview(src) {
     if (thumbnailPreview) {
       thumbnailPreview.src = src || "";
@@ -133,12 +135,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Choose thumbnail button triggers file input
+  // --- Choose thumbnail button triggers file input ---
   if (chooseThumbnailBtn && thumbnailUpload) {
     chooseThumbnailBtn.addEventListener("click", () => thumbnailUpload.click());
   }
 
-  // Handle thumbnail upload and refresh preview (with cache busting)
+  // --- Handle thumbnail upload and refresh preview (with cache busting) ---
   if (thumbnailUpload) {
     thumbnailUpload.addEventListener("change", async (e) => {
       const file = e.target.files[0];
@@ -156,17 +158,18 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showToast("❌ Error uploading thumbnail", "error");
       }
+      updateSectionStatus("social");
     });
   }
 
-  // Remove thumbnail button triggers modal
+  // --- Remove thumbnail button triggers modal ---
   if (removeThumbnailBtn) {
     removeThumbnailBtn.addEventListener("click", () => {
       deleteModal.style.display = "flex";
     });
   }
 
-  // Modal logic for thumbnail deletion
+  // --- Modal logic for thumbnail deletion ---
   if (deleteModal && deleteModalClose && deleteModalConfirm && deleteModalCancel) {
     deleteModalClose.onclick = deleteModalCancel.onclick = () => {
       deleteModal.style.display = "none";
@@ -187,10 +190,11 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("❌ Error removing thumbnail", "error");
       }
       deleteModal.style.display = "none";
+      updateSectionStatus("social");
     };
   }
 
-  // Theme upload logic (custom theme folder)
+  // --- Theme upload logic (custom theme folder) ---
   const themeUpload = document.getElementById("theme-upload");
   const chooseThemeBtn = document.getElementById("choose-theme-btn");
   if (chooseThemeBtn && themeUpload) {
@@ -223,10 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showToast("❌ Error uploading theme", "error");
       }
+      updateSectionStatus("build");
     });
   }
 
-  // Remove theme button triggers modal
+  // --- Remove theme button triggers modal ---
   const removeThemeBtn = document.getElementById("remove-theme-btn");
   if (removeThemeBtn && themeSelect) {
     removeThemeBtn.addEventListener("click", () => {
@@ -242,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Modal logic for theme deletion
+  // --- Modal logic for theme deletion ---
   if (deleteThemeModal && deleteThemeModalClose && deleteThemeModalConfirm && deleteThemeModalCancel) {
     deleteThemeModalClose.onclick = deleteThemeModalCancel.onclick = () => {
       deleteThemeModal.style.display = "none";
@@ -283,10 +288,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       deleteThemeModal.style.display = "none";
       themeToDelete = null;
+      updateSectionStatus("build");
     };
   }
 
-  // Fetch theme list and populate select
+  // --- Fetch theme list and populate select ---
   if (themeSelect) {
     fetch("/api/themes")
       .then(res => res.json())
@@ -307,139 +313,307 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // Load config from server and populate form
-  if (form) {
-    fetch("/api/site-info")
-      .then(res => res.json())
-      .then(data => {
-        ipParagraphs = Array.isArray(data.legals?.intellectual_property)
-          ? data.legals.intellectual_property
-          : [];
-        renderIpParagraphs();
-        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
-        renderMenuItems();
-        form.elements["info.title"].value = data.info?.title || "";
-        form.elements["info.subtitle"].value = data.info?.subtitle || "";
-        form.elements["info.description"].value = data.info?.description || "";
-        form.elements["info.canonical"].value = data.info?.canonical || "";
-        form.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
-        form.elements["info.author"].value = data.info?.author || "";
-        form.elements["social.instagram_url"].value = data.social?.instagram_url || "";
+  // --- Load config from server and populate forms ---
+  let loadedConfig = {};
+  fetch("/api/site-info")
+    .then(res => res.json())
+    .then(data => {
+      loadedConfig = data;
+      // Info
+      if (infoForm) {
+        infoForm.elements["info.title"].value = data.info?.title || "";
+        infoForm.elements["info.subtitle"].value = data.info?.subtitle || "";
+        infoForm.elements["info.description"].value = data.info?.description || "";
+        infoForm.elements["info.canonical"].value = data.info?.canonical || "";
+        infoForm.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
+        infoForm.elements["info.author"].value = data.info?.author || "";
+      }
+      // Social
+      if (socialForm) {
+        socialForm.elements["social.instagram_url"].value = data.social?.instagram_url || "";
         if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
         updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
-        form.elements["footer.copyright"].value = data.footer?.copyright || "";
-        form.elements["footer.legal_label"].value = data.footer?.legal_label || "";
-        if (themeSelect) {
-          themeSelect.value = data.build?.theme || "";
-        }
-        form.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
-        form.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
-        form.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
-        // Build checkboxes
-        if (convertImagesCheckbox) {
-          convertImagesCheckbox.checked = !!data.build?.convert_images;
-        }
-        if (resizeImagesCheckbox) {
-          resizeImagesCheckbox.checked = !!data.build?.resize_images;
-        }
-      });
-  }
+      }
+      // Menu
+      menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
+      renderMenuItems();
+      // Footer
+      if (footerForm) {
+        footerForm.elements["footer.copyright"].value = data.footer?.copyright || "";
+        footerForm.elements["footer.legal_label"].value = data.footer?.legal_label || "";
+      }
+      // Legals
+      ipParagraphs = Array.isArray(data.legals?.intellectual_property)
+        ? data.legals.intellectual_property
+        : [];
+      renderIpParagraphs();
+      if (legalsForm) {
+        legalsForm.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
+        legalsForm.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
+        legalsForm.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
+      }
+      // Build
+      if (themeSelect) {
+        themeSelect.value = data.build?.theme || "";
+      }
+      if (convertImagesCheckbox) {
+        convertImagesCheckbox.checked = !!data.build?.convert_images;
+      }
+      if (resizeImagesCheckbox) {
+        resizeImagesCheckbox.checked = !!data.build?.resize_images;
+      }
+      // Initial status update
+      ["info", "social", "menu", "footer", "legals", "build"].forEach(updateSectionStatus);
+    });
 
-  // Add menu item
+  // --- Add menu item ---
   if (addMenuBtn) {
     addMenuBtn.addEventListener("click", () => {
       menuItems.push({ label: "", href: "" });
       renderMenuItems();
+      updateSectionStatus("menu");
     });
   }
 
-  // Remove menu item
+  // --- Remove menu item ---
   menuList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-menu-item")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
       menuItems.splice(idx, 1);
       renderMenuItems();
+      updateSectionStatus("menu");
     }
   });
 
-  // Update menuItems on input change
+  // --- Update menuItems on input change ---
   menuList.addEventListener("input", () => {
     updateMenuItemsFromInputs();
+    updateSectionStatus("menu");
   });
 
-  // Add paragraph
+  // --- Add paragraph ---
   if (addIpBtn) {
     addIpBtn.addEventListener("click", () => {
       ipParagraphs.push({ paragraph: "" });
       renderIpParagraphs();
+      updateSectionStatus("legals");
     });
   }
 
-  // Remove paragraph
+  // --- Remove paragraph ---
   ipList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-ip-paragraph")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
       ipParagraphs.splice(idx, 1);
       renderIpParagraphs();
+      updateSectionStatus("legals");
     }
   });
 
-  // Update ipParagraphs on input change
+  // --- Update ipParagraphs on input change ---
   ipList.addEventListener("input", () => {
     updateIpParagraphsFromInputs();
+    updateSectionStatus("legals");
   });
 
-  // Save config to server
-  if (form) {
+  // --- Section value helpers ---
+  function getSectionValues(section) {
+    switch (section) {
+      case "info":
+        return {
+          title: infoForm.elements["info.title"].value,
+          subtitle: infoForm.elements["info.subtitle"].value,
+          description: infoForm.elements["info.description"].value,
+          canonical: infoForm.elements["info.canonical"].value,
+          keywords: infoForm.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
+          author: infoForm.elements["info.author"].value
+        };
+      case "social":
+        return {
+          instagram_url: socialForm.elements["social.instagram_url"].value,
+          thumbnail: thumbnailInput ? thumbnailInput.value : ""
+        };
+      case "menu":
+        updateMenuItemsFromInputs();
+        return { items: menuItems };
+      case "footer":
+        return {
+          copyright: footerForm.elements["footer.copyright"].value,
+          legal_label: footerForm.elements["footer.legal_label"].value
+        };
+      case "legals":
+        updateIpParagraphsFromInputs();
+        return {
+          hoster_name: legalsForm.elements["legals.hoster_name"].value,
+          hoster_address: legalsForm.elements["legals.hoster_address"].value,
+          hoster_contact: legalsForm.elements["legals.hoster_contact"].value,
+          intellectual_property: ipParagraphs
+        };
+      case "build":
+        return {
+          theme: themeSelect ? themeSelect.value : "",
+          convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
+          resize_images: !!(resizeImagesCheckbox && resizeImagesCheckbox.checked)
+        };
+      default:
+        return {};
+    }
+  }
+
+  function isSectionSaved(section) {
+    const values = getSectionValues(section);
+    const config = loadedConfig[section] || {};
+    switch (section) {
+      case "info":
+        return Object.keys(values).every(
+          key => values[key] && (
+            key === "keywords"
+              ? Array.isArray(config.keywords) && values.keywords.join(",") === config.keywords.join(",")
+              : values[key] === (config[key] || "")
+          )
+        );
+      case "social":
+        return values.instagram_url && values.thumbnail &&
+          values.instagram_url === (config.instagram_url || "") &&
+          values.thumbnail === (config.thumbnail || "");
+      case "menu":
+        return JSON.stringify(values.items) === JSON.stringify(config.items || []);
+      case "footer":
+        return values.copyright && values.legal_label &&
+          values.copyright === (config.copyright || "") &&
+          values.legal_label === (config.legal_label || "");
+      case "legals":
+        return values.hoster_name && values.hoster_address && values.hoster_contact &&
+          values.hoster_name === (config.hoster_name || "") &&
+          values.hoster_address === (config.hoster_address || "") &&
+          values.hoster_contact === (config.hoster_contact || "") &&
+          JSON.stringify(values.intellectual_property) === JSON.stringify(config.intellectual_property || []);
+      case "build":
+        return values.theme === (config.theme || "") &&
+          !!values.convert_images === !!config.convert_images &&
+          !!values.resize_images === !!config.resize_images;
+      default:
+        return true;
+    }
+  }
+
+  function isSectionComplete(section) {
+    const values = getSectionValues(section);
+    switch (section) {
+      case "info":
+        return (
+          values.title &&
+          values.subtitle &&
+          values.description &&
+          values.canonical &&
+          values.keywords.length > 0 &&
+          values.author
+        );
+      case "social":
+        return values.instagram_url && values.thumbnail;
+      case "menu":
+        return Array.isArray(values.items) && values.items.every(item => item.label && item.href);
+      case "footer":
+        return values.copyright && values.legal_label;
+      case "legals":
+        return (
+          values.hoster_name &&
+          values.hoster_address &&
+          values.hoster_contact &&
+          Array.isArray(values.intellectual_property) &&
+          values.intellectual_property.length > 0 &&
+          values.intellectual_property.every(ip => ip.paragraph)
+        );
+      case "build":
+        return values.theme;
+      default:
+        return true;
+    }
+  }
+
+  function updateSectionStatus(section) {
+    const statusEl = document.querySelector(`#${section}-section .section-status`);
+    if (!statusEl) return;
+  if (!isSectionComplete(section)) {
+    statusEl.innerHTML = "⚠️ Section not yet saved. Please fill required fields";
+    statusEl.style.color = "#ffc700";
+    statusEl.style.display = "";
+    statusEl.style.fontStyle = "normal";
+    return;
+  }
+  if (isSectionSaved(section)) {
+    statusEl.innerHTML = "";
+    statusEl.style.display = "none";
+  } else {
+    statusEl.innerHTML = "⚠️ Section not yet saved";
+    statusEl.style.color = "#ffc700";
+    statusEl.style.display = "";
+    statusEl.style.fontStyle = "normal";
+  }
+}
+
+  // --- Listen for changes in each section ---
+  [
+    { form: infoForm, section: "info" },
+    { form: socialForm, section: "social" },
+    { form: menuForm, section: "menu" },
+    { form: footerForm, section: "footer" },
+    { form: legalsForm, section: "legals" },
+    { form: buildForm, section: "build" }
+  ].forEach(({ form, section }) => {
+    if (!form) return;
+    form.addEventListener("input", () => updateSectionStatus(section));
+    form.addEventListener("change", () => updateSectionStatus(section));
+  });
+
+  // --- Save section handler (form submit) ---
+  [
+    { form: infoForm, section: "info" },
+    { form: socialForm, section: "social" },
+    { form: menuForm, section: "menu" },
+    { form: footerForm, section: "footer" },
+    { form: legalsForm, section: "legals" },
+    { form: buildForm, section: "build" }
+  ].forEach(({ form, section }) => {
+    if (!form) return;
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      updateMenuItemsFromInputs();
-      updateIpParagraphsFromInputs();
-
-      // Check if thumbnail is set before saving (uploaded or present in input)
-      if (!thumbnailInput || !thumbnailInput.value) {
-        showLoader("Saving...");
-        showToast("❌ Thumbnail is required.", "error");
-        hideLoader();
+      // Native browser validation
+      if (!form.reportValidity()) {
+        showToast("❌ Please fill all required fields before saving.", "error");
+        updateSectionStatus(section);
         return;
       }
-
-      const build = {
-        theme: themeSelect ? themeSelect.value : "",
-        convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
-        resize_images: !!(resizeImagesCheckbox && resizeImagesCheckbox.checked)
-      };
-
-      const payload = {
-        info: {
-          title: form.elements["info.title"].value,
-          subtitle: form.elements["info.subtitle"].value,
-          description: form.elements["info.description"].value,
-          canonical: form.elements["info.canonical"].value,
-          keywords: form.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
-          author: form.elements["info.author"].value
-        },
-        social: {
-          instagram_url: form.elements["social.instagram_url"].value,
-          thumbnail: thumbnailInput ? thumbnailInput.value : ""
-        },
-        menu: {
-          items: menuItems
-        },
-        footer: {
-          copyright: form.elements["footer.copyright"].value,
-          legal_label: form.elements["footer.legal_label"].value
-        },
-        build,
-        legals: {
-          hoster_name: form.elements["legals.hoster_name"].value,
-          hoster_address: form.elements["legals.hoster_address"].value,
-          hoster_contact: form.elements["legals.hoster_contact"].value,
-          intellectual_property: ipParagraphs
+      // Social section: check thumbnail
+      if (section === "social") {
+        if (!thumbnailInput || !thumbnailInput.value) {
+          showToast("❌ Thumbnail is required.", "error");
+          updateSectionStatus(section);
+          return;
         }
-      };
-      // --- REMOVE loader for save ---
-      // showLoader("Saving...");
+      }
+      // Menu section: check all menu items
+      if (section === "menu") {
+        updateMenuItemsFromInputs();
+        if (!menuItems.length || !menuItems.every(item => item.label && item.href)) {
+          showToast("❌ Please fill all menu item fields.", "error");
+          updateSectionStatus(section);
+          return;
+        }
+      }
+      // Legals section: check all paragraphs
+      if (section === "legals") {
+        updateIpParagraphsFromInputs();
+        if (!ipParagraphs.length || !ipParagraphs.every(ip => ip.paragraph)) {
+          showToast("❌ Please fill all intellectual property paragraphs.", "error");
+          updateSectionStatus(section);
+          return;
+        }
+      }
+      // Build payload for this section only
+      let payload = {};
+      payload[section] = getSectionValues(section);
+
       const res = await fetch("/api/site-info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -447,10 +621,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const result = await res.json();
       if (result.status === "ok") {
-        showToast("✅ Site info saved!", "success");
+        showToast("✅ Section saved!", "success");
+        // Reload config for this section
+        fetch("/api/site-info")
+          .then(res => res.json())
+          .then(data => {
+            loadedConfig = data;
+            updateSectionStatus(section);
+          });
       } else {
-        showToast("❌ Error saving site info", "error");
+        showToast("❌ Error saving section", "error");
       }
     });
-  }
+  });
+
 });
