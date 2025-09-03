@@ -401,15 +401,18 @@ h2 {
   z-index: 999;
   display: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  padding: 8px;
+  border-radius: 10px;
 }
 
 .tag-input ul.suggestions li {
-  padding: 6px 8px;
+  padding: 6px 10px;
   cursor: pointer;
 }
 
 .tag-input ul.suggestions li:hover {
   background-color: #007782;
+  border-radius: 7px;
 }
 
 .tags-display {
@@ -441,7 +444,9 @@ h2 {
   background-color: #007782;
   color: white;
   cursor: pointer;
+  border-radius: 7px;
 }
+
 .suggestions li {
   cursor: pointer;
 }
