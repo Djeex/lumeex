@@ -282,7 +282,7 @@ function renderHero() {
     div.className = 'photo flex-item flex-column';
     div.innerHTML = `
       <div class="flex-item">
-        <img src="/photos/${img.src}">
+        <img class="fade-in-img" src="/photos/${img.src}">
       </div>
       <div class="flex-item flex-full">
         <div class="flex-item flex-end">
