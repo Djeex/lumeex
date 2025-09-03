@@ -292,7 +292,63 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // --- Fetch theme list and populate select ---
+  // --- Fetch theme list and populate select, then load config and update build status ---
+  let loadedConfig = {};
+  function loadConfigAndUpdateBuildStatus() {
+    fetch("/api/site-info")
+      .then(res => res.json())
+      .then(data => {
+        loadedConfig = data;
+        // Info
+        if (infoForm) {
+          infoForm.elements["info.title"].value = data.info?.title || "";
+          infoForm.elements["info.subtitle"].value = data.info?.subtitle || "";
+          infoForm.elements["info.description"].value = data.info?.description || "";
+          infoForm.elements["info.canonical"].value = data.info?.canonical || "";
+          infoForm.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
+          infoForm.elements["info.author"].value = data.info?.author || "";
+        }
+        // Social
+        if (socialForm) {
+          socialForm.elements["social.instagram_url"].value = data.social?.instagram_url || "";
+          if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
+          updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
+        }
+        // Menu
+        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
+        renderMenuItems();
+        // Footer
+        if (footerForm) {
+          footerForm.elements["footer.copyright"].value = data.footer?.copyright || "";
+          footerForm.elements["footer.legal_label"].value = data.footer?.legal_label || "";
+        }
+        // Legals
+        ipParagraphs = Array.isArray(data.legals?.intellectual_property)
+          ? data.legals.intellectual_property
+          : [];
+        renderIpParagraphs();
+        if (legalsForm) {
+          legalsForm.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
+          legalsForm.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
+          legalsForm.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
+        }
+        // Build
+        if (themeSelect) {
+          themeSelect.value = data.build?.theme || "";
+        }
+        if (convertImagesCheckbox) {
+          convertImagesCheckbox.checked = !!data.build?.convert_images;
+        }
+        if (resizeImagesCheckbox) {
+          resizeImagesCheckbox.checked = !!data.build?.resize_images;
+        }
+        // Initial status update for all sections except build
+        ["info", "social", "menu", "footer", "legals"].forEach(updateSectionStatus);
+        // For build, update status after theme select is set
+        updateSectionStatus("build");
+      });
+  }
+
   if (themeSelect) {
     fetch("/api/themes")
       .then(res => res.json())
@@ -304,67 +360,13 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = theme;
           themeSelect.appendChild(option);
         });
-        // Set selected value after loading config
-        fetch("/api/site-info")
-          .then(res => res.json())
-          .then(data => {
-            themeSelect.value = data.build?.theme || "";
-          });
+        // Now load config and update build status after theme select is ready
+        loadConfigAndUpdateBuildStatus();
       });
+  } else {
+    // If no theme select, just load config
+    loadConfigAndUpdateBuildStatus();
   }
-
-  // --- Load config from server and populate forms ---
-  let loadedConfig = {};
-  fetch("/api/site-info")
-    .then(res => res.json())
-    .then(data => {
-      loadedConfig = data;
-      // Info
-      if (infoForm) {
-        infoForm.elements["info.title"].value = data.info?.title || "";
-        infoForm.elements["info.subtitle"].value = data.info?.subtitle || "";
-        infoForm.elements["info.description"].value = data.info?.description || "";
-        infoForm.elements["info.canonical"].value = data.info?.canonical || "";
-        infoForm.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
-        infoForm.elements["info.author"].value = data.info?.author || "";
-      }
-      // Social
-      if (socialForm) {
-        socialForm.elements["social.instagram_url"].value = data.social?.instagram_url || "";
-        if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
-        updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
-      }
-      // Menu
-      menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
-      renderMenuItems();
-      // Footer
-      if (footerForm) {
-        footerForm.elements["footer.copyright"].value = data.footer?.copyright || "";
-        footerForm.elements["footer.legal_label"].value = data.footer?.legal_label || "";
-      }
-      // Legals
-      ipParagraphs = Array.isArray(data.legals?.intellectual_property)
-        ? data.legals.intellectual_property
-        : [];
-      renderIpParagraphs();
-      if (legalsForm) {
-        legalsForm.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
-        legalsForm.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
-        legalsForm.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
-      }
-      // Build
-      if (themeSelect) {
-        themeSelect.value = data.build?.theme || "";
-      }
-      if (convertImagesCheckbox) {
-        convertImagesCheckbox.checked = !!data.build?.convert_images;
-      }
-      if (resizeImagesCheckbox) {
-        resizeImagesCheckbox.checked = !!data.build?.resize_images;
-      }
-      // Initial status update
-      ["info", "social", "menu", "footer", "legals", "build"].forEach(updateSectionStatus);
-    });
 
   // --- Add menu item ---
   if (addMenuBtn) {
@@ -484,7 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
           values.thumbnail === (config.thumbnail || "");
       case "menu":
         return JSON.stringify(normalizeMenuItems(values.items)) === JSON.stringify(normalizeMenuItems(config.items));
-            case "footer":
+      case "footer":
         return values.copyright && values.legal_label &&
           values.copyright === (config.copyright || "") &&
           values.legal_label === (config.legal_label || "");
@@ -531,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
           values.intellectual_property.every(ip => ip.paragraph)
         );
       case "build":
-        return values.theme;
+        return !!values.theme; // Only check theme is present
       default:
         return true;
     }
@@ -540,23 +542,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateSectionStatus(section) {
     const statusEl = document.querySelector(`#${section}-section .section-status`);
     if (!statusEl) return;
-  if (!isSectionComplete(section)) {
-    statusEl.innerHTML = "⚠️ Section not yet saved. Please fill required fields";
-    statusEl.style.color = "#ffc700";
-    statusEl.style.display = "";
-    statusEl.style.fontStyle = "normal";
-    return;
+    if (!isSectionComplete(section)) {
+      statusEl.innerHTML = "⚠️ Section not yet saved. Please fill required fields";
+      statusEl.style.color = "#ffc700";
+      statusEl.style.display = "";
+      statusEl.style.fontStyle = "normal";
+      return;
+    }
+    if (isSectionSaved(section)) {
+      statusEl.innerHTML = "";
+      statusEl.style.display = "none";
+    } else {
+      statusEl.innerHTML = "⚠️ Section not yet saved";
+      statusEl.style.color = "#ffc700";
+      statusEl.style.display = "";
+      statusEl.style.fontStyle = "normal";
+    }
   }
-  if (isSectionSaved(section)) {
-    statusEl.innerHTML = "";
-    statusEl.style.display = "none";
-  } else {
-    statusEl.innerHTML = "⚠️ Section not yet saved";
-    statusEl.style.color = "#ffc700";
-    statusEl.style.display = "";
-    statusEl.style.fontStyle = "normal";
-  }
-}
 
   // --- Listen for changes in each section ---
   [
