@@ -14,7 +14,7 @@ copy_default_config() {
   files_copied=false
 
   # Recursively check all files and folders in /app/default
-  find /app/default -mindepth 1 | while read src; do
+  while IFS= read -r src; do
     relpath="${src#/app/default/}"
     target="/app/config/$relpath"
     if [ ! -e "$target" ]; then
@@ -26,7 +26,7 @@ copy_default_config() {
       fi
       files_copied=true
     fi
-  done
+  done < <(find /app/default -mindepth 1)
 
   if [ "$files_copied" = true ]; then
     echo "[✓] Default configuration files/folders copied successfully."
