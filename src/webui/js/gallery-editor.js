@@ -4,6 +4,24 @@ let heroImages = [];
 let allTags = []; // global tag list
 let showOnlyUntagged = false;
 
+// --- Fade-in helper ---
+function applyFadeInImages(container) {
+  const fadeImages = container.querySelectorAll("img.fade-in-img");
+  fadeImages.forEach(img => {
+    const onLoad = () => {
+      img.classList.add("loaded");
+    };
+    if (img.complete && img.naturalHeight !== 0) {
+      onLoad();
+    } else {
+      img.addEventListener("load", onLoad, { once: true });
+      img.addEventListener("error", () => {
+        console.warn("Image failed to load:", img.dataset?.src || img.src);
+      });
+    }
+  });
+}
+
 // --- Load images from server on page load ---
 async function loadData() {
   try {
@@ -94,20 +112,7 @@ function renderGallery() {
   }
 
   // Fade-in effect for loaded images
-  const fadeImages = document.querySelectorAll("img.fade-in-img");
-  fadeImages.forEach(img => {
-    const onLoad = () => {
-      img.classList.add("loaded");
-    };
-    if (img.complete && img.naturalHeight !== 0) {
-      onLoad();
-    } else {
-      img.addEventListener("load", onLoad, { once: true });
-      img.addEventListener("error", () => {
-        console.warn("Image failed to load:", img.dataset.src || img.src);
-      });
-    }
-  });
+  applyFadeInImages(container);
 }
 
 // --- Render tags for a single image ---
@@ -322,6 +327,9 @@ function renderHero() {
   if (removeAllBtnBottom) {
     removeAllBtnBottom.style.display = heroImages.length > 0 ? 'inline-block' : 'none';
   }
+
+  // Fade-in effect for loaded images
+  applyFadeInImages(container);
 }
 
 // --- Save gallery to server ---
