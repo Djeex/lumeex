@@ -70,9 +70,11 @@ function setupColorPicker(colorId, btnId, textId, initial) {
 function setFontDropdown(selectId, value, options) {
   const select = document.getElementById(selectId);
   if (!select) return;
-  select.innerHTML = options.map(opt =>
-    `<option value="${opt}"${opt === value ? " selected" : ""}>${opt}</option>`
-  ).join("");
+  select.innerHTML = options.map(opt => {
+    // Remove extension if present
+    const base = opt.replace(/\.(woff2?|ttf|otf)$/, "");
+    return `<option value="${base}"${base === value ? " selected" : ""}>${base}</option>`;
+  }).join("");
 }
 
 function setFallbackDropdown(selectId, value) {

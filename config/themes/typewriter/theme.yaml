@@ -6,14 +6,12 @@ colors:
   primary_dark: '#005384'
   secondary: '#00B0F0'
   text_dark: '#616161'
-
 favicon:
   path: favicon.png
-  
 fonts:
   primary:
-    name: trixie.woff
+    name: trixie
     fallback: sans-serif
   secondary:
-    name: trixie.woff
+    name: trixie
     fallback: serif

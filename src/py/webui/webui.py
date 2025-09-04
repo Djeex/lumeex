@@ -415,7 +415,8 @@ def upload_font():
     fonts_dir = Path(__file__).resolve().parents[3] / "config" / "themes" / theme_name / "fonts"
     fonts_dir.mkdir(parents=True, exist_ok=True)
     file.save(fonts_dir / file.filename)
-    return jsonify({"status": "ok", "filename": file.filename})
+    font_basename = Path(file.filename).stem
+    return jsonify({"status": "ok", "filename": font_basename})
 
 @app.route("/api/font/remove", methods=["POST"])
 def remove_font():
