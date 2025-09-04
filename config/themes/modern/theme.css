@@ -50,7 +50,7 @@ img, tag {
 
     .hero-background {
         max-width: 90%;
-        margin: auto;
+        margin: 0 auto;
     }
 
     .back-button {
