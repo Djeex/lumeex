@@ -48,7 +48,10 @@
                         <span id="build-success-modal-close" class="modal-close">&times;</span>
                         <h3>✅ Build completed!</h3>
                         <p>Your files are available in the output folder.</p>
-                        <button id="download-zip-btn" class="modal-btn">Download ZIP</button>
+                        <div class="modal-actions-row">
+                            <button id="preview-site-btn" class="modal-btn" data-preview-port="{{ preview_port }}">🔎 Preview Site</button>
+                            <button id="download-zip-btn" class="modal-btn">📦 Download ZIP</button>
+                        </div>
                         <div id="zip-loader" style="display:none;">Creating ZIP...</div>
                     </div>
                 </div>
@@ -65,7 +68,7 @@
                         </div>
                         <div class="footer-links">
                             <a class="footer-link documentation" href="https://lumeex.djeex.fr"><span class="icon"><img src="/img/favicon.svg"></span><span class="icon-text">Documentation</span></a>
-                            <a class="footer-link gitea" href="https://gitea.com/Djeex/lumeex"><span class="icon"><img src="/img/gitea.svg"></span><span class="icon-text">Giteex</span></a>
+                            <a class="footer-link gitea" href="https://git.djeex.fr/Djeex/lumeex"><span class="icon"><img src="/img/gitea.svg"></span><span class="icon-text">Giteex</span></a>
                             <a class="footer-link github" href="https://github.com/Djeex/lumeex"><span class="icon"><img src="/img/github.svg"></span><span class="icon-text">Github</span></a>
                         </div>
                     </div>

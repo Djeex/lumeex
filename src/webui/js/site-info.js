@@ -12,7 +12,6 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
-// --- Loader helpers ---
 function showLoader(text = "Uploading...") {
   const loader = document.getElementById("global-loader");
   if (loader) {
@@ -26,119 +25,99 @@ function hideLoader() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Form and menu logic
-  const form = document.getElementById("site-info-form");
+  // --- Section Forms ---
+  const forms = {
+    info: document.getElementById("info-form"),
+    social: document.getElementById("social-form"),
+    menu: document.getElementById("menu-form"),
+    footer: document.getElementById("footer-form"),
+    legals: document.getElementById("legals-form"),
+    build: document.getElementById("build-form")
+  };
+
+  // --- Menu logic ---
   const menuList = document.getElementById("menu-items-list");
   const addMenuBtn = document.getElementById("add-menu-item");
-
   let menuItems = [];
-
-  // Render menu items
   function renderMenuItems() {
     menuList.innerHTML = "";
     menuItems.forEach((item, idx) => {
-      const div = document.createElement("div");
-      div.style.display = "flex";
-      div.style.gap = "8px";
-      div.style.marginBottom = "6px";
-      div.innerHTML = `
-        <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label" required>
-        <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href" required>
-        <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
+      menuList.innerHTML += `
+        <div style="display:flex;gap:8px;margin-bottom:6px;">
+          <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label" required>
+          <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href" required>
+          <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
+        </div>
       `;
-      menuList.appendChild(div);
     });
   }
-
-  // Update menu items from inputs
   function updateMenuItemsFromInputs() {
     const inputs = menuList.querySelectorAll("input");
-    const items = [];
+    menuItems = [];
     for (let i = 0; i < inputs.length; i += 2) {
       const label = inputs[i].value.trim();
       const href = inputs[i + 1].value.trim();
-      if (label || href) items.push({ label, href });
+      if (label || href) menuItems.push({ label, href });
     }
-    menuItems = items;
   }
 
-  // Intellectual property paragraphs logic
+  // --- Intellectual property paragraphs logic ---
   const ipList = document.getElementById("ip-list");
   const addIpBtn = document.getElementById("add-ip-paragraph");
   let ipParagraphs = [];
-
-  // Render IP paragraphs
   function renderIpParagraphs() {
     ipList.innerHTML = "";
     ipParagraphs.forEach((item, idx) => {
-      const div = document.createElement("div");
-      div.style.display = "flex";
-      div.style.gap = "8px";
-      div.style.marginBottom = "6px";
-      div.innerHTML = `
-        <textarea placeholder="Paragraph" required style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
-        <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
+      ipList.innerHTML += `
+        <div style="display:flex;gap:8px;margin-bottom:6px;">
+          <textarea placeholder="Paragraph" required style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
+          <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
+        </div>
       `;
-      ipList.appendChild(div);
     });
   }
-
-  // Update IP paragraphs from textareas
   function updateIpParagraphsFromInputs() {
-    const textareas = ipList.querySelectorAll("textarea");
-    ipParagraphs = Array.from(textareas).map(textarea => ({
-      paragraph: textarea.value.trim()
-    })).filter(item => item.paragraph !== "");
+    ipParagraphs = Array.from(ipList.querySelectorAll("textarea"))
+      .map(textarea => ({ paragraph: textarea.value.trim() }))
+      .filter(item => item.paragraph !== "");
   }
 
-  // Build options
+  // --- Build options & Theme select ---
   const convertImagesCheckbox = document.getElementById("convert-images-checkbox");
   const resizeImagesCheckbox = document.getElementById("resize-images-checkbox");
-
-  // Theme select
   const themeSelect = document.getElementById("theme-select");
 
-  // Thumbnail upload and modal logic
-  const thumbnailInput = form?.elements["social.thumbnail"];
+  // --- Thumbnail upload and modal logic ---
+  const thumbnailInput = document.getElementById("social-thumbnail");
   const thumbnailUpload = document.getElementById("thumbnail-upload");
   const chooseThumbnailBtn = document.getElementById("choose-thumbnail-btn");
   const thumbnailPreview = document.getElementById("thumbnail-preview");
   const removeThumbnailBtn = document.getElementById("remove-thumbnail-btn");
 
-  // Modal elements for delete confirmation
-  const deleteModal = document.getElementById("delete-modal");
-  const deleteModalClose = document.getElementById("delete-modal-close");
-  const deleteModalConfirm = document.getElementById("delete-modal-confirm");
-  const deleteModalCancel = document.getElementById("delete-modal-cancel");
+  // --- Modal helpers ---
+  function setupModal(modal, closeBtn, confirmBtn, cancelBtn, onConfirm) {
+    if (!modal) return;
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+    if (cancelBtn) cancelBtn.onclick = () => modal.style.display = "none";
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+    if (confirmBtn && onConfirm) confirmBtn.onclick = onConfirm;
+  }
 
-  // Modal elements for theme deletion
-  const deleteThemeModal = document.getElementById("delete-theme-modal");
-  const deleteThemeModalClose = document.getElementById("delete-theme-modal-close");
-  const deleteThemeModalConfirm = document.getElementById("delete-theme-modal-confirm");
-  const deleteThemeModalCancel = document.getElementById("delete-theme-modal-cancel");
-  const deleteThemeModalText = document.getElementById("delete-theme-modal-text");
-  let themeToDelete = null;
-
-  // Show/hide thumbnail preview, remove button, and choose button
+  // --- Thumbnail preview logic ---
   function updateThumbnailPreview(src) {
     if (thumbnailPreview) {
       thumbnailPreview.src = src || "";
       thumbnailPreview.style.display = src ? "block" : "none";
     }
-    if (removeThumbnailBtn) {
-      removeThumbnailBtn.style.display = src ? "inline-block" : "none";
-    }
-    if (chooseThumbnailBtn) {
-      chooseThumbnailBtn.style.display = src ? "none" : "inline-block";
-    }
+    if (removeThumbnailBtn) removeThumbnailBtn.style.display = src ? "inline-block" : "none";
+    if (chooseThumbnailBtn) chooseThumbnailBtn.style.display = src ? "none" : "inline-block";
   }
 
-  // Choose thumbnail button triggers file input
   if (chooseThumbnailBtn && thumbnailUpload) {
     chooseThumbnailBtn.addEventListener("click", () => thumbnailUpload.click());
   }
-
-  // Handle thumbnail upload and refresh preview (with cache busting)
   if (thumbnailUpload) {
     thumbnailUpload.addEventListener("change", async (e) => {
       const file = e.target.files[0];
@@ -156,27 +135,20 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showToast("❌ Error uploading thumbnail", "error");
       }
+      updateSectionStatus("social");
     });
   }
-
-  // Remove thumbnail button triggers modal
   if (removeThumbnailBtn) {
     removeThumbnailBtn.addEventListener("click", () => {
-      deleteModal.style.display = "flex";
+      document.getElementById("delete-modal").style.display = "flex";
     });
   }
-
-  // Modal logic for thumbnail deletion
-  if (deleteModal && deleteModalClose && deleteModalConfirm && deleteModalCancel) {
-    deleteModalClose.onclick = deleteModalCancel.onclick = () => {
-      deleteModal.style.display = "none";
-    };
-    window.onclick = function(event) {
-      if (event.target === deleteModal) {
-        deleteModal.style.display = "none";
-      }
-    };
-    deleteModalConfirm.onclick = async () => {
+  setupModal(
+    document.getElementById("delete-modal"),
+    document.getElementById("delete-modal-close"),
+    document.getElementById("delete-modal-confirm"),
+    document.getElementById("delete-modal-cancel"),
+    async () => {
       const res = await fetch("/api/thumbnail/remove", { method: "POST" });
       const result = await res.json();
       if (result.status === "ok") {
@@ -186,48 +158,38 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showToast("❌ Error removing thumbnail", "error");
       }
-      deleteModal.style.display = "none";
-    };
-  }
+      document.getElementById("delete-modal").style.display = "none";
+      updateSectionStatus("social");
+    }
+  );
 
-  // Theme upload logic (custom theme folder)
+  // --- Theme upload logic ---
   const themeUpload = document.getElementById("theme-upload");
   const chooseThemeBtn = document.getElementById("choose-theme-btn");
   if (chooseThemeBtn && themeUpload) {
     chooseThemeBtn.addEventListener("click", () => themeUpload.click());
     themeUpload.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files);
-      if (files.length === 0) return;
+      if (!files.length) return;
       showLoader("Uploading theme...");
       const formData = new FormData();
-      files.forEach(file => {
-        formData.append("files", file, file.webkitRelativePath || file.name);
-      });
+      files.forEach(file => formData.append("files", file, file.webkitRelativePath || file.name));
       const res = await fetch("/api/theme/upload", { method: "POST", body: formData });
       const result = await res.json();
       hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme uploaded!", "success");
-        // Refresh theme select after upload
-        fetch("/api/themes")
-          .then(res => res.json())
-          .then(themes => {
-            themeSelect.innerHTML = "";
-            themes.forEach(theme => {
-              const option = document.createElement("option");
-              option.value = theme;
-              option.textContent = theme;
-              themeSelect.appendChild(option);
-            });
-          });
+        refreshThemes();
       } else {
         showToast("❌ Error uploading theme", "error");
       }
+      updateSectionStatus("build");
     });
   }
 
-  // Remove theme button triggers modal
+  // --- Remove theme logic ---
   const removeThemeBtn = document.getElementById("remove-theme-btn");
+  let themeToDelete = null;
   if (removeThemeBtn && themeSelect) {
     removeThemeBtn.addEventListener("click", () => {
       const theme = themeSelect.value;
@@ -237,24 +199,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       themeToDelete = theme;
-      deleteThemeModalText.textContent = `Are you sure you want to remove theme "${theme}"?`;
-      deleteThemeModal.style.display = "flex";
+      document.getElementById("delete-theme-modal-text").textContent = `Are you sure you want to remove theme "${theme}"?`;
+      document.getElementById("delete-theme-modal").style.display = "flex";
     });
   }
-
-  // Modal logic for theme deletion
-  if (deleteThemeModal && deleteThemeModalClose && deleteThemeModalConfirm && deleteThemeModalCancel) {
-    deleteThemeModalClose.onclick = deleteThemeModalCancel.onclick = () => {
-      deleteThemeModal.style.display = "none";
-      themeToDelete = null;
-    };
-    window.onclick = function(event) {
-      if (event.target === deleteThemeModal) {
-        deleteThemeModal.style.display = "none";
-        themeToDelete = null;
-      }
-    };
-    deleteThemeModalConfirm.onclick = async () => {
+  setupModal(
+    document.getElementById("delete-theme-modal"),
+    document.getElementById("delete-theme-modal-close"),
+    document.getElementById("delete-theme-modal-confirm"),
+    document.getElementById("delete-theme-modal-cancel"),
+    async () => {
       if (!themeToDelete) return;
       showLoader("Removing theme...");
       const res = await fetch("/api/theme/remove", {
@@ -266,28 +220,18 @@ document.addEventListener("DOMContentLoaded", () => {
       hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme removed!", "success");
-        // Refresh theme select
-        fetch("/api/themes")
-          .then(res => res.json())
-          .then(themes => {
-            themeSelect.innerHTML = "";
-            themes.forEach(theme => {
-              const option = document.createElement("option");
-              option.value = theme;
-              option.textContent = theme;
-              themeSelect.appendChild(option);
-            });
-          });
+        refreshThemes();
       } else {
         showToast(result.error || "❌ Error removing theme", "error");
       }
-      deleteThemeModal.style.display = "none";
+      document.getElementById("delete-theme-modal").style.display = "none";
       themeToDelete = null;
-    };
-  }
+      updateSectionStatus("build");
+    }
+  );
 
-  // Fetch theme list and populate select
-  if (themeSelect) {
+  // --- Theme select refresh ---
+  function refreshThemes() {
     fetch("/api/themes")
       .then(res => res.json())
       .then(themes => {
@@ -298,148 +242,276 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = theme;
           themeSelect.appendChild(option);
         });
-        // Set selected value after loading config
-        fetch("/api/site-info")
-          .then(res => res.json())
-          .then(data => {
-            themeSelect.value = data.build?.theme || "";
-          });
+        loadConfigAndUpdateBuildStatus();
       });
   }
 
-  // Load config from server and populate form
-  if (form) {
+  // --- Config loading ---
+  let loadedConfig = {};
+  function loadConfigAndUpdateBuildStatus() {
     fetch("/api/site-info")
       .then(res => res.json())
       .then(data => {
+        loadedConfig = data;
+        // Info
+        if (forms.info) {
+          forms.info.elements["info.title"].value = data.info?.title || "";
+          forms.info.elements["info.subtitle"].value = data.info?.subtitle || "";
+          forms.info.elements["info.description"].value = data.info?.description || "";
+          forms.info.elements["info.canonical"].value = data.info?.canonical || "";
+          forms.info.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
+          forms.info.elements["info.author"].value = data.info?.author || "";
+        }
+        // Social
+        if (forms.social) {
+          forms.social.elements["social.instagram_url"].value = data.social?.instagram_url || "";
+          if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
+          updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
+        }
+        // Menu
+        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
+        renderMenuItems();
+        // Footer
+        if (forms.footer) {
+          forms.footer.elements["footer.copyright"].value = data.footer?.copyright || "";
+          forms.footer.elements["footer.legal_label"].value = data.footer?.legal_label || "";
+        }
+        // Legals
         ipParagraphs = Array.isArray(data.legals?.intellectual_property)
           ? data.legals.intellectual_property
           : [];
         renderIpParagraphs();
-        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
-        renderMenuItems();
-        form.elements["info.title"].value = data.info?.title || "";
-        form.elements["info.subtitle"].value = data.info?.subtitle || "";
-        form.elements["info.description"].value = data.info?.description || "";
-        form.elements["info.canonical"].value = data.info?.canonical || "";
-        form.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
-        form.elements["info.author"].value = data.info?.author || "";
-        form.elements["social.instagram_url"].value = data.social?.instagram_url || "";
-        if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
-        updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
-        form.elements["footer.copyright"].value = data.footer?.copyright || "";
-        form.elements["footer.legal_label"].value = data.footer?.legal_label || "";
-        if (themeSelect) {
-          themeSelect.value = data.build?.theme || "";
+        if (forms.legals) {
+          forms.legals.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
+          forms.legals.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
+          forms.legals.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
         }
-        form.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
-        form.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
-        form.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
-        // Build checkboxes
-        if (convertImagesCheckbox) {
-          convertImagesCheckbox.checked = !!data.build?.convert_images;
-        }
-        if (resizeImagesCheckbox) {
-          resizeImagesCheckbox.checked = !!data.build?.resize_images;
-        }
+        // Build
+        if (themeSelect) themeSelect.value = data.build?.theme || "";
+        if (convertImagesCheckbox) convertImagesCheckbox.checked = !!data.build?.convert_images;
+        if (resizeImagesCheckbox) resizeImagesCheckbox.checked = !!data.build?.resize_images;
+        ["info", "social", "menu", "footer", "legals"].forEach(updateSectionStatus);
+        updateSectionStatus("build");
       });
   }
+  if (themeSelect) refreshThemes();
+  else loadConfigAndUpdateBuildStatus();
 
-  // Add menu item
-  if (addMenuBtn) {
-    addMenuBtn.addEventListener("click", () => {
-      menuItems.push({ label: "", href: "" });
-      renderMenuItems();
-    });
-  }
-
-  // Remove menu item
+  // --- Add/remove menu items ---
+  if (addMenuBtn) addMenuBtn.addEventListener("click", () => {
+    menuItems.push({ label: "", href: "" });
+    renderMenuItems();
+    updateSectionStatus("menu");
+  });
   menuList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-menu-item")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
       menuItems.splice(idx, 1);
       renderMenuItems();
+      updateSectionStatus("menu");
     }
   });
-
-  // Update menuItems on input change
   menuList.addEventListener("input", () => {
     updateMenuItemsFromInputs();
+    updateSectionStatus("menu");
   });
 
-  // Add paragraph
-  if (addIpBtn) {
-    addIpBtn.addEventListener("click", () => {
-      ipParagraphs.push({ paragraph: "" });
-      renderIpParagraphs();
-    });
-  }
-
-  // Remove paragraph
+  // --- Add/remove IP paragraphs ---
+  if (addIpBtn) addIpBtn.addEventListener("click", () => {
+    ipParagraphs.push({ paragraph: "" });
+    renderIpParagraphs();
+    updateSectionStatus("legals");
+  });
   ipList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-ip-paragraph")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
       ipParagraphs.splice(idx, 1);
       renderIpParagraphs();
+      updateSectionStatus("legals");
     }
   });
-
-  // Update ipParagraphs on input change
   ipList.addEventListener("input", () => {
     updateIpParagraphsFromInputs();
+    updateSectionStatus("legals");
   });
 
-  // Save config to server
-  if (form) {
+  // --- Section value helpers ---
+  function getSectionValues(section) {
+    switch (section) {
+      case "info":
+        return {
+          title: forms.info.elements["info.title"].value,
+          subtitle: forms.info.elements["info.subtitle"].value,
+          description: forms.info.elements["info.description"].value,
+          canonical: forms.info.elements["info.canonical"].value,
+          keywords: forms.info.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
+          author: forms.info.elements["info.author"].value
+        };
+      case "social":
+        return {
+          instagram_url: forms.social.elements["social.instagram_url"].value,
+          thumbnail: thumbnailInput ? thumbnailInput.value : ""
+        };
+      case "menu":
+        updateMenuItemsFromInputs();
+        return { items: menuItems };
+      case "footer":
+        return {
+          copyright: forms.footer.elements["footer.copyright"].value,
+          legal_label: forms.footer.elements["footer.legal_label"].value
+        };
+      case "legals":
+        updateIpParagraphsFromInputs();
+        return {
+          hoster_name: forms.legals.elements["legals.hoster_name"].value,
+          hoster_address: forms.legals.elements["legals.hoster_address"].value,
+          hoster_contact: forms.legals.elements["legals.hoster_contact"].value,
+          intellectual_property: ipParagraphs
+        };
+      case "build":
+        return {
+          theme: themeSelect ? themeSelect.value : "",
+          convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
+          resize_images: !!(resizeImagesCheckbox && resizeImagesCheckbox.checked)
+        };
+      default:
+        return {};
+    }
+  }
+
+  function isSectionSaved(section) {
+    const values = getSectionValues(section);
+    const config = loadedConfig[section] || {};
+    function normalizeMenuItems(items) {
+      return (items || []).map(item => ({
+        label: item.label || "",
+        href: item.href || ""
+      }));
+    }
+    switch (section) {
+      case "info":
+        return Object.keys(values).every(
+          key => values[key] && (
+            key === "keywords"
+              ? Array.isArray(config.keywords) && values.keywords.join(",") === config.keywords.join(",")
+              : values[key] === (config[key] || "")
+          )
+        );
+      case "social":
+        return values.instagram_url && values.thumbnail &&
+          values.instagram_url === (config.instagram_url || "") &&
+          values.thumbnail === (config.thumbnail || "");
+      case "menu":
+        return JSON.stringify(normalizeMenuItems(values.items)) === JSON.stringify(normalizeMenuItems(config.items));
+      case "footer":
+        return values.copyright && values.legal_label &&
+          values.copyright === (config.copyright || "") &&
+          values.legal_label === (config.legal_label || "");
+      case "legals":
+        return values.hoster_name && values.hoster_address && values.hoster_contact &&
+          values.hoster_name === (config.hoster_name || "") &&
+          values.hoster_address === (config.hoster_address || "") &&
+          values.hoster_contact === (config.hoster_contact || "") &&
+          JSON.stringify(values.intellectual_property) === JSON.stringify(config.intellectual_property || []);
+      case "build":
+        return values.theme === (config.theme || "") &&
+          !!values.convert_images === !!config.convert_images &&
+          !!values.resize_images === !!config.resize_images;
+      default:
+        return true;
+    }
+  }
+
+  function isSectionComplete(section) {
+    const values = getSectionValues(section);
+    switch (section) {
+      case "info":
+        return (
+          values.title &&
+          values.subtitle &&
+          values.description &&
+          values.canonical &&
+          values.keywords.length > 0 &&
+          values.author
+        );
+      case "social":
+        return values.instagram_url && values.thumbnail;
+      case "menu":
+        return Array.isArray(values.items) && values.items.every(item => item.label && item.href);
+      case "footer":
+        return values.copyright && values.legal_label;
+      case "legals":
+        return (
+          values.hoster_name &&
+          values.hoster_address &&
+          values.hoster_contact &&
+          Array.isArray(values.intellectual_property) &&
+          values.intellectual_property.length > 0 &&
+          values.intellectual_property.every(ip => ip.paragraph)
+        );
+      case "build":
+        return !!values.theme;
+      default:
+        return true;
+    }
+  }
+
+  function updateSectionStatus(section) {
+    const statusEl = document.querySelector(`#${section}-section .section-status`);
+    if (!statusEl) return;
+    if (!isSectionComplete(section)) {
+      statusEl.innerHTML = "⚠️ Section not yet saved. Please fill required fields";
+      statusEl.style.color = "#ffc700";
+      statusEl.style.display = "";
+      statusEl.style.fontStyle = "normal";
+      return;
+    }
+    if (isSectionSaved(section)) {
+      statusEl.innerHTML = "";
+      statusEl.style.display = "none";
+    } else {
+      statusEl.innerHTML = "⚠️ Section not yet saved";
+      statusEl.style.color = "#ffc700";
+      statusEl.style.display = "";
+      statusEl.style.fontStyle = "normal";
+    }
+  }
+
+  // --- Listen for changes in each section ---
+  Object.entries(forms).forEach(([section, form]) => {
+    if (!form) return;
+    form.addEventListener("input", () => updateSectionStatus(section));
+    form.addEventListener("change", () => updateSectionStatus(section));
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      updateMenuItemsFromInputs();
-      updateIpParagraphsFromInputs();
-
-      // Check if thumbnail is set before saving (uploaded or present in input)
-      if (!thumbnailInput || !thumbnailInput.value) {
-        showLoader("Saving...");
-        showToast("❌ Thumbnail is required.", "error");
-        hideLoader();
+      if (!form.reportValidity()) {
+        showToast("❌ Please fill all required fields before saving.", "error");
+        updateSectionStatus(section);
         return;
       }
-
-      const build = {
-        theme: themeSelect ? themeSelect.value : "",
-        convert_images: !!(convertImagesCheckbox && convertImagesCheckbox.checked),
-        resize_images: !!(resizeImagesCheckbox && resizeImagesCheckbox.checked)
-      };
-
-      const payload = {
-        info: {
-          title: form.elements["info.title"].value,
-          subtitle: form.elements["info.subtitle"].value,
-          description: form.elements["info.description"].value,
-          canonical: form.elements["info.canonical"].value,
-          keywords: form.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
-          author: form.elements["info.author"].value
-        },
-        social: {
-          instagram_url: form.elements["social.instagram_url"].value,
-          thumbnail: thumbnailInput ? thumbnailInput.value : ""
-        },
-        menu: {
-          items: menuItems
-        },
-        footer: {
-          copyright: form.elements["footer.copyright"].value,
-          legal_label: form.elements["footer.legal_label"].value
-        },
-        build,
-        legals: {
-          hoster_name: form.elements["legals.hoster_name"].value,
-          hoster_address: form.elements["legals.hoster_address"].value,
-          hoster_contact: form.elements["legals.hoster_contact"].value,
-          intellectual_property: ipParagraphs
+      if (section === "social" && (!thumbnailInput || !thumbnailInput.value)) {
+        showToast("❌ Thumbnail is required.", "error");
+        updateSectionStatus(section);
+        return;
+      }
+      if (section === "menu") {
+        updateMenuItemsFromInputs();
+        if (!menuItems.length || !menuItems.every(item => item.label && item.href)) {
+          showToast("❌ Please fill all menu item fields.", "error");
+          updateSectionStatus(section);
+          return;
         }
-      };
-      // --- REMOVE loader for save ---
-      // showLoader("Saving...");
+      }
+      if (section === "legals") {
+        updateIpParagraphsFromInputs();
+        if (!ipParagraphs.length || !ipParagraphs.every(ip => ip.paragraph)) {
+          showToast("❌ Please fill all intellectual property paragraphs.", "error");
+          updateSectionStatus(section);
+          return;
+        }
+      }
+      let payload = {};
+      payload[section] = getSectionValues(section);
       const res = await fetch("/api/site-info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -447,10 +519,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const result = await res.json();
       if (result.status === "ok") {
-        showToast("✅ Site info saved!", "success");
+        showToast("✅ Section saved!", "success");
+        fetch("/api/site-info")
+          .then(res => res.json())
+          .then(data => {
+            loadedConfig = data;
+            updateSectionStatus(section);
+          });
       } else {
-        showToast("❌ Error saving site info", "error");
+        showToast("❌ Error saving section", "error");
       }
     });
-  }
+  });
 });

@@ -92,6 +92,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Preview Site button
+  const previewBtn = document.getElementById("preview-site-btn");
+  if (previewBtn) {
+    const previewPort = previewBtn.getAttribute("data-preview-port") || "3000";
+    previewBtn.onclick = () => {
+      const host = window.location.hostname;
+      const protocol = window.location.protocol;
+      const url = `${protocol}//${host}:${previewPort}/`;
+      window.open(url, "_blank");
+    };
+  }
+  
   // Modal close logic
   if (buildModal && buildModalClose) {
     buildModalClose.onclick = () => {

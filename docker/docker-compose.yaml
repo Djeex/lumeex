@@ -2,10 +2,15 @@ services:
   lumeex:
     container_name: lmx
     build: ..
+    env_file:
+      - .env
+    environment:
+      - PREVIEW_PORT=${PREVIEW_PORT:-3000} # port for preview server - set it in .env file
+      - WEBUI_PORT=${WEBUI_PORT:-5000} # port for webui server - set it in .env file
     volumes:
       - ../config:/app/config  # mount config directory
       - ../output:/app/output  # mount output directory
     ports:
-      - "3000:3000"
-      - "5000:5000"
+      - "${PREVIEW_PORT:-3000}:3000"
+      - "${WEBUI_PORT:-5000}:5000"
       

@@ -1,4 +1,3 @@
-# Please change this by your settings.
 info:
   title:
   subtitle:
@@ -9,8 +8,8 @@ info:
 
 social:
   instagram_url:
-  thumbnail:
-  
+  thumbnail: ''
+
 menu:
   items:
   - label: Home
@@ -18,19 +17,17 @@ menu:
 
 footer:
   copyright: Copyright © 2025
-  legal_link: '/legals/'
+  legal_link: /legals/
   legal_label: Legal notice
 
-# Build parameters
 build:
-  theme: modern # choose a theme in config/theme folder
-  convert_images: true # true to enable image conversion
-  resize_images: true # true to enable image resizing
-
-# Change this by your legals
+  theme: modern
+  convert_images: true
+  resize_images: true
+  
 legals:
   hoster_name:
-  hoster_adress:
+  hoster_address:
   hoster_contact:
   intellectual_property:
-    - paragraph: ""
+  - paragraph: ''

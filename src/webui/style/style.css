@@ -7,7 +7,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   margin:0px;
-  width: 100vw;
+  min-width: 320px;
 }
 
 a {
@@ -236,11 +236,32 @@ h2 {
   cursor: pointer;
 }
 
+/* --- Filter Row --- */
+.filter-row label {
+  display: inline-block;
+  margin-right: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filter-row input[type="radio"] {
+  accent-color: #55c3ec;
+  margin-right: 6px;
+}
+
 /* --- Gallery & Hero Grid --- */
 #gallery, #hero {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
+  margin: 30px 0 0 0;
+}
+
+#hero-count-bottom, #gallery-count-bottom {
+  flex-basis: 100%;
+}
+
+.bottom-action-row {
   margin-top: 30px;
 }
 
@@ -316,6 +337,20 @@ h2 {
 .toast.success { background-color: #28a7468c; }
 .toast.error { background-color: #dc3545; }
 
+/* img fade in */
+
+.fade-in-img {
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+  will-change: opacity, transform;
+}
+
+.fade-in-img.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
 /* --- Tags --- */
 .tag-input {
   display: flex;
@@ -366,15 +401,18 @@ h2 {
   z-index: 999;
   display: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  padding: 8px;
+  border-radius: 10px;
 }
 
 .tag-input ul.suggestions li {
-  padding: 6px 8px;
+  padding: 6px 10px;
   cursor: pointer;
 }
 
 .tag-input ul.suggestions li:hover {
   background-color: #007782;
+  border-radius: 7px;
 }
 
 .tags-display {
@@ -406,7 +444,9 @@ h2 {
   background-color: #007782;
   color: white;
   cursor: pointer;
+  border-radius: 7px;
 }
+
 .suggestions li {
   cursor: pointer;
 }
@@ -414,6 +454,14 @@ h2 {
 /* --- Flex Utilities --- */
 .flex-item {
   display: flex;
+}
+
+.modal-actions-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
 }
 
 .flex-column {
@@ -521,18 +569,23 @@ h2 {
   align-items: center;
   gap: 16px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 /* --- Remove All Buttons --- */
-#remove-all-hero, #remove-all-gallery {
+#remove-all-hero, #remove-all-gallery, .bottom-remove-btn {
   background: #2d2d2d;
   color: white;
   display: none;
   margin-bottom: 6px;
 }
 
+.bottom-remove-btn {
+  display: inherit;
+}
+
 #remove-all-gallery:hover,
-#remove-all-hero:hover {
+#remove-all-hero:hover, .bottom-remove-btn:hover {
   background: rgb(121, 26, 19);
 }
 
@@ -541,6 +594,7 @@ h2 {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
@@ -588,9 +642,9 @@ label {
   letter-spacing: 0.5px;
 }
 
-#site-info-form input, #theme-editor-form input,
-#site-info-form textarea, #theme-editor-form textarea,
-#site-info-form select, #theme-editor-form select {
+form input,
+form textarea,
+form select {
   background: #1f2223;
   color: #fff;
   border: 1px solid #585858;
@@ -612,27 +666,24 @@ label {
   gap: 0 18px;
 }
 
+.theme-info {
+  margin-bottom: 25px;
+}
 
-
-#site-info-form input::placeholder,
-#theme-editor-form input::placeholder,
-#site-info-form textarea::placeholder,
-#theme-editor-form textarea::placeholder {
+form input::placeholder,
+form textarea::placeholder {
   color: #585858;
   font-style: italic;
 }
 
-#site-info-form input:focus,
-#theme-editor-form input:focus,
-#site-info-form textarea:focus,
-#theme-editor-form textarea:focus,
-#site-info-form select:focus,
-#theme-editor-form select:focus {
+form input:focus,
+form textarea:focus,
+form select:focus {
   border-color: #585858;
   background: #161616;
 }
-#site-info-form textarea,
-#theme-editor-form textarea {
+
+form textarea {
   min-height: 60px;
   resize: vertical;
 }
@@ -651,7 +702,7 @@ img#thumbnail-preview {
   border: 1px solid #585858;
 }
 
-#site-info-form button[type="submit"], #theme-editor-form button[type="submit"] {
+form button[type="submit"] {
   background: linear-gradient(135deg, #26c4ff, #016074);
   color: #fff;
   font-weight: 700;
@@ -659,17 +710,18 @@ img#thumbnail-preview {
   border-radius: 30px;
   padding: 12px 32px;
   font-size: 1.1em;
-  margin: 0 0 45px 0;
+  margin: 16px 0 0 0;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(38,196,255,0.15);
   transition: background 0.2s;
+  display: block;
 }
 
-#site-info-form button[type="submit"]:hover,  #theme-editor-form button[type="submit"]:hover {
+form button[type="submit"]:hover {
   background: linear-gradient(135deg, #72d9ff, #26657e);
 }
 
-#site-info-form button[type="button"], #theme-editor-form button[type="button"] {
+form button[type="button"] {
   background: #00000000;
   color: #fff;
   border: none;
@@ -682,34 +734,36 @@ img#thumbnail-preview {
   border: 1px solid #585858;
 }
 
-#site-info-form button[type="button"]:hover, #theme-editor-form button[type="button"]:hover {
+form button[type="button"]:hover{
   background: #2d2d2d;
   color: #fff;
 }
 
 
-#site-info-form button.remove-menu-item, #site-info-form button.remove-ip-paragraph, #theme-editor-form button.remove-menu-item, #theme-editor-form button.remove-ip-paragraph {
+form button.remove-menu-item,
+form button.remove-ip-paragraph {
   margin-top: 0px;
   margin-bottom: 4px;
   border-radius: 30px;
   background: #2d2d2d;
 }
 
-#site-info-form button.remove-menu-item:hover, #site-info-form button.remove-ip-paragraph:hover, #theme-editor-form button.remove-menu-item:hover, #theme-editor-form button.remove-ip-paragraph:hover {
+form button.remove-menu-item:hover,
+form button.remove-ip-paragraph:hover {
   background: rgb(121, 26, 19);
 }
 
-#site-info-form button.remove-btn, #theme-editor-form button.remove-btn {
+form button.remove-btn {
 
   border-radius: 30px;
   background: #2d2d2d;
 }
 
-#site-info-form button.remove-btn:hover, #theme-editor-form button.remove-btn:hover {
+form button.remove-btn:hover {
   background: rgb(121, 26, 19);
 }
 
-#site-info-form .thumbnail-form-label, #theme-editor-form .thumbnail-form-label {
+form .thumbnail-form-label {
   margin-top: 10px;
 }
 
@@ -769,6 +823,10 @@ fieldset p, .section p {
 
 #theme-editor-form button[type="button"]#choose-font-btn {
   margin-top: 16px;
+}
+
+.section-status {
+  font-style: normal;
 }
 
 /* --- Stepper --- */
@@ -905,6 +963,7 @@ justify-content: center;
 
 #footer a {
   color: #fff;
+  margin: auto;
 }
 
 .footer-credit .lum-first::before {
@@ -920,6 +979,7 @@ justify-content: center;
     width: 16px;
     height: 16px;
     display: flex;
+    margin: auto;
 }
 
 .icon-text {
@@ -993,13 +1053,13 @@ justify-content: center;
   #menu-items-list > div {
     flex-direction: column;
   }
-  
-  #stepper {
-    flex-direction: column;
+
+  form button[type="button"], form button[type="submit"],   #stepper li {
+    width: 100%;
   }
 
-  #stepper li {
-    width: 100%;
+  #stepper {
+    flex-direction: column;
   }
 
   .footer-container, .footer-links {
@@ -1020,12 +1080,14 @@ justify-content: center;
     /* Hide the default arrow */
     color: transparent;
   }
-  #site-info-form, #theme-editor-form {
-    padding: 18px 8px;
-  }
+
   .input-field {
     min-width: 100%;
     margin-bottom: 12px;
+  }
+
+  #site-info-form button[type="submit"], #theme-editor-form button[type="submit"] {
+    width: 100%;
   }
 
   #color-picker .input-field{

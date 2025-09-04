@@ -78,6 +78,8 @@ html,body {
 	font-weight: 400;
 	line-height:1.5;
 	color:var(--color-primary-dark);
+	display: flex;
+	flex-direction: column;
 }
 
 html {
@@ -179,8 +181,8 @@ h2 {
 /* animation */
 
 .appear {
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
   opacity: 0;
   -webkit-transform: translateY(20px);
           transform: translateY(20px);
@@ -237,12 +239,23 @@ h2 {
 /* Hero */
 
 #hero {
-	height: 100%;
-	width: 100%;
+  min-height: 100vh;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
 }
+
+#hero .section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 #hero .content-wrapper, #hero .section {
 	height:100%;
 }
+
 .hero-background {
 	height: 66%;
 	width: 100%;
@@ -303,7 +316,6 @@ h2 {
     font-size: 22px;
 }
 
-
 .gallery {
 		padding-top: 15px;
 	}
@@ -340,6 +352,11 @@ h2 {
 }
 
 /* Footer */
+
+#footer {
+	margin: auto 0 0 0;
+	width: 100%;
+}
 
 .navigation {
 	text-align: center;
@@ -470,8 +487,7 @@ h2 {
 
 	#legals.content-wrapper {
 		max-width: 90%;
-		margin: auto;
-		margin-top: 50px;
+		margin: 50px auto;
 	}
 
 	.legals-content {

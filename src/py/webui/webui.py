@@ -30,6 +30,8 @@ app = Flask(
     static_url_path=""
 )
 
+WEBUI_PORT = int(os.getenv("WEBUI_PORT", 5000))
+
 # --- Config paths ---
 SITE_YAML = Path(__file__).resolve().parents[3] / "config" / "site.yaml"
 PHOTOS_DIR = Path(__file__).resolve().parents[3] / "config" / "photos"
@@ -72,9 +74,14 @@ def get_local_fonts(theme_name):
 def index():
     return render_template("index.html")
 
+PREVIEW_PORT = int(os.getenv("PREVIEW_PORT", 3000))
+
 @app.context_processor
 def inject_version():
-    return dict(lumeex_version=lumeex_version)
+    return dict(
+        lumeex_version=lumeex_version,
+        preview_port=PREVIEW_PORT
+    )
 
 # --- Gallery & Hero API ---
 @app.route("/gallery-editor")
@@ -203,9 +210,21 @@ def get_site_info():
 @app.route("/api/site-info", methods=["POST"])
 def update_site_info():
     """Update site info YAML."""
-    data = request.json
+    new_data = request.json
+    with open(SITE_YAML, "r") as f:
+        old_data = yaml.safe_load(f) or {}
+
+    def deep_merge(old, new):
+        for k, v in new.items():
+            if isinstance(v, dict) and isinstance(old.get(k), dict):
+                old[k] = deep_merge(old[k], v)
+            else:
+                old[k] = v
+        return old
+
+    merged = deep_merge(old_data, new_data)
     with open(SITE_YAML, "w") as f:
-        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+        yaml.safe_dump(merged, f, sort_keys=False, allow_unicode=True)
     return jsonify({"status": "ok"})
 
 # --- Theme management ---
@@ -396,7 +415,8 @@ def upload_font():
     fonts_dir = Path(__file__).resolve().parents[3] / "config" / "themes" / theme_name / "fonts"
     fonts_dir.mkdir(parents=True, exist_ok=True)
     file.save(fonts_dir / file.filename)
-    return jsonify({"status": "ok", "filename": file.filename})
+    font_basename = Path(file.filename).stem
+    return jsonify({"status": "ok", "filename": font_basename})
 
 @app.route("/api/font/remove", methods=["POST"])
 def remove_font():
@@ -487,5 +507,6 @@ def download_output_zip():
 
 # --- Run server ---
 if __name__ == "__main__":
-    logging.info("Starting WebUI at http://0.0.0.0:5000")
+    logging.info("[~] Starting WebUI at http://0.0.0.0:5000")
+    logging.info(f"[i] WebUI host port is set to {WEBUI_PORT}")
     app.run(host="0.0.0.0", port=5000, debug=True)

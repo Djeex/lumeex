@@ -9,7 +9,6 @@ window.addEventListener("DOMContentLoaded", () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
-        console.log("Lazy-loading image:", img.dataset.src);
         img.src = img.dataset.src;
         img.onload = () => {
           img.classList.add("loaded");

@@ -1,21 +1,19 @@
-#-----------------------------------#
-# Typewriter theme for Lumeex       #
-# https://git.djeex.fr/Djeex/lumeex #
-#-----------------------------------#
 colors:
-  primary: '#0065a1'
+  accent: '#FFC700'
+  background: '#FFFFFF'
+  browser_color: '#FFFFFF'
+  primary: '#0065A1'
   primary_dark: '#005384'
-  secondary: '#00b0f0'
-  accent: '#ffc700'
+  secondary: '#00B0F0'
   text_dark: '#616161'
-  background: '#fff'
-  browser_color: '#fff'
+
 favicon:
   path: favicon.png
+  
 fonts:
   primary:
-    name: Trixie
+    name: trixie.woff
     fallback: sans-serif
   secondary:
-    name: Trixie
+    name: trixie.woff
     fallback: serif
