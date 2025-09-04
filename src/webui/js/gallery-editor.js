@@ -251,11 +251,9 @@ function renderTags(imgIndex, tags) {
   });
 
   input.addEventListener('blur', () => {
-    setTimeout(() => {
-      suggestionBox.style.display = 'none';
-      input.value = '';
-      validateBtn.style.display = 'none';
-    }, 150);
+    suggestionBox.style.display = 'none';
+    input.value = '';
+    validateBtn.style.display = 'none';
   });
 
   // --- Validate button action ---
@@ -267,9 +265,10 @@ function renderTags(imgIndex, tags) {
       validateBtn.style.display = 'none';
     }
   };
-
-  input.focus();
   updateSuggestions();
+  if (!input.value.trim()) {
+    suggestionBox.style.display = 'none';
+  }
 }
 
 // --- Update tags in galleryImages array ---
