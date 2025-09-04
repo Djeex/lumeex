@@ -12,7 +12,6 @@ function showToast(message, type = "success", duration = 3000) {
   }, duration);
 }
 
-// --- Loader helpers ---
 function showLoader(text = "Uploading...") {
   const loader = document.getElementById("global-loader");
   if (loader) {
@@ -27,77 +26,65 @@ function hideLoader() {
 
 document.addEventListener("DOMContentLoaded", () => {
   // --- Section Forms ---
-  const infoForm = document.getElementById("info-form");
-  const socialForm = document.getElementById("social-form");
-  const menuForm = document.getElementById("menu-form");
-  const footerForm = document.getElementById("footer-form");
-  const legalsForm = document.getElementById("legals-form");
-  const buildForm = document.getElementById("build-form");
+  const forms = {
+    info: document.getElementById("info-form"),
+    social: document.getElementById("social-form"),
+    menu: document.getElementById("menu-form"),
+    footer: document.getElementById("footer-form"),
+    legals: document.getElementById("legals-form"),
+    build: document.getElementById("build-form")
+  };
 
   // --- Menu logic ---
   const menuList = document.getElementById("menu-items-list");
   const addMenuBtn = document.getElementById("add-menu-item");
   let menuItems = [];
-
   function renderMenuItems() {
     menuList.innerHTML = "";
     menuItems.forEach((item, idx) => {
-      const div = document.createElement("div");
-      div.style.display = "flex";
-      div.style.gap = "8px";
-      div.style.marginBottom = "6px";
-      div.innerHTML = `
-        <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label" required>
-        <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href" required>
-        <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
+      menuList.innerHTML += `
+        <div style="display:flex;gap:8px;margin-bottom:6px;">
+          <input type="text" placeholder="Label" value="${item.label || ""}" style="flex:1;" data-idx="${idx}" data-type="label" required>
+          <input type="text" placeholder="?tag=tag1,tag2" value="${item.href || ""}" style="flex:2;" data-idx="${idx}" data-type="href" required>
+          <button type="button" class="remove-menu-item" data-idx="${idx}">🗑</button>
+        </div>
       `;
-      menuList.appendChild(div);
     });
   }
-
   function updateMenuItemsFromInputs() {
     const inputs = menuList.querySelectorAll("input");
-    const items = [];
+    menuItems = [];
     for (let i = 0; i < inputs.length; i += 2) {
       const label = inputs[i].value.trim();
       const href = inputs[i + 1].value.trim();
-      if (label || href) items.push({ label, href });
+      if (label || href) menuItems.push({ label, href });
     }
-    menuItems = items;
   }
 
   // --- Intellectual property paragraphs logic ---
   const ipList = document.getElementById("ip-list");
   const addIpBtn = document.getElementById("add-ip-paragraph");
   let ipParagraphs = [];
-
   function renderIpParagraphs() {
     ipList.innerHTML = "";
     ipParagraphs.forEach((item, idx) => {
-      const div = document.createElement("div");
-      div.style.display = "flex";
-      div.style.gap = "8px";
-      div.style.marginBottom = "6px";
-      div.innerHTML = `
-        <textarea placeholder="Paragraph" required style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
-        <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
+      ipList.innerHTML += `
+        <div style="display:flex;gap:8px;margin-bottom:6px;">
+          <textarea placeholder="Paragraph" required style="flex:1;" data-idx="${idx}">${item.paragraph || ""}</textarea>
+          <button type="button" class="remove-ip-paragraph" data-idx="${idx}">🗑</button>
+        </div>
       `;
-      ipList.appendChild(div);
     });
   }
-
   function updateIpParagraphsFromInputs() {
-    const textareas = ipList.querySelectorAll("textarea");
-    ipParagraphs = Array.from(textareas).map(textarea => ({
-      paragraph: textarea.value.trim()
-    })).filter(item => item.paragraph !== "");
+    ipParagraphs = Array.from(ipList.querySelectorAll("textarea"))
+      .map(textarea => ({ paragraph: textarea.value.trim() }))
+      .filter(item => item.paragraph !== "");
   }
 
-  // --- Build options ---
+  // --- Build options & Theme select ---
   const convertImagesCheckbox = document.getElementById("convert-images-checkbox");
   const resizeImagesCheckbox = document.getElementById("resize-images-checkbox");
-
-  // --- Theme select ---
   const themeSelect = document.getElementById("theme-select");
 
   // --- Thumbnail upload and modal logic ---
@@ -107,40 +94,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const thumbnailPreview = document.getElementById("thumbnail-preview");
   const removeThumbnailBtn = document.getElementById("remove-thumbnail-btn");
 
-  // --- Modal elements for delete confirmation ---
-  const deleteModal = document.getElementById("delete-modal");
-  const deleteModalClose = document.getElementById("delete-modal-close");
-  const deleteModalConfirm = document.getElementById("delete-modal-confirm");
-  const deleteModalCancel = document.getElementById("delete-modal-cancel");
+  // --- Modal helpers ---
+  function setupModal(modal, closeBtn, confirmBtn, cancelBtn, onConfirm) {
+    if (!modal) return;
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+    if (cancelBtn) cancelBtn.onclick = () => modal.style.display = "none";
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+    if (confirmBtn && onConfirm) confirmBtn.onclick = onConfirm;
+  }
 
-  // --- Modal elements for theme deletion ---
-  const deleteThemeModal = document.getElementById("delete-theme-modal");
-  const deleteThemeModalClose = document.getElementById("delete-theme-modal-close");
-  const deleteThemeModalConfirm = document.getElementById("delete-theme-modal-confirm");
-  const deleteThemeModalCancel = document.getElementById("delete-theme-modal-cancel");
-  const deleteThemeModalText = document.getElementById("delete-theme-modal-text");
-  let themeToDelete = null;
-
-  // --- Show/hide thumbnail preview, remove button, and choose button ---
+  // --- Thumbnail preview logic ---
   function updateThumbnailPreview(src) {
     if (thumbnailPreview) {
       thumbnailPreview.src = src || "";
       thumbnailPreview.style.display = src ? "block" : "none";
     }
-    if (removeThumbnailBtn) {
-      removeThumbnailBtn.style.display = src ? "inline-block" : "none";
-    }
-    if (chooseThumbnailBtn) {
-      chooseThumbnailBtn.style.display = src ? "none" : "inline-block";
-    }
+    if (removeThumbnailBtn) removeThumbnailBtn.style.display = src ? "inline-block" : "none";
+    if (chooseThumbnailBtn) chooseThumbnailBtn.style.display = src ? "none" : "inline-block";
   }
 
-  // --- Choose thumbnail button triggers file input ---
   if (chooseThumbnailBtn && thumbnailUpload) {
     chooseThumbnailBtn.addEventListener("click", () => thumbnailUpload.click());
   }
-
-  // --- Handle thumbnail upload and refresh preview (with cache busting) ---
   if (thumbnailUpload) {
     thumbnailUpload.addEventListener("change", async (e) => {
       const file = e.target.files[0];
@@ -161,25 +138,17 @@ document.addEventListener("DOMContentLoaded", () => {
       updateSectionStatus("social");
     });
   }
-
-  // --- Remove thumbnail button triggers modal ---
   if (removeThumbnailBtn) {
     removeThumbnailBtn.addEventListener("click", () => {
-      deleteModal.style.display = "flex";
+      document.getElementById("delete-modal").style.display = "flex";
     });
   }
-
-  // --- Modal logic for thumbnail deletion ---
-  if (deleteModal && deleteModalClose && deleteModalConfirm && deleteModalCancel) {
-    deleteModalClose.onclick = deleteModalCancel.onclick = () => {
-      deleteModal.style.display = "none";
-    };
-    window.onclick = function(event) {
-      if (event.target === deleteModal) {
-        deleteModal.style.display = "none";
-      }
-    };
-    deleteModalConfirm.onclick = async () => {
+  setupModal(
+    document.getElementById("delete-modal"),
+    document.getElementById("delete-modal-close"),
+    document.getElementById("delete-modal-confirm"),
+    document.getElementById("delete-modal-cancel"),
+    async () => {
       const res = await fetch("/api/thumbnail/remove", { method: "POST" });
       const result = await res.json();
       if (result.status === "ok") {
@@ -189,41 +158,28 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showToast("❌ Error removing thumbnail", "error");
       }
-      deleteModal.style.display = "none";
+      document.getElementById("delete-modal").style.display = "none";
       updateSectionStatus("social");
-    };
-  }
+    }
+  );
 
-  // --- Theme upload logic (custom theme folder) ---
+  // --- Theme upload logic ---
   const themeUpload = document.getElementById("theme-upload");
   const chooseThemeBtn = document.getElementById("choose-theme-btn");
   if (chooseThemeBtn && themeUpload) {
     chooseThemeBtn.addEventListener("click", () => themeUpload.click());
     themeUpload.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files);
-      if (files.length === 0) return;
+      if (!files.length) return;
       showLoader("Uploading theme...");
       const formData = new FormData();
-      files.forEach(file => {
-        formData.append("files", file, file.webkitRelativePath || file.name);
-      });
+      files.forEach(file => formData.append("files", file, file.webkitRelativePath || file.name));
       const res = await fetch("/api/theme/upload", { method: "POST", body: formData });
       const result = await res.json();
       hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme uploaded!", "success");
-        // Refresh theme select after upload
-        fetch("/api/themes")
-          .then(res => res.json())
-          .then(themes => {
-            themeSelect.innerHTML = "";
-            themes.forEach(theme => {
-              const option = document.createElement("option");
-              option.value = theme;
-              option.textContent = theme;
-              themeSelect.appendChild(option);
-            });
-          });
+        refreshThemes();
       } else {
         showToast("❌ Error uploading theme", "error");
       }
@@ -231,8 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Remove theme button triggers modal ---
+  // --- Remove theme logic ---
   const removeThemeBtn = document.getElementById("remove-theme-btn");
+  let themeToDelete = null;
   if (removeThemeBtn && themeSelect) {
     removeThemeBtn.addEventListener("click", () => {
       const theme = themeSelect.value;
@@ -242,24 +199,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       themeToDelete = theme;
-      deleteThemeModalText.textContent = `Are you sure you want to remove theme "${theme}"?`;
-      deleteThemeModal.style.display = "flex";
+      document.getElementById("delete-theme-modal-text").textContent = `Are you sure you want to remove theme "${theme}"?`;
+      document.getElementById("delete-theme-modal").style.display = "flex";
     });
   }
-
-  // --- Modal logic for theme deletion ---
-  if (deleteThemeModal && deleteThemeModalClose && deleteThemeModalConfirm && deleteThemeModalCancel) {
-    deleteThemeModalClose.onclick = deleteThemeModalCancel.onclick = () => {
-      deleteThemeModal.style.display = "none";
-      themeToDelete = null;
-    };
-    window.onclick = function(event) {
-      if (event.target === deleteThemeModal) {
-        deleteThemeModal.style.display = "none";
-        themeToDelete = null;
-      }
-    };
-    deleteThemeModalConfirm.onclick = async () => {
+  setupModal(
+    document.getElementById("delete-theme-modal"),
+    document.getElementById("delete-theme-modal-close"),
+    document.getElementById("delete-theme-modal-confirm"),
+    document.getElementById("delete-theme-modal-cancel"),
+    async () => {
       if (!themeToDelete) return;
       showLoader("Removing theme...");
       const res = await fetch("/api/theme/remove", {
@@ -271,85 +220,18 @@ document.addEventListener("DOMContentLoaded", () => {
       hideLoader();
       if (result.status === "ok") {
         showToast("✅ Theme removed!", "success");
-        // Refresh theme select
-        fetch("/api/themes")
-          .then(res => res.json())
-          .then(themes => {
-            themeSelect.innerHTML = "";
-            themes.forEach(theme => {
-              const option = document.createElement("option");
-              option.value = theme;
-              option.textContent = theme;
-              themeSelect.appendChild(option);
-            });
-          });
+        refreshThemes();
       } else {
         showToast(result.error || "❌ Error removing theme", "error");
       }
-      deleteThemeModal.style.display = "none";
+      document.getElementById("delete-theme-modal").style.display = "none";
       themeToDelete = null;
       updateSectionStatus("build");
-    };
-  }
+    }
+  );
 
-  // --- Fetch theme list and populate select, then load config and update build status ---
-  let loadedConfig = {};
-  function loadConfigAndUpdateBuildStatus() {
-    fetch("/api/site-info")
-      .then(res => res.json())
-      .then(data => {
-        loadedConfig = data;
-        // Info
-        if (infoForm) {
-          infoForm.elements["info.title"].value = data.info?.title || "";
-          infoForm.elements["info.subtitle"].value = data.info?.subtitle || "";
-          infoForm.elements["info.description"].value = data.info?.description || "";
-          infoForm.elements["info.canonical"].value = data.info?.canonical || "";
-          infoForm.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
-          infoForm.elements["info.author"].value = data.info?.author || "";
-        }
-        // Social
-        if (socialForm) {
-          socialForm.elements["social.instagram_url"].value = data.social?.instagram_url || "";
-          if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
-          updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
-        }
-        // Menu
-        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
-        renderMenuItems();
-        // Footer
-        if (footerForm) {
-          footerForm.elements["footer.copyright"].value = data.footer?.copyright || "";
-          footerForm.elements["footer.legal_label"].value = data.footer?.legal_label || "";
-        }
-        // Legals
-        ipParagraphs = Array.isArray(data.legals?.intellectual_property)
-          ? data.legals.intellectual_property
-          : [];
-        renderIpParagraphs();
-        if (legalsForm) {
-          legalsForm.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
-          legalsForm.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
-          legalsForm.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
-        }
-        // Build
-        if (themeSelect) {
-          themeSelect.value = data.build?.theme || "";
-        }
-        if (convertImagesCheckbox) {
-          convertImagesCheckbox.checked = !!data.build?.convert_images;
-        }
-        if (resizeImagesCheckbox) {
-          resizeImagesCheckbox.checked = !!data.build?.resize_images;
-        }
-        // Initial status update for all sections except build
-        ["info", "social", "menu", "footer", "legals"].forEach(updateSectionStatus);
-        // For build, update status after theme select is set
-        updateSectionStatus("build");
-      });
-  }
-
-  if (themeSelect) {
+  // --- Theme select refresh ---
+  function refreshThemes() {
     fetch("/api/themes")
       .then(res => res.json())
       .then(themes => {
@@ -360,24 +242,67 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = theme;
           themeSelect.appendChild(option);
         });
-        // Now load config and update build status after theme select is ready
         loadConfigAndUpdateBuildStatus();
       });
-  } else {
-    // If no theme select, just load config
-    loadConfigAndUpdateBuildStatus();
   }
 
-  // --- Add menu item ---
-  if (addMenuBtn) {
-    addMenuBtn.addEventListener("click", () => {
-      menuItems.push({ label: "", href: "" });
-      renderMenuItems();
-      updateSectionStatus("menu");
-    });
+  // --- Config loading ---
+  let loadedConfig = {};
+  function loadConfigAndUpdateBuildStatus() {
+    fetch("/api/site-info")
+      .then(res => res.json())
+      .then(data => {
+        loadedConfig = data;
+        // Info
+        if (forms.info) {
+          forms.info.elements["info.title"].value = data.info?.title || "";
+          forms.info.elements["info.subtitle"].value = data.info?.subtitle || "";
+          forms.info.elements["info.description"].value = data.info?.description || "";
+          forms.info.elements["info.canonical"].value = data.info?.canonical || "";
+          forms.info.elements["info.keywords"].value = Array.isArray(data.info?.keywords) ? data.info.keywords.join(", ") : (data.info?.keywords || "");
+          forms.info.elements["info.author"].value = data.info?.author || "";
+        }
+        // Social
+        if (forms.social) {
+          forms.social.elements["social.instagram_url"].value = data.social?.instagram_url || "";
+          if (thumbnailInput) thumbnailInput.value = data.social?.thumbnail || "";
+          updateThumbnailPreview(data.social?.thumbnail ? `/photos/${data.social.thumbnail}?t=${Date.now()}` : "");
+        }
+        // Menu
+        menuItems = Array.isArray(data.menu?.items) ? data.menu.items : [];
+        renderMenuItems();
+        // Footer
+        if (forms.footer) {
+          forms.footer.elements["footer.copyright"].value = data.footer?.copyright || "";
+          forms.footer.elements["footer.legal_label"].value = data.footer?.legal_label || "";
+        }
+        // Legals
+        ipParagraphs = Array.isArray(data.legals?.intellectual_property)
+          ? data.legals.intellectual_property
+          : [];
+        renderIpParagraphs();
+        if (forms.legals) {
+          forms.legals.elements["legals.hoster_name"].value = data.legals?.hoster_name || "";
+          forms.legals.elements["legals.hoster_address"].value = data.legals?.hoster_address || "";
+          forms.legals.elements["legals.hoster_contact"].value = data.legals?.hoster_contact || "";
+        }
+        // Build
+        if (themeSelect) themeSelect.value = data.build?.theme || "";
+        if (convertImagesCheckbox) convertImagesCheckbox.checked = !!data.build?.convert_images;
+        if (resizeImagesCheckbox) resizeImagesCheckbox.checked = !!data.build?.resize_images;
+        ["info", "social", "menu", "footer", "legals"].forEach(updateSectionStatus);
+        updateSectionStatus("build");
+      });
   }
+  if (themeSelect) refreshThemes();
+  else loadConfigAndUpdateBuildStatus();
 
-  // --- Remove menu item ---
+  // --- Add/remove menu items ---
+  if (addMenuBtn) addMenuBtn.addEventListener("click", () => {
+    menuItems.push({ label: "", href: "" });
+    renderMenuItems();
+    updateSectionStatus("menu");
+  });
   menuList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-menu-item")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
@@ -386,23 +311,17 @@ document.addEventListener("DOMContentLoaded", () => {
       updateSectionStatus("menu");
     }
   });
-
-  // --- Update menuItems on input change ---
   menuList.addEventListener("input", () => {
     updateMenuItemsFromInputs();
     updateSectionStatus("menu");
   });
 
-  // --- Add paragraph ---
-  if (addIpBtn) {
-    addIpBtn.addEventListener("click", () => {
-      ipParagraphs.push({ paragraph: "" });
-      renderIpParagraphs();
-      updateSectionStatus("legals");
-    });
-  }
-
-  // --- Remove paragraph ---
+  // --- Add/remove IP paragraphs ---
+  if (addIpBtn) addIpBtn.addEventListener("click", () => {
+    ipParagraphs.push({ paragraph: "" });
+    renderIpParagraphs();
+    updateSectionStatus("legals");
+  });
   ipList.addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-ip-paragraph")) {
       const idx = parseInt(e.target.getAttribute("data-idx"));
@@ -411,8 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateSectionStatus("legals");
     }
   });
-
-  // --- Update ipParagraphs on input change ---
   ipList.addEventListener("input", () => {
     updateIpParagraphsFromInputs();
     updateSectionStatus("legals");
@@ -423,16 +340,16 @@ document.addEventListener("DOMContentLoaded", () => {
     switch (section) {
       case "info":
         return {
-          title: infoForm.elements["info.title"].value,
-          subtitle: infoForm.elements["info.subtitle"].value,
-          description: infoForm.elements["info.description"].value,
-          canonical: infoForm.elements["info.canonical"].value,
-          keywords: infoForm.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
-          author: infoForm.elements["info.author"].value
+          title: forms.info.elements["info.title"].value,
+          subtitle: forms.info.elements["info.subtitle"].value,
+          description: forms.info.elements["info.description"].value,
+          canonical: forms.info.elements["info.canonical"].value,
+          keywords: forms.info.elements["info.keywords"].value.split(",").map(i => i.trim()).filter(Boolean),
+          author: forms.info.elements["info.author"].value
         };
       case "social":
         return {
-          instagram_url: socialForm.elements["social.instagram_url"].value,
+          instagram_url: forms.social.elements["social.instagram_url"].value,
           thumbnail: thumbnailInput ? thumbnailInput.value : ""
         };
       case "menu":
@@ -440,15 +357,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return { items: menuItems };
       case "footer":
         return {
-          copyright: footerForm.elements["footer.copyright"].value,
-          legal_label: footerForm.elements["footer.legal_label"].value
+          copyright: forms.footer.elements["footer.copyright"].value,
+          legal_label: forms.footer.elements["footer.legal_label"].value
         };
       case "legals":
         updateIpParagraphsFromInputs();
         return {
-          hoster_name: legalsForm.elements["legals.hoster_name"].value,
-          hoster_address: legalsForm.elements["legals.hoster_address"].value,
-          hoster_contact: legalsForm.elements["legals.hoster_contact"].value,
+          hoster_name: forms.legals.elements["legals.hoster_name"].value,
+          hoster_address: forms.legals.elements["legals.hoster_address"].value,
+          hoster_contact: forms.legals.elements["legals.hoster_contact"].value,
           intellectual_property: ipParagraphs
         };
       case "build":
@@ -533,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
           values.intellectual_property.every(ip => ip.paragraph)
         );
       case "build":
-        return !!values.theme; // Only check theme is present
+        return !!values.theme;
       default:
         return true;
     }
@@ -561,46 +478,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Listen for changes in each section ---
-  [
-    { form: infoForm, section: "info" },
-    { form: socialForm, section: "social" },
-    { form: menuForm, section: "menu" },
-    { form: footerForm, section: "footer" },
-    { form: legalsForm, section: "legals" },
-    { form: buildForm, section: "build" }
-  ].forEach(({ form, section }) => {
+  Object.entries(forms).forEach(([section, form]) => {
     if (!form) return;
     form.addEventListener("input", () => updateSectionStatus(section));
     form.addEventListener("change", () => updateSectionStatus(section));
-  });
-
-  // --- Save section handler (form submit) ---
-  [
-    { form: infoForm, section: "info" },
-    { form: socialForm, section: "social" },
-    { form: menuForm, section: "menu" },
-    { form: footerForm, section: "footer" },
-    { form: legalsForm, section: "legals" },
-    { form: buildForm, section: "build" }
-  ].forEach(({ form, section }) => {
-    if (!form) return;
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      // Native browser validation
       if (!form.reportValidity()) {
         showToast("❌ Please fill all required fields before saving.", "error");
         updateSectionStatus(section);
         return;
       }
-      // Social section: check thumbnail
-      if (section === "social") {
-        if (!thumbnailInput || !thumbnailInput.value) {
-          showToast("❌ Thumbnail is required.", "error");
-          updateSectionStatus(section);
-          return;
-        }
+      if (section === "social" && (!thumbnailInput || !thumbnailInput.value)) {
+        showToast("❌ Thumbnail is required.", "error");
+        updateSectionStatus(section);
+        return;
       }
-      // Menu section: check all menu items
       if (section === "menu") {
         updateMenuItemsFromInputs();
         if (!menuItems.length || !menuItems.every(item => item.label && item.href)) {
@@ -609,7 +502,6 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      // Legals section: check all paragraphs
       if (section === "legals") {
         updateIpParagraphsFromInputs();
         if (!ipParagraphs.length || !ipParagraphs.every(ip => ip.paragraph)) {
@@ -618,10 +510,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      // Build payload for this section only
       let payload = {};
       payload[section] = getSectionValues(section);
-
       const res = await fetch("/api/site-info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -630,7 +520,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (result.status === "ok") {
         showToast("✅ Section saved!", "success");
-        // Reload config for this section
         fetch("/api/site-info")
           .then(res => res.json())
           .then(data => {
@@ -642,5 +531,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-
 });
