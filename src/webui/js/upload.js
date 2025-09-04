@@ -11,107 +11,37 @@ function hideLoader() {
   if (loader) loader.classList.remove("active");
 }
 
-
-// --- Upload gallery images ---
-const galleryInput = document.getElementById('upload-gallery');
-if (galleryInput) {
-  galleryInput.addEventListener('change', async (e) => {
+// --- Generic upload handler ---
+function setupUpload(inputId, apiUrl, loaderText, successMsg, refreshFn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('change', async (e) => {
     const files = e.target.files;
     if (!files.length) return;
-    showLoader("Uploading photos...");
+    showLoader(loaderText);
     const formData = new FormData();
     for (const file of files) formData.append('files', file);
 
     try {
-      const res = await fetch('/api/gallery/upload', { method: 'POST', body: formData });
+      const res = await fetch(apiUrl, { method: 'POST', body: formData });
       const data = await res.json();
       hideLoader();
       if (res.ok) {
-        showToast(`✅ ${data.uploaded.length} gallery image(s) uploaded!`, "success");
-        if (typeof refreshGallery === "function") refreshGallery();
+        showToast(`✅ ${data.uploaded.length} ${successMsg}`, "success");
+        if (typeof refreshFn === "function") refreshFn();
       } else showToast('Error: ' + data.error, "error");
     } catch(err) {
       hideLoader();
       console.error(err);
       showToast('Server error!', "error");
-    } finally { e.target.value = ''; }
+    } finally {
+      e.target.value = '';
+    }
   });
 }
 
-// --- Upload hero images ---
-const heroInput = document.getElementById('upload-hero');
-if (heroInput) {
-  heroInput.addEventListener('change', async (e) => {
-    const files = e.target.files;
-    if (!files.length) return;
-    showLoader("Uploading hero photos...");
-    const formData = new FormData();
-    for (const file of files) formData.append('files', file);
-
-    try {
-      const res = await fetch('/api/hero/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      hideLoader();
-      if (res.ok) {
-        showToast(`✅ ${data.uploaded.length} hero image(s) uploaded!`, "success");
-        if (typeof refreshHero === "function") refreshHero();
-      } else showToast('Error: ' + data.error, "error");
-    } catch(err) {
-      hideLoader();
-      console.error(err);
-      showToast('Server error!', "error");
-    } finally { e.target.value = ''; }
-  });
-}
-
-// --- Upload gallery images (bottom button) ---
-const galleryInputBottom = document.getElementById('upload-gallery-bottom');
-if (galleryInputBottom) {
-  galleryInputBottom.addEventListener('change', async (e) => {
-    const files = e.target.files;
-    if (!files.length) return;
-    showLoader("Uploading photos...");
-    const formData = new FormData();
-    for (const file of files) formData.append('files', file);
-
-    try {
-      const res = await fetch('/api/gallery/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      hideLoader();
-      if (res.ok) {
-        showToast(`✅ ${data.uploaded.length} gallery image(s) uploaded!`, "success");
-        if (typeof refreshGallery === "function") refreshGallery();
-      } else showToast('Error: ' + data.error, "error");
-    } catch(err) {
-      hideLoader();
-      console.error(err);
-      showToast('Server error!', "error");
-    } finally { e.target.value = ''; }
-  });
-}
-
-// --- Upload hero images (bottom button) ---
-const heroInputBottom = document.getElementById('upload-hero-bottom');
-if (heroInputBottom) {
-  heroInputBottom.addEventListener('change', async (e) => {
-    const files = e.target.files;
-    if (!files.length) return;
-    showLoader("Uploading hero photos...");
-    const formData = new FormData();
-    for (const file of files) formData.append('files', file);
-
-    try {
-      const res = await fetch('/api/hero/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      hideLoader();
-      if (res.ok) {
-        showToast(`✅ ${data.uploaded.length} hero image(s) uploaded!`, "success");
-        if (typeof refreshHero === "function") refreshHero();
-      } else showToast('Error: ' + data.error, "error");
-    } catch(err) {
-      hideLoader();
-      console.error(err);
-      showToast('Server error!', "error");
-    } finally { e.target.value = ''; }
-  });
-}
+// --- Setup all upload inputs ---
+setupUpload('upload-gallery', '/api/gallery/upload', "Uploading photos...", "gallery image(s) uploaded!", refreshGallery);
+setupUpload('upload-hero', '/api/hero/upload', "Uploading hero photos...", "hero image(s) uploaded!", refreshHero);
+setupUpload('upload-gallery-bottom', '/api/gallery/upload', "Uploading photos...", "gallery image(s) uploaded!", refreshGallery);
+setupUpload('upload-hero-bottom', '/api/hero/upload', "Uploading hero photos...", "hero image(s) uploaded!", refreshHero);
