@@ -10,24 +10,28 @@ copy_default_config() {
     mkdir -p /app/config
   fi
 
-  echo "[~] Checking if default config files need to be copied..."
+  echo "[~] Checking if default config files/folders need to be copied..."
   files_copied=false
 
-  for file in /app/default/*; do
-    filename=$(basename "$file")
-    target="/app/config/$filename"
-
+  # Recursively check all files and folders in /app/default
+  find /app/default -mindepth 1 | while read src; do
+    relpath="${src#/app/default/}"
+    target="/app/config/$relpath"
     if [ ! -e "$target" ]; then
-      echo "[→] Copying default config file: $filename"
-      cp -r "$file" "$target"
+      echo "[→] Copying: $relpath"
+      if [ -d "$src" ]; then
+        cp -r "$src" "$target"
+      else
+        cp "$src" "$target"
+      fi
       files_copied=true
     fi
   done
 
   if [ "$files_copied" = true ]; then
-    echo "[✓] Default configuration files copied successfully."
+    echo "[✓] Default configuration files/folders copied successfully."
   else
-    echo "[✓] No default files needed to be copied."
+    echo "[✓] No default files/folders needed to be copied."
   fi
 }
 
