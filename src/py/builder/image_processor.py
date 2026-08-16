@@ -11,6 +11,7 @@ def convert_and_resize_image(input_path, output_path, resize=True, max_width=114
             return
 
         img = Image.open(input_path)
+        icc_profile = img.info.get("icc_profile")
         if img.mode != "RGB":
             img = img.convert("RGB")
 
@@ -27,7 +28,10 @@ def convert_and_resize_image(input_path, output_path, resize=True, max_width=114
         if fmt == "JPEG":
             output_path = output_path.with_suffix(".jpg")
 
-        img.save(output_path, fmt, quality=90 if fmt == "JPEG" else 100)
+        save_kwargs = {"quality": 90 if fmt == "JPEG" else 100}
+        if icc_profile:
+            save_kwargs["icc_profile"] = icc_profile
+        img.save(output_path, fmt, **save_kwargs)
         logging.info(f"[✓] Processed image: {input_path} → {output_path}")
 
     except Exception as e:
