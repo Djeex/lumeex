@@ -32,6 +32,14 @@ window.addEventListener("DOMContentLoaded", () => {
       img.classList.add("loaded");
     };
 
+    // Chrome HDR artefacting fix
+    const clearWillChange = (e) => {
+      if (e.propertyName !== "transform") return;
+      img.style.willChange = "auto";
+      img.removeEventListener("transitionend", clearWillChange);
+    };
+    img.addEventListener("transitionend", clearWillChange);
+
     if (img.complete && img.naturalHeight !== 0) {
       onLoad(); // already loaded
     } else {
