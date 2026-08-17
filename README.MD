@@ -12,6 +12,8 @@
 
 Lumeex is a static site generator designed to create minimalist photo galleries that highlight your artworks over the author. It empowers users to organize and explore images using tags, with each page load presenting photos in a random order to encourage discovery of new content.
 
+👉 __Check the online version : [Lumeex-web](https://lumeex.djeex.fr)__
+
 The project includes two thoughtfully designed themes—one modern, one minimalistic—both crafted to keep the spotlight on your photos:
 
 - **Modern** — [View Demo](https://modern.djeex.fr)  
