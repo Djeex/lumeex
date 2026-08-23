@@ -2,5 +2,9 @@
 !.env
 !.sh
 !.gitignore
+!.gitea
+!.gitea/**
 output/
 __pycache__/
+htmlcov/
+site_output.zip
