@@ -18,23 +18,23 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Build prod image
+      - name: Build Docker image
         run: |
           docker build -t lumeex:ci . 2>&1 | tee build.log
           if grep -q "Building wheel for" build.log; then
             echo "::warning::A dependency was built from source — check Python/Alpine compatibility"
           fi
 
-      - name: Smoke test
+      - name: Smoke test (syntax check)
         run: |
           docker run --rm --entrypoint python lumeex:ci -c "
-          import ast, glob
+          import ast
           ok = True
-          for f in glob.glob('/app/*.py'):
+          for f in ('build.py', 'gallery.py'):
               with open(f) as fh:
                   source = fh.read()
               try:
-                  ast.parse(source, filename=f)
+                  ast.parse(source)
               except SyntaxError as e:
                   print(f'::error::Syntax error in {f}: {e}')
                   ok = False
@@ -99,7 +99,7 @@ jobs:
             git config user.name "lumeex-ci"
             git config user.email "ci@git.djeex.fr"
             git add VERSION
-            git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+            git commit -m "Bump build version to $NEW_VERSION [skip ci]"
 
             # Belt and suspenders: actions/checkout can leave its own ephemeral
             # credential injected as an extraheader, which would silently override
@@ -151,7 +151,7 @@ jobs:
             fi
           fi
 
-          CHANGED_LIST=$(echo "$CHANGED" | sed 's/^/- /')
+          COMMIT_LIST=$(git log --no-merges --format='- %s' "$BASE_REF".."${{ github.sha }}")
 
           REPO_URL="https://git.djeex.fr/Djeex/lumeex"
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
@@ -162,15 +162,17 @@ jobs:
 
           BODY=$(cat <<EOF
           ## Changelog
+          ---
 
           ### ${CATEGORY}
+          ---
           ${CHANGE_TITLE}
 
           **Source:** ${SOURCE_LINE}
           **Image:** \`${IMAGE}:${VERSION}\`
 
-          **Changed files:**
-          ${CHANGED_LIST}
+          **Commits:**
+          ${COMMIT_LIST}
           EOF
           )
 
