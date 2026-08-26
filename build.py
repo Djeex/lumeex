@@ -1,4 +1,5 @@
 import logging
+
 from src.py.builder.site_builder import build
 
 if __name__ == "__main__":

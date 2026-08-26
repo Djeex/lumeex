@@ -1,6 +1,7 @@
-import yaml
 import os
 from pathlib import Path
+
+import yaml
 
 # YAML file paths
 GALLERY_YAML = "config/gallery.yaml"
@@ -9,17 +10,19 @@ GALLERY_YAML = "config/gallery.yaml"
 GALLERY_DIR = Path("config/photos/gallery")
 HERO_DIR = Path("config/photos/hero")
 
+
 def load_yaml(path):
     """Load gallery config .yaml file"""
     print(f"[→] Loading {path}...")
     if not os.path.exists(path):
         print(f"[✗] File not found: {path}")
         return {}
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
         images = data.get("images", []) or []
         print(f"[✓] Loaded {len(images)} image(s) from {path}")
         return data
+
 
 def save_yaml(data, path):
     """Save modified gallery config .yaml file"""
@@ -27,13 +30,17 @@ def save_yaml(data, path):
         yaml.dump(data, f, sort_keys=False, allow_unicode=True)
     print(f"[✓] Saved updated YAML to {path}")
 
+
 def get_all_image_paths(directory):
     """Get the path to record for builded site"""
-    return sorted([
-        str(p.relative_to(directory.parent)).replace("\\", "/")
-        for p in directory.rglob("*")
-        if p.suffix.lower() in [".jpg", ".jpeg", ".png", ".webp"]
-    ])
+    return sorted(
+        [
+            str(p.relative_to(directory.parent)).replace("\\", "/")
+            for p in directory.rglob("*")
+            if p.suffix.lower() in [".jpg", ".jpeg", ".png", ".webp"]
+        ]
+    )
+
 
 def update_gallery():
     """Update the gallery photo list"""
@@ -50,11 +57,7 @@ def update_gallery():
     known_images = {img["src"] for img in gallery_images}
 
     # Add new images
-    new_images = [
-        {"src": path, "tags": []}
-        for path in all_images
-        if path not in known_images
-    ]
+    new_images = [{"src": path, "tags": []} for path in all_images if path not in known_images]
     if new_images:
         gallery_images.extend(new_images)
         print(f"[✓] Added {len(new_images)} new image(s) to gallery.yaml (gallery)")
@@ -74,6 +77,7 @@ def update_gallery():
     if not new_images and not deleted_images:
         print("[✓] No changes to gallery.yaml (gallery)")
 
+
 def update_hero():
     """Update the hero photo list"""
     print("\n=== Updating gallery.yaml (hero section) ===")
@@ -89,11 +93,7 @@ def update_hero():
     known_images = {img["src"] for img in hero_images}
 
     # Add new images
-    new_images = [
-        {"src": path}
-        for path in all_images
-        if path not in known_images
-    ]
+    new_images = [{"src": path} for path in all_images if path not in known_images]
     if new_images:
         hero_images.extend(new_images)
         print(f"[✓] Added {len(new_images)} new image(s) to gallery.yaml (hero)")

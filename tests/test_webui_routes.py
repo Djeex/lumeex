@@ -102,7 +102,13 @@ def test_site_info_get_and_post(client, app_env):
     data = resp.get_json()
     assert data["info"]["title"] == "Test"
 
-    client.post("/api/site-info", json={"info": {"subtitle": "New subtitle"}, "social": {"instagram_url": "https://insta.example"}})
+    client.post(
+        "/api/site-info",
+        json={
+            "info": {"subtitle": "New subtitle"},
+            "social": {"instagram_url": "https://insta.example"},
+        },
+    )
 
     updated = client.get("/api/site-info").get_json()
     assert updated["info"]["title"] == "Test"
@@ -271,9 +277,7 @@ def test_trigger_build_success_invokes_subprocess(client, app_env, monkeypatch):
     )
 
     calls = []
-    monkeypatch.setattr(
-        webui.subprocess, "run", lambda *a, **k: calls.append((a, k))
-    )
+    monkeypatch.setattr(webui.subprocess, "run", lambda *a, **k: calls.append((a, k)))
 
     resp = client.post("/api/build")
     assert resp.get_json() == {"status": "ok"}

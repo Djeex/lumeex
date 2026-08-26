@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from PIL import Image
 
 from src.py.builder import image_processor as ip
@@ -101,8 +99,13 @@ def test_generate_favicons_from_logo_creates_all_sizes(tmp_path, make_image):
     ip.generate_favicons_from_logo({"favicon": {"path": "favicon.png"}}, theme_dir, output_dir)
 
     expected = [
-        "favicon-32.png", "favicon-96.png", "favicon-128.png",
-        "favicon-192.png", "favicon-196.png", "favicon-152.png", "favicon-180.png",
+        "favicon-32.png",
+        "favicon-96.png",
+        "favicon-128.png",
+        "favicon-192.png",
+        "favicon-196.png",
+        "favicon-152.png",
+        "favicon-180.png",
     ]
     for name in expected:
         assert (output_dir / name).exists()

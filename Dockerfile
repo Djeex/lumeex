@@ -27,6 +27,13 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY ./tests/ ./tests/
 COPY ./demo/ ./demo/
 
+FROM base AS lint
+
+RUN pip install --no-cache-dir ruff==0.16.4
+COPY ruff.toml /app/ruff.toml
+COPY ./tests/ ./tests/
+RUN ruff check . && ruff format --check .
+
 FROM base
 
 ENTRYPOINT ["/app/entrypoint.sh"]

@@ -2,6 +2,7 @@ import json
 import logging
 from pathlib import Path
 
+
 def render_template(template_path, context):
     """Render html templates"""
     with open(template_path, encoding="utf-8") as f:
@@ -10,6 +11,7 @@ def render_template(template_path, context):
         placeholder = "{{ " + key + " }}"
         content = content.replace(placeholder, str(value) if value is not None else "")
     return content
+
 
 def render_gallery_images(images):
     """Render the photo gallery"""
@@ -20,10 +22,11 @@ def render_gallery_images(images):
         html += f"""
         <div class="section" data-tags="{tags}">
             <div class="tags">{tag_html}</div>
-            <img class="fade-in-img lazyload" data-src="/img/{img['src']}" alt="{img.get('alt', '')}" loading="lazy">
+            <img class="fade-in-img lazyload" data-src="/img/{img["src"]}" alt="{img.get("alt", "")}" loading="lazy">
         </div>
         """
     return html
+
 
 def generate_gallery_json_from_images(images, output_dir):
     """Generte the hero carrousel photo list"""
@@ -36,6 +39,7 @@ def generate_gallery_json_from_images(images, output_dir):
         logging.info(f"[✓] Generated hero gallery JSON: {output_path}")
     except Exception as e:
         logging.error(f"[✗] Error generating gallery JSON: {e}")
+
 
 def generate_robots_txt(canonical_url, allowed_paths, output_dir):
     """Generate the robot.txt"""
@@ -65,10 +69,11 @@ def generate_robots_txt(canonical_url, allowed_paths, output_dir):
     except Exception as e:
         logging.error(f"[✗] Failed to write robots.txt: {e}")
 
+
 def generate_sitemap_xml(canonical_url, allowed_paths, output_dir):
     """Generate the sitemap"""
     urlset_start = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    urlset_end = '</urlset>\n'
+    urlset_end = "</urlset>\n"
     urls = ""
     for path in allowed_paths:
         loc = canonical_url.rstrip("/") + path

@@ -1,0 +1,15 @@
+line-length = 100
+
+[lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[lint.isort]
+# See nvidia-stock-bot's ruff.toml for why this is pinned explicitly rather
+# than left to auto-detection.
+known-first-party = ["src", "build", "gallery"]
+
+[lint.per-file-ignores]
+# Real findings (unused var, unused loop var) but app-logic changes,
+# left for the user to decide rather than auto-fixed.
+"src/py/webui/webui.py" = ["F841", "B007"]

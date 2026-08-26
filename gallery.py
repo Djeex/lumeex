@@ -1,4 +1,5 @@
 import logging
+
 from src.py.builder.gallery_builder import update_gallery, update_hero
 
 if __name__ == "__main__":

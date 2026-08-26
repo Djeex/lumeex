@@ -1,5 +1,3 @@
-import yaml
-
 from src.py.builder import gallery_builder as gb
 
 

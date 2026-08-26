@@ -1,6 +1,6 @@
 import logging
-from pathlib import Path
 from shutil import copyfile
+
 
 def generate_css_variables(colors_dict, output_path):
     """Generate css variables for theme colors"""
@@ -12,6 +12,7 @@ def generate_css_variables(colors_dict, output_path):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("\n".join(css_lines))
     logging.info(f"[✓] CSS variables written to {output_path}")
+
 
 def generate_fonts_css(fonts_dir, output_path, fonts_cfg=None):
     """Generate css variables fonts"""
@@ -35,7 +36,7 @@ def generate_fonts_css(fonts_dir, output_path, fonts_cfg=None):
 
     css_lines = []
     for font_name, sources in font_faces.items():
-        css_lines.append(f"@font-face {{")
+        css_lines.append("@font-face {")
         css_lines.append(f"  font-family: '{font_name}';")
         srcs = [f"url('../fonts/{file}') format('{fmt}')" for file, fmt in sorted(sources)]
         css_lines.append(f"  src: {', '.join(srcs)};")
@@ -58,6 +59,7 @@ def generate_fonts_css(fonts_dir, output_path, fonts_cfg=None):
     logging.info(f"[✓] Generated fonts CSS: {output_path}")
     return preload_links
 
+
 def generate_google_fonts_link(fonts):
     """Generate src link for Google fonts"""
     if not fonts:
@@ -70,5 +72,9 @@ def generate_google_fonts_link(fonts):
             families.append(f"{family}:wght@{';'.join(weights)}")
         else:
             families.append(family)
-    href = "https://fonts.googleapis.com/css2?" + "&".join(f"family={f}" for f in families) + "&display=swap"
+    href = (
+        "https://fonts.googleapis.com/css2?"
+        + "&".join(f"family={f}" for f in families)
+        + "&display=swap"
+    )
     return f'<link href="{href}" rel="stylesheet">'

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from src.py.builder import utils
 
 
@@ -30,7 +28,7 @@ def test_load_theme_config_missing_raises(tmp_path):
     themes_dir = tmp_path / "themes"
     try:
         utils.load_theme_config("missing", themes_dir)
-        assert False, "expected FileNotFoundError"
+        raise AssertionError("expected FileNotFoundError")
     except FileNotFoundError:
         pass
 

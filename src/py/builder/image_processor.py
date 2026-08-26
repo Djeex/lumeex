@@ -1,7 +1,9 @@
 import logging
 from pathlib import Path
-from PIL import Image, features
 from shutil import copyfile
+
+from PIL import Image, features
+
 
 def convert_and_resize_image(input_path, output_path, resize=True, max_width=1140):
     """Convert an image to WebP (or JPEG fallback) and optionally resize it."""
@@ -37,6 +39,7 @@ def convert_and_resize_image(input_path, output_path, resize=True, max_width=114
     except Exception as e:
         logging.error(f"[✗] Error processing image {input_path}: {e}")
 
+
 def process_images(images, resize_images, img_dir, build_dir):
     """Process a list of image references and update paths to optimized versions."""
     for img in images:
@@ -51,6 +54,7 @@ def process_images(images, resize_images, img_dir, build_dir):
             jpg_path = webp_path.with_suffix(".jpg")
             if jpg_path.exists():
                 img["src"] = str(Path(img["src"]).with_suffix(".jpg"))
+
 
 def copy_original_images(images, img_dir, build_dir):
     """Copy original image files without processing."""
@@ -70,6 +74,7 @@ def copy_original_images(images, img_dir, build_dir):
         except Exception as e:
             logging.error(f"[✗] Error copying {src_path}: {e}")
 
+
 def get_favicon_path(theme_vars, theme_dir):
     """Retrieve the favicon path from theme variables, ensuring it exists."""
     fav_path = theme_vars.get("favicon", {}).get("path")
@@ -87,6 +92,7 @@ def get_favicon_path(theme_vars, theme_dir):
 
     return path
 
+
 def generate_favicons_from_logo(theme_vars, theme_dir, output_dir):
     """Generate multiple PNG favicons from a single source image."""
     logo_path = get_favicon_path(theme_vars, theme_dir)
@@ -97,9 +103,13 @@ def generate_favicons_from_logo(theme_vars, theme_dir, output_dir):
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
         specs = [
-            (32, "favicon-32.png"), (96, "favicon-96.png"), (128, "favicon-128.png"),
-            (192, "favicon-192.png"), (196, "favicon-196.png"),
-            (152, "favicon-152.png"), (180, "favicon-180.png")
+            (32, "favicon-32.png"),
+            (96, "favicon-96.png"),
+            (128, "favicon-128.png"),
+            (192, "favicon-192.png"),
+            (196, "favicon-196.png"),
+            (152, "favicon-152.png"),
+            (180, "favicon-180.png"),
         ]
         img = Image.open(logo_path).convert("RGBA")
         for size, name in specs:
@@ -109,6 +119,7 @@ def generate_favicons_from_logo(theme_vars, theme_dir, output_dir):
 
     except Exception as e:
         logging.error(f"[✗] Error generating PNG favicons: {e}")
+
 
 def generate_favicon_ico(theme_vars, theme_dir, output_path):
     """Generate a multi-size favicon.ico from a source image."""

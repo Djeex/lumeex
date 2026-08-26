@@ -50,9 +50,7 @@ def app_env(tmp_path, monkeypatch, make_image):
     theme_dir = root / "config" / "themes" / "modern"
     theme_dir.mkdir(parents=True)
     (theme_dir / "theme.yaml").write_text(
-        "colors:\n  browser_color: '#ffffff'\n"
-        "favicon:\n  path: favicon.png\n"
-        "google_fonts: []\n",
+        "colors:\n  browser_color: '#ffffff'\nfavicon:\n  path: favicon.png\ngoogle_fonts: []\n",
         encoding="utf-8",
     )
     make_image(theme_dir / "favicon.png", size=(32, 32), fmt="PNG")
@@ -61,8 +59,7 @@ def app_env(tmp_path, monkeypatch, make_image):
         "hero:\n  images: []\ngallery:\n  images: []\n", encoding="utf-8"
     )
     (root / "config" / "site.yaml").write_text(
-        "info:\n  title: Test\n  canonical: https://example.com\n"
-        "social:\n  thumbnail: ''\n",
+        "info:\n  title: Test\n  canonical: https://example.com\nsocial:\n  thumbnail: ''\n",
         encoding="utf-8",
     )
 

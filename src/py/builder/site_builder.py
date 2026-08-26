@@ -2,14 +2,27 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from shutil import copyfile
+
 from PIL import Image
-from .utils import ensure_dir, copy_assets, load_yaml, load_theme_config
+
 from .css_generator import generate_css_variables, generate_fonts_css, generate_google_fonts_link
-from .image_processor import process_images, copy_original_images, convert_and_resize_image, generate_favicons_from_logo, generate_favicon_ico
-from .html_generator import render_template, render_gallery_images, generate_gallery_json_from_images, generate_robots_txt, generate_sitemap_xml
+from .html_generator import (
+    generate_gallery_json_from_images,
+    generate_robots_txt,
+    generate_sitemap_xml,
+    render_gallery_images,
+    render_template,
+)
+from .image_processor import (
+    copy_original_images,
+    generate_favicon_ico,
+    generate_favicons_from_logo,
+    process_images,
+)
+from .utils import copy_assets, ensure_dir, load_theme_config, load_yaml
 
 # Configure logging to display only the messages
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # Define key directories used throughout the script
 SRC_DIR = Path.cwd()
@@ -22,8 +35,9 @@ GALLERY_FILE = SRC_DIR / "config/gallery.yaml"
 SITE_FILE = SRC_DIR / "config/site.yaml"
 THEMES_DIR = SRC_DIR / "config/themes"
 VERSION_FILE = SRC_DIR / "VERSION"
-with open(VERSION_FILE, "r") as vf:
+with open(VERSION_FILE) as vf:
     build_version = vf.read().strip()
+
 
 def build():
     logging.info("\n")
@@ -33,7 +47,7 @@ def build():
     logging.info("\n === Starting build === ")
     ensure_dir(BUILD_DIR)
     copy_assets(JS_DIR, STYLE_DIR, BUILD_DIR)
-    
+
     # Defining build vars
     build_date = datetime.now().strftime("%Y%m%d%H%M%S")
     build_date_version = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -57,9 +71,13 @@ def build():
         logging.info(f"[✓] Theme CSS found, copied to build folder: {dest_theme_css}")
     else:
         theme_css = ""
-        logging.warning(f"[~] No theme.css found in {theme_css_path}, skipping theme CSS injection.")
+        logging.warning(
+            f"[~] No theme.css found in {theme_css_path}, skipping theme CSS injection."
+        )
 
-    preload_links = generate_fonts_css(fonts_dir, BUILD_DIR / "style" / "fonts.css", fonts_cfg=theme_vars.get("fonts"))
+    preload_links = generate_fonts_css(
+        fonts_dir, BUILD_DIR / "style" / "fonts.css", fonts_cfg=theme_vars.get("fonts")
+    )
     generate_css_variables(theme_vars.get("colors", {}), BUILD_DIR / "style" / "colors.css")
     generate_favicons_from_logo(theme_vars, theme_dir, BUILD_DIR / "img" / "favicon")
     generate_favicon_ico(theme_vars, theme_dir, BUILD_DIR / "favicon.ico")
@@ -94,7 +112,7 @@ def build():
 
     # Adding Google fonts if existing
     google_fonts_link = generate_google_fonts_link(theme_vars.get("google_fonts", []))
-    logging.info(f"[✓] Google Fonts link generated")
+    logging.info("[✓] Google Fonts link generated")
 
     # Generating thumbnail
     thumbnail_path = site_vars.get("social", {}).get("thumbnail")
@@ -124,11 +142,13 @@ def build():
     head_vars["theme_css"] = theme_css
     head_vars["build_date"] = build_date
     head_vars["canonical"] = canonical_home
-    
+
     # Render the home page
     head = render_template(TEMPLATE_DIR / "head.html", head_vars)
     hero = render_template(TEMPLATE_DIR / "hero.html", {**site_vars["hero"], **head_vars})
-    footer = render_template(TEMPLATE_DIR / "footer.html", {**site_vars.get("footer", {}), **head_vars})
+    footer = render_template(
+        TEMPLATE_DIR / "footer.html", {**site_vars.get("footer", {}), **head_vars}
+    )
     gallery_html = render_gallery_images(gallery_images)
     gallery = render_template(TEMPLATE_DIR / "gallery.html", {"gallery_images": gallery_html})
 
@@ -185,7 +205,8 @@ def build():
         generate_robots_txt(canonical_url, allowed_pages, BUILD_DIR)
         generate_sitemap_xml(canonical_url, allowed_pages, BUILD_DIR)
     else:
-        logging.warning("[~] No canonical URL found in site.yaml info section, skipping robots.txt and sitemap.xml generation.")
+        logging.warning(
+            "[~] No canonical URL found in site.yaml info section, skipping robots.txt and sitemap.xml generation."
+        )
 
     logging.info("✅ Build complete.")
-    

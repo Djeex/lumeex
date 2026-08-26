@@ -1,7 +1,9 @@
 import logging
 from pathlib import Path
-from flask import Blueprint, request, current_app
+
+from flask import Blueprint, current_app, request
 from werkzeug.utils import secure_filename
+
 from src.py.builder.gallery_builder import update_gallery, update_hero
 
 # --- Create Flask blueprint for upload routes ---
@@ -10,9 +12,11 @@ upload_bp = Blueprint("upload", __name__)
 # --- Allowed file types ---
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
+
 def allowed_file(filename: str) -> bool:
     """Check if the uploaded file has an allowed extension."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def save_uploaded_file(file, folder: Path):
     """Save an uploaded file to the specified folder."""
@@ -21,6 +25,7 @@ def save_uploaded_file(file, folder: Path):
     file.save(folder / filename)  # Save to disk
     logging.info(f"[✓] Uploaded {filename} to {folder}")
     return filename
+
 
 @upload_bp.route("/api/<section>/upload", methods=["POST"])
 def upload_photo(section: str):
@@ -35,7 +40,7 @@ def upload_photo(section: str):
     # Check if files are provided
     if "files" not in request.files:
         return {"error": "No files provided"}, 400
-    
+
     files = request.files.getlist("files")
     if not files:
         return {"error": "No selected files"}, 400
@@ -63,4 +68,3 @@ def upload_photo(section: str):
         return {"status": "ok", "uploaded": uploaded}
 
     return {"error": "No valid files uploaded"}, 400
-
