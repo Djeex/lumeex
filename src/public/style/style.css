@@ -331,6 +331,126 @@ h2 {
 	margin: 5px 0 60px 0;
 }
 
+/* Photo menu (right click / long press on a gallery photo) */
+
+.section[data-photo-id] img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.photo-menu {
+  position: fixed;
+  z-index: 1100;
+  min-width: 200px;
+  padding: 6px;
+  background: var(--color-background);
+  border: 1px solid rgb(0 0 0 / 7%);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 16%), 0 2px 6px rgb(0 0 0 / 6%);
+  font-family: var(--font-primary), Arial, sans-serif;
+  transform-origin: top left;
+  animation: photo-menu-in 0.14s ease-out;
+}
+
+.photo-menu:focus {
+  outline: none;
+}
+
+.photo-menu[hidden] {
+  display: none;
+}
+
+.photo-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  color: var(--color-text-dark);
+  text-align: left;
+  cursor: pointer;
+}
+
+.photo-menu button:hover,
+.photo-menu button:focus-visible {
+  background: rgb(245 245 245);
+  color: var(--color-primary-dark);
+}
+
+.photo-menu button:focus {
+  outline: none;
+}
+
+.photo-menu button:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: -2px;
+}
+
+.photo-menu svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.photo-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 1100;
+  padding: 9px 18px;
+  border-radius: 30px;
+  background: var(--color-primary-dark);
+  color: var(--color-background);
+  font-family: var(--font-primary), Arial, sans-serif;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.photo-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.section.photo-linked img {
+  animation: photo-linked 2.4s ease-out 0.6s;
+}
+
+@keyframes photo-menu-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes photo-linked {
+  0%, 60% { box-shadow: 0 0 0 3px var(--color-background), 0 0 0 6px var(--color-secondary); }
+  100% { box-shadow: 0 0 0 3px transparent, 0 0 0 6px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-menu, .section.photo-linked img {
+    animation: none;
+  }
+  .photo-toast {
+    transition: none;
+  }
+}
+
 .text-block {
 	padding:10px;
 	margin:10px;

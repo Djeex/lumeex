@@ -1,6 +1,10 @@
 // js for Lumeex
 // https://git.djeex.fr/Djeex/lumeex
 
+// The site is always served from the domain root (see the /img/ and
+// /data/ paths below); the photo menu builds its permalinks from this.
+const siteRoot = `${window.location.origin}/`;
+
 // Fade in effect for elements with class 'appear'
 const setupIntersectionObserver = () => {
   document.querySelectorAll('.appear').forEach(parent => {
@@ -163,6 +167,187 @@ const disableRightClickAndDrag = () => {
   document.addEventListener('dragstart', (e) => e.preventDefault());
 };
 
+// Photo menu: right click (or long press on touch screens) on a gallery
+// photo opens a small menu to copy its permalink or share it. The
+// permalink points at photo/<id>/, a tiny page generated per photo that
+// carries the photo's own preview tags for social networks and sends
+// visitors back to the gallery with ?photo=<id>. The id is a hash of the
+// original photo file, so the link survives reordering and rebuilds.
+const PHOTO_MENU_TEXT = {
+  en: { copy: 'Copy link', share: 'Share…', copied: 'Link copied', copyFailed: 'Could not copy the link' },
+  fr: { copy: 'Copier le lien', share: 'Partager…', copied: 'Lien copié', copyFailed: 'Impossible de copier le lien' },
+};
+
+const PHOTO_MENU_ICONS = {
+  copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>',
+  share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>',
+};
+
+const setupPhotoMenu = () => {
+  const lang = (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en';
+  const text = PHOTO_MENU_TEXT[lang];
+  const canShare = typeof navigator.share === 'function';
+  let menu = null;
+  let toast = null;
+  let toastTimer = null;
+  let currentUrl = '';
+  let pressTimer = null;
+  let pressStart = null;
+  let openScrollY = 0;
+
+  const photoAt = (el) => el.closest && el.closest('.section[data-photo-id] img');
+  const permalinkFor = (img) => `${siteRoot}photo/${img.closest('.section').dataset.photoId}/`;
+
+  const showToast = (message) => {
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'photo-toast';
+      toast.setAttribute('role', 'status');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
+  };
+
+  const copyText = async (value) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch {
+      // Clipboard API missing (plain http) or refused: fall back to the
+      // legacy selection-based copy.
+      const area = document.createElement('textarea');
+      area.value = value;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      area.remove();
+      return ok;
+    }
+  };
+
+  const close = () => {
+    if (!menu || menu.hidden) return;
+    menu.hidden = true;
+  };
+
+  const buildMenu = () => {
+    menu = document.createElement('div');
+    menu.className = 'photo-menu';
+    menu.setAttribute('role', 'menu');
+    menu.tabIndex = -1;
+    menu.hidden = true;
+    const actions = canShare ? ['copy', 'share'] : ['copy'];
+    actions.forEach((action) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('role', 'menuitem');
+      button.dataset.action = action;
+      button.innerHTML = PHOTO_MENU_ICONS[action];
+      button.append(text[action]);
+      menu.appendChild(button);
+    });
+    menu.addEventListener('click', async (e) => {
+      const button = e.target.closest('button');
+      if (!button) return;
+      const url = currentUrl;
+      close();
+      if (button.dataset.action === 'copy') {
+        showToast((await copyText(url)) ? text.copied : text.copyFailed);
+      } else {
+        // AbortError just means the visitor dismissed the share sheet.
+        navigator.share({ title: document.title, url }).catch(() => {});
+      }
+    });
+    menu.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const items = Array.from(menu.querySelectorAll('button'));
+      const i = items.indexOf(document.activeElement);
+      const next = i === -1
+        ? (e.key === 'ArrowDown' ? 0 : items.length - 1)
+        : (i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+      items[next].focus();
+    });
+    document.body.appendChild(menu);
+  };
+
+  const open = (img, x, y) => {
+    if (!menu) buildMenu();
+    currentUrl = permalinkFor(img);
+    openScrollY = window.scrollY;
+    menu.hidden = false;
+    // Keep the whole menu inside the viewport near the pointer.
+    const margin = 8;
+    const left = Math.min(x, window.innerWidth - menu.offsetWidth - margin);
+    const top = Math.min(y, window.innerHeight - menu.offsetHeight - margin);
+    menu.style.left = `${Math.max(margin, left)}px`;
+    menu.style.top = `${Math.max(margin, top)}px`;
+    // Focus the menu itself (not its first item) so Escape and the arrow
+    // keys work without a focus ring showing after a mouse right click.
+    menu.focus({ preventScroll: true });
+  };
+
+  document.addEventListener('contextmenu', (e) => {
+    const img = photoAt(e.target);
+    if (img) open(img, e.clientX, e.clientY);
+    else close();
+  });
+
+  // iOS never fires contextmenu on a long press, so time it by hand.
+  const cancelPress = () => {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+  };
+  document.addEventListener('pointerdown', (e) => {
+    if (menu && !menu.hidden && !menu.contains(e.target)) close();
+    if (e.pointerType === 'mouse') return;
+    const img = photoAt(e.target);
+    if (!img) return;
+    pressStart = { x: e.clientX, y: e.clientY };
+    cancelPress();
+    pressTimer = setTimeout(() => open(img, pressStart.x, pressStart.y), 500);
+  });
+  document.addEventListener('pointermove', (e) => {
+    if (pressTimer && Math.hypot(e.clientX - pressStart.x, e.clientY - pressStart.y) > 10) cancelPress();
+  });
+  ['pointerup', 'pointercancel'].forEach((type) => document.addEventListener(type, cancelPress));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+  // Only a real scroll closes the menu: lazy-loaded photos shifting the
+  // layout also fire small scroll events (scroll anchoring).
+  window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - openScrollY) > 40) close();
+  }, { passive: true });
+  window.addEventListener('resize', close);
+  window.addEventListener('blur', close);
+};
+
+// Permalink landing: ?photo=<id> moves that photo to the top of the
+// gallery (after the shuffle) and scrolls to it.
+const openLinkedPhoto = () => {
+  const id = new URLSearchParams(window.location.search).get('photo');
+  if (!id) return;
+  const gallery = document.querySelector('#gallery');
+  const section = gallery && Array.from(gallery.querySelectorAll('.section[data-photo-id]'))
+    .find((el) => el.dataset.photoId === id);
+  if (!section) return;
+  gallery.prepend(section);
+  section.classList.add('photo-linked');
+  // Wait for the loader to fade out so the scroll lands on the final layout.
+  window.addEventListener('load', () => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+};
+
 // Scroll-to-top button functionality
 const setupScrollToTopButton = () => {
   const scrollBtn = document.getElementById("scrollToTop");
@@ -190,9 +375,11 @@ document.addEventListener("DOMContentLoaded", () => {
   setupIntersectionObserver();
   setupLoader();
   shuffleGallery();
+  openLinkedPhoto();
   randomizeHeroBackground();
   setupTagFilter();
   disableRightClickAndDrag();
+  setupPhotoMenu();
   setupScrollToTopButton();
   fixNavSeparators();
 });
