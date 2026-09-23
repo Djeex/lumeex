@@ -39,6 +39,55 @@ def test_render_gallery_images_with_and_without_tags():
     assert 'alt=""' in html
 
 
+def test_render_gallery_images_adds_photo_id_when_present():
+    html = hg.render_gallery_images(
+        [{"src": "gallery/a.jpg", "photo_id": "abc123"}, {"src": "gallery/b.jpg"}]
+    )
+
+    assert html.count("data-photo-id=") == 1
+    assert 'data-photo-id="abc123"' in html
+
+
+def _photo_page(**overrides):
+    kwargs = {
+        "photo_id": "ab12",
+        "site_title": "My photos",
+        "description": "A gallery",
+        "alt": "Sunset",
+        "page_url": "https://example.com/photo/ab12/",
+        "image_url": "https://example.com/img/share/ab12.jpg",
+        "image_size": (1200, 800),
+        "signature": "<!-- sig -->",
+    }
+    kwargs.update(overrides)
+    return hg.render_photo_page(**kwargs)
+
+
+def test_render_photo_page_preview_tags_and_noindex():
+    page = _photo_page()
+
+    assert '<meta name="robots" content="noindex, follow">' in page
+    assert '<meta property="og:image" content="https://example.com/img/share/ab12.jpg" />' in page
+    assert '<meta property="og:url" content="https://example.com/photo/ab12/" />' in page
+    assert '<meta property="og:image:width" content="1200" />' in page
+    assert "<title>Sunset - My photos</title>" in page
+    assert 'rel="canonical"' not in page
+
+
+def test_render_photo_page_redirects_to_gallery():
+    page = _photo_page()
+
+    assert 'location.replace("/?photo=ab12")' in page
+    assert '<a href="/?photo=ab12">' in page
+
+
+def test_render_photo_page_escapes_text():
+    page = _photo_page(alt="", site_title='"><script>alert(1)</script>')
+
+    assert "<script>alert(1)" not in page
+    assert "<title>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</title>" in page
+
+
 def test_generate_gallery_json_from_images(tmp_path):
     images = [{"src": "hero/a.jpg"}, {"src": "hero/b.jpg"}]
 

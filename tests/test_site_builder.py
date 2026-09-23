@@ -36,6 +36,35 @@ def test_build_end_to_end_with_demo_content(tmp_path, monkeypatch, demo_root):
     assert all(p.suffix in (".webp", ".jpg") for p in processed)
 
 
+def test_build_generates_photo_share_pages(tmp_path, monkeypatch, demo_root):
+    import hashlib
+    import re
+
+    output_dir = tmp_path / "output"
+    monkeypatch.setattr(site_builder, "BUILD_DIR", output_dir)
+    monkeypatch.setattr(site_builder, "GALLERY_FILE", demo_root / "gallery.yaml")
+    monkeypatch.setattr(site_builder, "SITE_FILE", demo_root / "site.yaml")
+    monkeypatch.setattr(site_builder, "IMG_DIR", demo_root / "photos")
+    monkeypatch.setattr(site_builder, "THEMES_DIR", demo_root / "themes")
+
+    site_builder.build()
+
+    gallery = yaml.safe_load((demo_root / "gallery.yaml").read_text(encoding="utf-8"))
+    sources = [img["src"] for img in gallery["gallery"]["images"]]
+    index_html = (output_dir / "index.html").read_text(encoding="utf-8")
+    ids = re.findall(r'data-photo-id="([^"]+)"', index_html)
+    assert len(ids) == len(sources)
+    first_hash = hashlib.sha256((demo_root / "photos" / sources[0]).read_bytes()).hexdigest()
+    assert ids[0] == first_hash
+
+    page = (output_dir / "photo" / first_hash / "index.html").read_text(encoding="utf-8")
+    assert f'content="https://lumeex.djeex.fr/img/share/{first_hash}.jpg"' in page
+    assert 'content="noindex, follow"' in page
+    assert (output_dir / "img" / "share" / f"{first_hash}.jpg").exists()
+    assert len(list((output_dir / "photo").iterdir())) == len(set(ids))
+    assert "/photo/" not in (output_dir / "sitemap.xml").read_text(encoding="utf-8")
+
+
 def test_build_without_image_conversion_copies_originals(tmp_path, monkeypatch, demo_root):
     site_data = yaml.safe_load((demo_root / "site.yaml").read_text(encoding="utf-8"))
     site_data["build"]["convert_images"] = False

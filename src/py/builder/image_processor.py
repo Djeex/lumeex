@@ -1,8 +1,12 @@
+import hashlib
+import io
 import logging
 from pathlib import Path
 from shutil import copyfile
 
 from PIL import Image, features
+
+SHARE_PREVIEW_MAX_WIDTH = 1200
 
 
 def convert_and_resize_image(input_path, output_path, resize=True, max_width=1140):
@@ -54,6 +58,64 @@ def process_images(images, resize_images, img_dir, build_dir):
             jpg_path = webp_path.with_suffix(".jpg")
             if jpg_path.exists():
                 img["src"] = str(Path(img["src"]).with_suffix(".jpg"))
+
+
+def compute_photo_ids(images, img_dir):
+    """
+    Set each image's permalink id (img["photo_id"]): the SHA-256 of its
+    original file, so the same photo keeps the same link whatever its
+    position or filename, across rebuilds. lumeex-web computes the same
+    value. Duplicates of the same file get "-2", "-3"... in list order.
+    Must run before process_images, which rewrites img["src"].
+    """
+    seen = {}
+    for img in images:
+        src_path = img_dir / img["src"]
+        if not src_path.exists():
+            continue
+        digest = hashlib.sha256(src_path.read_bytes()).hexdigest()
+        seen[digest] = seen.get(digest, 0) + 1
+        img["photo_id"] = digest if seen[digest] == 1 else f"{digest}-{seen[digest]}"
+
+
+def _to_srgb(img, icc_profile):
+    """Convert to sRGB when Pillow was built with LittleCMS; unchanged otherwise."""
+    try:
+        from PIL import ImageCms
+    except ImportError:
+        return img
+    try:
+        src_profile = ImageCms.ImageCmsProfile(io.BytesIO(icc_profile))
+        return ImageCms.profileToProfile(img, src_profile, ImageCms.createProfile("sRGB"))
+    except ImageCms.PyCMSError as e:
+        logging.warning(f"[~] Could not convert embedded profile to sRGB: {e}")
+        return img
+
+
+def generate_share_preview(input_path, output_path, max_width=SHARE_PREVIEW_MAX_WIDTH):
+    """
+    Link-preview image for one gallery photo (photo/<id>/ pages): a plain
+    sRGB JPEG no wider than max_width, since WebP and wide-gamut profiles
+    aren't handled by every messaging app. Returns (width, height), or None
+    on failure.
+    """
+    try:
+        img = Image.open(input_path)
+        icc_profile = img.info.get("icc_profile")
+        img = img.convert("RGB")
+        if icc_profile:
+            img = _to_srgb(img, icc_profile)
+        width, height = img.size
+        if width > max_width:
+            height = int((max_width / width) * height)
+            width = max_width
+            img = img.resize((width, height), Image.LANCZOS)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(output_path, "JPEG", quality=85)
+        return width, height
+    except Exception as e:
+        logging.error(f"[✗] Error generating share preview for {input_path}: {e}")
+        return None
 
 
 def copy_original_images(images, img_dir, build_dir):

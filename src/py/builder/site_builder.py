@@ -11,12 +11,15 @@ from .html_generator import (
     generate_robots_txt,
     generate_sitemap_xml,
     render_gallery_images,
+    render_photo_page,
     render_template,
 )
 from .image_processor import (
+    compute_photo_ids,
     copy_original_images,
     generate_favicon_ico,
     generate_favicons_from_logo,
+    generate_share_preview,
     process_images,
 )
 from .utils import copy_assets, ensure_dir, load_theme_config, load_yaml
@@ -90,6 +93,13 @@ def build():
 
     hero_images = gallery_vars.get("hero", {}).get("images", [])
     gallery_images = gallery_vars.get("gallery", {}).get("images", [])
+
+    # Permalink ids for gallery photos (not the hero carousel), hashed from
+    # the original files — before process_images rewrites their src
+    compute_photo_ids(gallery_images, IMG_DIR)
+    original_src_by_photo_id = {
+        img["photo_id"]: img["src"] for img in gallery_images if "photo_id" in img
+    }
 
     if convert_images:
         process_images(hero_images, resize_images, IMG_DIR, BUILD_DIR)
@@ -190,6 +200,34 @@ def build():
         logging.info(f"[✓] Legals page generated: {output_legals}")
     else:
         logging.warning("[~] No legals section found in site.yaml")
+
+    # One link-preview page + preview image per gallery photo. og:image and
+    # og:url must be absolute for crawlers, hence the canonical URL.
+    site_info = site_vars.get("info", {})
+    share_pages = 0
+    for img in gallery_images:
+        photo_id = img.get("photo_id")
+        if not photo_id:
+            continue
+        preview_path = BUILD_DIR / "img" / "share" / f"{photo_id}.jpg"
+        size = generate_share_preview(IMG_DIR / original_src_by_photo_id[photo_id], preview_path)
+        if not size:
+            continue
+        page = render_photo_page(
+            photo_id,
+            site_title=site_info.get("title", ""),
+            description=site_info.get("description", ""),
+            alt=img.get("alt", ""),
+            page_url=f"{canonical_url}/photo/{photo_id}/",
+            image_url=f"{canonical_url}/img/share/{photo_id}.jpg",
+            image_size=size,
+            signature=signature,
+        )
+        page_path = BUILD_DIR / "photo" / photo_id / "index.html"
+        page_path.parent.mkdir(parents=True, exist_ok=True)
+        page_path.write_text(page, encoding="utf-8")
+        share_pages += 1
+    logging.info(f"[✓] Photo share pages generated: {share_pages}")
 
     # Hero carrousel generator
     if hero_images:
