@@ -1,4 +1,4 @@
-FROM python:3.15.1-alpine AS builder
+FROM python:3.15.2-alpine AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ RUN apk add --no-cache gcc musl-dev jpeg-dev zlib-dev
 COPY requirements.txt .
 RUN pip wheel --no-cache-dir --wheel-dir=/wheels -r requirements.txt
 
-FROM python:3.15.1-alpine AS base
+FROM python:3.15.2-alpine AS base
 
 WORKDIR /app
 
